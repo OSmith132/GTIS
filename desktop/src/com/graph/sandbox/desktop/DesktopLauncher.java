@@ -11,7 +11,7 @@ public class DesktopLauncher {
 		config.resizable = false;
 		config.foregroundFPS = 60;
 		config.height = 900;
-		config.width = config.height * 14 / 9;
+		config.width = config.height * 16 / 9;
 		config.addIcon("titles 2.png", Files.FileType.Internal);
 		//config.fullscreen=true;
 		new LwjglApplication(new Main(), config);

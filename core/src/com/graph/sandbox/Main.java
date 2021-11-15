@@ -14,5 +14,6 @@ public class Main extends Game {
 
 		System.out.println();
 		setScreen(new MainMenu());
+		//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 	}
 }

@@ -5,8 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
@@ -16,11 +21,26 @@ public class MainMenu implements Screen {
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
         //background.setHeight(720);background.setWidth(1280);
         //stage.addActor(background);
-        Image Rectangle = new Image(new Texture(Gdx.files.internal("Rectangle1.png")));
-        Rectangle.setHeight(Gdx.graphics.getHeight()+2);
+        Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
+
+
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("fishtangle.png")));
+        Rectangle.setHeight(Gdx.graphics.getHeight()+1);
         Rectangle.setWidth(Gdx.graphics.getWidth()/5);
-        Rectangle.setPosition(-15,-1);
+        Rectangle.setPosition(0,-1);
         stage.addActor(Rectangle);
+
+        TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");
+        newGraph.setHeight(Gdx.graphics.getHeight());
+        newGraph.setWidth(Gdx.graphics.getWidth()/3);
+        newGraph.setPosition(50,750);
+        newGraph.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                //System.out.println("Make graph");
+            }
+        });
+        stage.addActor(newGraph);
     }
 
 
