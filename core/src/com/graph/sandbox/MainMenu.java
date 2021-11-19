@@ -17,30 +17,68 @@ public class MainMenu implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
 
-    public MainMenu(){
+    public MainMenu() {
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
         //background.setHeight(720);background.setWidth(1280);
         //stage.addActor(background);
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
 
-        Image Rectangle = new Image(new Texture(Gdx.files.internal("fishtangle.png")));
-        Rectangle.setHeight(Gdx.graphics.getHeight()+1);
-        Rectangle.setWidth(Gdx.graphics.getWidth()/5);
-        Rectangle.setPosition(0,-1);
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
+        Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
+        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        Rectangle.setPosition(0, -1);
         stage.addActor(Rectangle);
 
+
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");
-        newGraph.setHeight(Gdx.graphics.getHeight());
-        newGraph.setWidth(Gdx.graphics.getWidth()/3);
-        newGraph.setPosition(50,750);
-        newGraph.addListener(new ClickListener(){
+        newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
+        newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
+        newGraph.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.12f)));
+
+        newGraph.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
+            public void clicked(InputEvent event, float x, float y) {
                 //System.out.println("Make graph");
             }
         });
         stage.addActor(newGraph);
+
+
+        TextButton openGraph = new TextButton("Open Graph", buttonSkin, "maroon");
+        openGraph.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        openGraph.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        openGraph.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.24f)));
+
+
+        openGraph.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //System.out.println("Open graph");
+            }
+        });
+        stage.addActor(openGraph);
+
+
+
+        TextButton presetGraphs = new TextButton("Preset Graphs", buttonSkin, "maroon");
+        presetGraphs.setHeight(Gdx.graphics.getHeight()*(0.1f));
+        presetGraphs.setWidth(Gdx.graphics.getWidth()*(0.2f));
+        presetGraphs.setPosition((Gdx.graphics.getWidth()*(0.125f)-Gdx.graphics.getWidth()*(0.1125f)),(Gdx.graphics.getHeight()*(0.96f)-Gdx.graphics.getHeight()*(0.36f)));
+
+
+        presetGraphs.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                //System.out.println("Preset graph");
+            }
+        });
+        stage.addActor(presetGraphs);
+
+
+
+
+
     }
 
 
