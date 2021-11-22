@@ -1,5 +1,6 @@
 package com.graph.sandbox;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,7 +40,7 @@ public class MainMenu implements Screen {
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //System.out.println("Make graph");
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox());
             }
         });
         stage.addActor(newGraph);
@@ -78,7 +79,19 @@ public class MainMenu implements Screen {
 
 
 
+        TextButton exit = new TextButton("Exit", buttonSkin, "maroon");
+        presetGraphs.setHeight(Gdx.graphics.getHeight()*(0.1f));
+        presetGraphs.setWidth(Gdx.graphics.getWidth()*(0.2f));
+        presetGraphs.setPosition((Gdx.graphics.getWidth()*(0.125f)-Gdx.graphics.getWidth()*(0.1125f)),(Gdx.graphics.getHeight()*(0.96f)-Gdx.graphics.getHeight()*(0.36f)));
 
+
+        presetGraphs.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                //System.out.println("Preset graph");
+            }
+        });
+        stage.addActor(presetGraphs);
     }
 
 
