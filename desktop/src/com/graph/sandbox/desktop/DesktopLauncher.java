@@ -8,7 +8,7 @@ import com.graph.sandbox.Main;
 public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.resizable = true;
+		config.resizable = false;
 		config.foregroundFPS = 60;
 		config.height = 900;  // Default:  1600x900
 		config.width = config.height * 16 / 9;
