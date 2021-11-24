@@ -21,8 +21,6 @@ public class MainMenu implements Screen {
 
     public MainMenu() {
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
-        //background.setHeight(720);background.setWidth(1280);
-        //stage.addActor(background);
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
 
@@ -44,7 +42,7 @@ public class MainMenu implements Screen {
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");
         newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
         newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
-        newGraph.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.12f)));
+        newGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
 
         newGraph.addListener(new ClickListener() {
             @Override
@@ -60,7 +58,7 @@ public class MainMenu implements Screen {
         TextButton openGraph = new TextButton("Open Graph", buttonSkin, "maroon");
         openGraph.setHeight(Gdx.graphics.getHeight() * (0.1f));
         openGraph.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        openGraph.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.24f)));
+        openGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)),(Gdx.graphics.getHeight() * (0.72f)));
 
         openGraph.addListener(new ClickListener() {
             @Override
@@ -76,7 +74,7 @@ public class MainMenu implements Screen {
         TextButton Settings = new TextButton("Settings", buttonSkin, "maroon");
         Settings.setHeight(Gdx.graphics.getHeight()*(0.1f));
         Settings.setWidth(Gdx.graphics.getWidth()*(0.2f));
-        Settings.setPosition((Gdx.graphics.getWidth()*(0.125f)-Gdx.graphics.getWidth()*(0.1125f)),(Gdx.graphics.getHeight()*(0.96f)-Gdx.graphics.getHeight()*(0.36f)));
+        Settings.setPosition((Gdx.graphics.getWidth()*(0.125f)-Gdx.graphics.getWidth()*(0.1125f)),(Gdx.graphics.getHeight() * (0.60f)));
 
         Settings.addListener(new ClickListener(){
             @Override
@@ -91,9 +89,9 @@ public class MainMenu implements Screen {
 
 
         TextButton exitButton = new TextButton("Exit", buttonSkin, "maroon");
-        exitButton.setHeight(Gdx.graphics.getHeight()*(0.11f));
-        exitButton.setWidth(Gdx.graphics.getWidth()*(0.22f));
-        exitButton.setPosition((Gdx.graphics.getWidth()*(0.125f)-Gdx.graphics.getWidth()*(0.1125f)),(Gdx.graphics.getHeight()*(0.96f)-Gdx.graphics.getHeight()*(0.92f)));
+        exitButton.setHeight(Gdx.graphics.getHeight()*(0.12f));
+        exitButton.setWidth(Gdx.graphics.getWidth()*(0.225f));
+        exitButton.setPosition((Gdx.graphics.getWidth()*(0.0125f)),(Gdx.graphics.getHeight() * (0.04f)));
 
         exitButton.addListener(new ClickListener(){
             @Override

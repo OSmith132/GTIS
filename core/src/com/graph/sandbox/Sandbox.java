@@ -1,5 +1,6 @@
 package com.graph.sandbox;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,7 +20,7 @@ public class Sandbox implements Screen {
     private final ShapeRenderer sr = new ShapeRenderer();
 
     String vertexName = "Node";  // Node or Vertex
-    String edgeName = "arc";     // Arc or Edge
+    String edgeName = "Arc";     // Arc or Edge
 
 
     public Sandbox() {
@@ -41,16 +42,18 @@ public class Sandbox implements Screen {
 
 
 
+
+
         TextButton newVertex = new TextButton(("New "+vertexName), buttonSkin, "maroon");
         newVertex.setHeight(Gdx.graphics.getHeight()*(0.1f));
         newVertex.setWidth(Gdx.graphics.getWidth()*(0.08f));
-        newVertex.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.1f)));
+        newVertex.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.85f)));
         stage.addActor(newVertex);
 
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // code goes here
+                stage.addActor(errorText);
 
             }
         });
@@ -60,18 +63,33 @@ public class Sandbox implements Screen {
         TextButton newEdge = new TextButton(("New "+edgeName), buttonSkin, "maroon");
         newEdge.setHeight(Gdx.graphics.getHeight()*(0.1f));
         newEdge.setWidth(Gdx.graphics.getWidth()*(0.08f));
-        newEdge.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.3f)), (Gdx.graphics.getHeight() * (0.96f) - Gdx.graphics.getHeight() * (0.1f)));
+        newEdge.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.85f)));
         stage.addActor(newEdge);
 
-        newVertex.addListener(new ClickListener() {
+        newEdge.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // code goes here
+                stage.addActor(errorText);
 
             }
         });
 
 
+
+        TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
+        mainMenu.setHeight(Gdx.graphics.getHeight()*(0.1f));
+        mainMenu.setWidth(Gdx.graphics.getWidth()*(0.1725f));
+        mainMenu.setPosition((Gdx.graphics.getWidth()*(0.0125f)),(Gdx.graphics.getHeight() * (0.04f)));
+        stage.addActor(mainMenu);
+
+        mainMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                errorText.remove();
+
+            }
+        });
 
     }
 
