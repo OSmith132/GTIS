@@ -8,16 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 
 
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
+    int settingsOpen = 0;
 
     public MainMenu() {
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
@@ -37,6 +36,20 @@ public class MainMenu implements Screen {
         Rectangle.setPosition(0, -1);
         stage.addActor(Rectangle);
 
+
+
+       /* final Image settingsBox = new Image(new Texture(Gdx.files.internal("settings box.png")));
+        settingsBox.setHeight(Gdx.graphics.getHeight()*(2/3f));
+        settingsBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
+        settingsBox.setPosition((Gdx.graphics.getWidth() * (0.25f)), (Gdx.graphics.getHeight() * (0.25f)));*/
+
+        final Window settingsBox = new Window("Settings", buttonSkin, "maroon");
+        settingsBox.setHeight(Gdx.graphics.getHeight()*(2/3f));
+        settingsBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
+        settingsBox.setPosition((Gdx.graphics.getWidth() * (0.25f)), (Gdx.graphics.getHeight() * (0.25f)));
+
+        stage.addActor(settingsBox);
+        settingsBox.setVisible(false);
 
 
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");
@@ -79,7 +92,16 @@ public class MainMenu implements Screen {
         Settings.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                stage.addActor(errorText);
+
+                if (settingsOpen == 1){
+                    settingsOpen = 0;
+                    settingsBox.setVisible(false);
+                }
+
+                else{
+                    settingsOpen = 1;
+                    settingsBox.setVisible(true);
+                }
 
 
             }

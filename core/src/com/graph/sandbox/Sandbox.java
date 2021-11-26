@@ -31,7 +31,7 @@ public class Sandbox implements Screen {
 
         final Label errorText = new Label("*Sorry, this feature has not yet been implemented",buttonSkin, "error");
         errorText.setPosition(Gdx.graphics.getWidth()*(0.2f)+10, 5);
-
+        //errorText.getFontScaleX()
 
 
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
