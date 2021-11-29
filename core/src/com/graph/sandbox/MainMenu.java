@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
+import com.badlogic.gdx.utils.Align;
 
 
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
     int settingsOpen = 0;
+
 
     public MainMenu() {
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
@@ -47,9 +48,27 @@ public class MainMenu implements Screen {
         settingsBox.setHeight(Gdx.graphics.getHeight()*(2/3f));
         settingsBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
         settingsBox.setPosition((Gdx.graphics.getWidth() * (0.25f)), (Gdx.graphics.getHeight() * (0.25f)));
-
         stage.addActor(settingsBox);
         settingsBox.setVisible(false);
+        settingsBox.getTitleTable().align(Align.top|Align.right);
+
+
+        TextButton settingsClose = new TextButton("Close the settings here", buttonSkin,"maroonX");
+        settingsClose.setHeight(Gdx.graphics.getHeight()*(1f));
+        settingsClose.setWidth(Gdx.graphics.getWidth() * (1f));
+        settingsClose.addListener (new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                settingsBox.setVisible(false);
+                settingsOpen = 0;
+
+            }
+        });
+        settingsBox.getTitleTable().add(settingsClose).height(Value.percentHeight(.05f, settingsBox)).width(Value.percentWidth(.05f, settingsBox));
+        //settingsClose.height(Value.percentWidth(.05F, settingsBox));
+        settingsBox.align(Align.top|Align.right);
+        //settingsClose.setPosition(100,100);
+
 
 
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");
@@ -107,6 +126,7 @@ public class MainMenu implements Screen {
             }
         });
         stage.addActor(Settings);
+
 
 
 
