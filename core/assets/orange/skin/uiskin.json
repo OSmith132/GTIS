@@ -44,6 +44,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: round-orange,
 		down: round-dark-orange
 	},
+	orange-smallX: {
+		font: font,
+		fontColor: { a: 1, b: 1, g: 1, r: 1 },
+		downFontColor: { a: 1, b: 0.2627451, g: 0.05490196, r: 0.6 },
+		up: round-orange,
+		down: round-orange
+	},
 	maroon-small: {
 		font: font,
 		fontColor: { a: 1, b: 1, g: 1, r: 1 },
