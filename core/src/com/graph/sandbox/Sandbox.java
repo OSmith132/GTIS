@@ -19,18 +19,16 @@ public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
 
-    String vertexName = "Node";  // Node or Vertex
-    String edgeName = "Arc";     // Arc or Edge
+     String vertexName = "Node";  // Node or Vertex
+     String edgeName = "Arc";     // Arc or Edge
 
 
     public Sandbox() {
 
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
-
-
-        final Label errorText = new Label("*Sorry, this feature has not yet been implemented",buttonSkin, "error");
-        errorText.setPosition(Gdx.graphics.getWidth()*(0.2f)+10, 5);
+        final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
+        errorText.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
         //errorText.getFontScaleX()
 
 
@@ -41,12 +39,9 @@ public class Sandbox implements Screen {
         stage.addActor(Rectangle);
 
 
-
-
-
-        TextButton newVertex = new TextButton(("New "+vertexName), buttonSkin, "maroon");
-        newVertex.setHeight(Gdx.graphics.getHeight()*(0.1f));
-        newVertex.setWidth(Gdx.graphics.getWidth()*(0.08f));
+        TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");
+        newVertex.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        newVertex.setWidth(Gdx.graphics.getWidth() * (0.08f));
         newVertex.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.85f)));
         stage.addActor(newVertex);
 
@@ -59,10 +54,9 @@ public class Sandbox implements Screen {
         });
 
 
-
-        TextButton newEdge = new TextButton(("New "+edgeName), buttonSkin, "maroon");
-        newEdge.setHeight(Gdx.graphics.getHeight()*(0.1f));
-        newEdge.setWidth(Gdx.graphics.getWidth()*(0.08f));
+        TextButton newEdge = new TextButton(("New " + edgeName), buttonSkin, "maroon");
+        newEdge.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        newEdge.setWidth(Gdx.graphics.getWidth() * (0.08f));
         newEdge.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.85f)));
         stage.addActor(newEdge);
 
@@ -76,10 +70,22 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
-        mainMenu.setHeight(Gdx.graphics.getHeight()*(0.1f));
-        mainMenu.setWidth(Gdx.graphics.getWidth()*(0.1725f));
-        mainMenu.setPosition((Gdx.graphics.getWidth()*(0.0125f)),(Gdx.graphics.getHeight() * (0.04f)));
+        mainMenu.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        mainMenu.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        mainMenu.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.04f)));
         stage.addActor(mainMenu);
 
         mainMenu.addListener(new ClickListener() {
@@ -101,12 +107,9 @@ public class Sandbox implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.95f,0.95f,0.95f,1);
+        Gdx.gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // sr.begin(ShapeRenderer.ShapeType.Filled);
-        // sr.rect(0,0,Gdx.graphics.getWidth()/5f,Gdx.graphics.getHeight());
-        //  sr.end();
         stage.act();
         stage.draw();
 
