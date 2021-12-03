@@ -17,11 +17,12 @@ public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
 
-    private boolean edited = false;
-    private boolean saved = false;
+    private boolean saved = true;
 
      String vertexName = "Node";  // Node or Vertex
      String edgeName = "Arc";     // Arc or Edge
+
+
 
 
 
@@ -38,25 +39,26 @@ public class Sandbox implements Screen {
 
 
 
-        Window saveBox = new Window("Would you like to save?",buttonSkin,"peach");
+
+        final Window saveBox = new Window("Would you like to save?",buttonSkin,"maroon");
         saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
         saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
         saveBox.setModal(true);
         saveBox.setMovable(false);
+       // savebox.drawStageBackground(Batch,0.5f,0f,0f,500f,600f);
         saveBox.getTitleLabel().setAlignment(1);
 
 
+        TextButton yesButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
 
+        TextButton noButton = new TextButton(("Save"), buttonSkin, "maroon");
+        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
 
-        TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
-
-        saveBox.add(yesButton).height(Value.percentHeight(0.5f, saveBox)).width(Value.percentWidth(0.2f, saveBox));
-        saveBox.align(Align.center | Align.right);
-
-
-
+        saveBox.align(Align.center);
         stage.addActor(saveBox);
+        saveBox.setVisible(false);
 
 
 
@@ -85,7 +87,7 @@ public class Sandbox implements Screen {
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                edited = true;
+                saved = false;
 
                 stage.addActor(errorText);
 
@@ -102,7 +104,7 @@ public class Sandbox implements Screen {
         newEdge.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                edited = true;
+                saved = false;
 
                 stage.addActor(errorText);
 
@@ -127,7 +129,6 @@ public class Sandbox implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
                 saved = true;
 
             }
@@ -163,9 +164,12 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                if (((edited) && (saved)) | !(edited)) {
+                if (saved){
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                     errorText.remove();
+                }
+                else{
+                    saveBox.setVisible(true);
                 }
 
 
@@ -186,6 +190,8 @@ public class Sandbox implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
 
         stage.act();
         stage.draw();

@@ -98,8 +98,8 @@ public class MainMenu implements Screen {
 
 
         settingsBox= new Window("Settings", buttonSkin);                                                                                                                 //Settings Button
-        settingsBox.setHeight(Gdx.graphics.getHeight() * (0.6f));
-        settingsBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
+        settingsBox.setHeight(Gdx.graphics.getHeight() * (0.5f));
+        settingsBox.setWidth(Gdx.graphics.getWidth() * (0.4f));
         settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
         settingsBox.keepWithinStage();
         stage.addActor(settingsBox);
