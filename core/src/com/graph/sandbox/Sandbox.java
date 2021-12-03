@@ -8,21 +8,24 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
 
+    private boolean edited = false;
+    private boolean saved = false;
+
      String vertexName = "Node";  // Node or Vertex
      String edgeName = "Arc";     // Arc or Edge
 
 
+
+//I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
     public Sandbox() {
 
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
@@ -30,6 +33,40 @@ public class Sandbox implements Screen {
         final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
         errorText.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
         //errorText.getFontScaleX()
+
+
+
+
+
+        Window saveBox = new Window("Would you like to save?",buttonSkin,"peach");
+        saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
+        saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        saveBox.setModal(true);
+        saveBox.setMovable(false);
+        saveBox.getTitleLabel().setAlignment(1);
+
+
+
+
+        TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
+
+        saveBox.add(yesButton).height(Value.percentHeight(0.5f, saveBox)).width(Value.percentWidth(0.2f, saveBox));
+        saveBox.align(Align.center | Align.right);
+
+
+
+        stage.addActor(saveBox);
+
+
+
+
+
+
+
+
+
+
 
 
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
@@ -48,6 +85,8 @@ public class Sandbox implements Screen {
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                edited = true;
+
                 stage.addActor(errorText);
 
             }
@@ -63,6 +102,8 @@ public class Sandbox implements Screen {
         newEdge.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                edited = true;
+
                 stage.addActor(errorText);
 
             }
@@ -77,7 +118,36 @@ public class Sandbox implements Screen {
 
 
 
+        TextButton saveButton = new TextButton(("Save"), buttonSkin, "maroon");
+        saveButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        saveButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
+        saveButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
+        stage.addActor(saveButton);
 
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                saved = true;
+
+            }
+        });
+
+
+        TextButton saveAsButton = new TextButton(("Save As"), buttonSkin, "maroon");
+        saveAsButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        saveAsButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
+        saveAsButton.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.16f)));
+        stage.addActor(saveAsButton);
+
+        saveAsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                saved = true;
+
+            }
+        });
 
 
 
@@ -91,10 +161,17 @@ public class Sandbox implements Screen {
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                errorText.remove();
+
+
+                if (((edited) && (saved)) | !(edited)) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                    errorText.remove();
+                }
+
 
             }
+
+
         });
 
     }

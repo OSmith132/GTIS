@@ -17,9 +17,10 @@ import com.badlogic.gdx.utils.Align;
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
-    boolean settingsOpen = false;
-    boolean openGraphOpen = false;
-
+    private boolean settingsOpen = false;
+    private boolean openGraphOpen = false;
+    private final Window settingsBox;
+    private final Window openGraphBox;
 
 
     public MainMenu() {
@@ -49,18 +50,15 @@ public class MainMenu implements Screen {
 
 
 
-
-        final Window openGraphBox = new Window("Open Graph", buttonSkin, "maroon");                                                                           //Open Graph Button
+        openGraphBox = new Window("Open Graph", buttonSkin, "maroon");                                                                           //Open Graph Button
         openGraphBox.setHeight(Gdx.graphics.getHeight() * (0.6f));
         openGraphBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
         openGraphBox.setPosition((Gdx.graphics.getWidth() * (0.3f)), (Gdx.graphics.getHeight() * (0.25f)));
         stage.addActor(openGraphBox);
         openGraphBox.setVisible(false);
-        openGraphBox.getTitleTable().align(Align.top | Align.right);
+
 
         TextButton openGraphClose = new TextButton("X", buttonSkin, "maroonX");
-        openGraphClose.setHeight(Gdx.graphics.getHeight() * (1f));
-        openGraphClose.setWidth(Gdx.graphics.getWidth() * (1f));
         openGraphClose.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -95,7 +93,11 @@ public class MainMenu implements Screen {
         });
         stage.addActor(openGraph);
 
-        final Window settingsBox = new Window("Settings", buttonSkin);                                                                                                 //Settings Button
+
+
+
+
+        settingsBox= new Window("Settings", buttonSkin);                                                                                                                 //Settings Button
         settingsBox.setHeight(Gdx.graphics.getHeight() * (0.6f));
         settingsBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
         settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
@@ -105,8 +107,6 @@ public class MainMenu implements Screen {
         settingsBox.getTitleTable().align(Align.top | Align.right);
 
         TextButton settingsClose = new TextButton("X", buttonSkin, "orange-smallX");
-        settingsClose.setHeight(Gdx.graphics.getHeight() * (1f));
-        settingsClose.setWidth(Gdx.graphics.getWidth() * (1f));
         settingsClose.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -142,6 +142,10 @@ public class MainMenu implements Screen {
         stage.addActor(Settings);
 
 
+
+
+
+
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");                                                                              //New Graph Button
         newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
         newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
@@ -151,7 +155,7 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox());
-                errorText.remove();
+                errorText.setVisible(false);
             }
         });
         stage.addActor(newGraph);
@@ -173,11 +177,7 @@ public class MainMenu implements Screen {
 
 
 
-        System.out.println(settingsBox.getX());
-        if (settingsBox.getX() <= Gdx.graphics.getWidth() * (0.25f)) {
-            settingsBox.setX(Gdx.graphics.getWidth() * (0.25f) + 1);
 
-        }
     }
 
 
@@ -192,6 +192,13 @@ public class MainMenu implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+        if (settingsBox.getX() <= Gdx.graphics.getWidth() * (0.25f)-1) {
+            settingsBox.setX(Gdx.graphics.getWidth() * (0.25f)-1);
+        }
+
+        if (openGraphBox.getX() <= Gdx.graphics.getWidth() * (0.25f)-1) {
+            openGraphBox.setX(Gdx.graphics.getWidth() * (0.25f)-1);
+        }
 
         stage.act();
         stage.draw();
