@@ -19,9 +19,9 @@ public class Sandbox implements Screen {
 
     private boolean saved = true;
 
+
      String vertexName = "Node";  // Node or Vertex
      String edgeName = "Arc";     // Arc or Edge
-
 
 
 
@@ -40,13 +40,12 @@ public class Sandbox implements Screen {
 
 
 
-        final Window saveBox = new Window("Would you like to save?",buttonSkin,"maroon");
+        final Window saveBox = new Window("Would you like to save and exit?",buttonSkin,"maroon");
         saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
         saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
         saveBox.setModal(true);
         saveBox.setMovable(false);
-       // savebox.drawStageBackground(Batch,0.5f,0f,0f,500f,600f);
         saveBox.getTitleLabel().setAlignment(1);
 
 
@@ -181,6 +180,7 @@ public class Sandbox implements Screen {
     }
 
 
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -196,7 +196,35 @@ public class Sandbox implements Screen {
         stage.act();
         stage.draw();
 
+
+
+
+        drawSaveBackground();
+
+
+
+
     }
+
+
+    private void drawSaveBackground() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(0.6f,0.6f,0.6f,0.3f);
+        sr.rect(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        sr.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }           // Draw the save background
+
+
+
+
+
+
+
+
+
 
     @Override
     public void resize(int width, int height) {
@@ -221,5 +249,6 @@ public class Sandbox implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        sr.dispose();
     }
 }
