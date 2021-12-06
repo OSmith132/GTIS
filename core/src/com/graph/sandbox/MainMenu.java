@@ -139,6 +139,19 @@ public class MainMenu implements Screen {
 
             }
         });
+
+        SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
+        resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","1960 x 540","170 x 480");
+        resPicker.setSelected("1920 x 1080");    //Use Config File Here
+        resPicker.setMaxListCount(5);
+        settingsBox.add(resPicker).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
+
+
+        Label resLabel = new Label("Resolution:", buttonSkin);
+        settingsBox.add(resLabel).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(0.9f);
+
+
+
         stage.addActor(Settings);
 
 
