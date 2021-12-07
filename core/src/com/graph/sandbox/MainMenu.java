@@ -140,6 +140,14 @@ public class MainMenu implements Screen {
             }
         });
 
+
+
+        Label resLabel = new Label("Resolution:_________________________", buttonSkin);
+        resLabel.setFontScaleX(1.25f);
+        resLabel.setFontScaleY(1.25f);
+        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.0f, settingsBox));
+
+
         SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","1960 x 540","170 x 480");
         resPicker.setSelected("1920 x 1080");    //Use Config File Here
@@ -147,8 +155,7 @@ public class MainMenu implements Screen {
         settingsBox.add(resPicker).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
 
 
-        Label resLabel = new Label("Resolution:", buttonSkin);
-        settingsBox.add(resLabel).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(0.9f);
+
 
 
 
