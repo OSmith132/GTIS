@@ -20,8 +20,8 @@ public class Sandbox implements Screen {
     private boolean saved = true;
 
 
-     String vertexName = "Node";  // Node or Vertex
-     String edgeName = "Arc";     // Arc or Edge
+    String vertexName = "Node";  // Node or Vertex
+    String edgeName = "Arc";     // Arc or Edge
 
 
 
