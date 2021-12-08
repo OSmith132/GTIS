@@ -3,6 +3,7 @@ package com.graph.sandbox;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -22,8 +23,14 @@ public class MainMenu implements Screen {
     private final Window settingsBox;
     private final Window openGraphBox;
 
+    FileHandle config = Gdx.files.local("config.txt");
+
 
     public MainMenu() {
+
+
+
+
         //Image background = new Image(new Texture(Gdx.files.internal("GTIS TTIEL.png")));
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
@@ -142,15 +149,20 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
+
         Label resLabel = new Label("Resolution:_________________________", buttonSkin);
         resLabel.setFontScaleX(1.25f);
         resLabel.setFontScaleY(1.25f);
         settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.0f, settingsBox));
 
 
-        SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
+        final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","1960 x 540","170 x 480");
-        resPicker.setSelected("1920 x 1080");    //Use Config File Here
+        resPicker.setSelected(config.readString());    //Use Config File Here
         resPicker.setMaxListCount(5);
         settingsBox.add(resPicker).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
 
@@ -159,7 +171,37 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+        TextButton applyButton = new TextButton("Apply",buttonSkin,"maroon");
+
+        applyButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                config.writeString(resPicker.getSelected(), false);
+
+            }
+        });
+
+
+
+        settingsBox.add(applyButton).height(Value.percentHeight(0.1f, settingsBox)).width(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.8f, settingsBox));
+
+
+
         stage.addActor(Settings);
+
+
+
+
+
+
 
 
 
@@ -189,7 +231,9 @@ public class MainMenu implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 Gdx.app.exit();
+
             }
         });
         stage.addActor(exitButton);
