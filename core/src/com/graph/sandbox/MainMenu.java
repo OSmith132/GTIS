@@ -23,11 +23,11 @@ public class MainMenu implements Screen {
     private final Window settingsBox;
     private final Window openGraphBox;
 
-    FileHandle config = Gdx.files.local("config.txt");
+
 
 
     public MainMenu() {
-
+        final FileHandle configFile = Gdx.files.local("config.txt");
 
 
 
@@ -102,6 +102,14 @@ public class MainMenu implements Screen {
 
 
 
+//--------------------------------------------------------------
+
+        final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
+
+
+
+
+
 
 
         settingsBox= new Window("Settings", buttonSkin);                                                                                                                 //Settings Button
@@ -140,6 +148,7 @@ public class MainMenu implements Screen {
                     settingsBox.setVisible(false);
                     settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
                 } else {
+                    resPicker.setSelected(configFile.readString());
                     settingsOpen = true;
                     settingsBox.setVisible(true);
                 }
@@ -154,54 +163,53 @@ public class MainMenu implements Screen {
 
 
 
-        Label resLabel = new Label("Resolution:_________________________", buttonSkin);
+        Label resLabel = new Label("Resolution:", buttonSkin);
         resLabel.setFontScaleX(1.25f);
         resLabel.setFontScaleY(1.25f);
-        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.0f, settingsBox));
 
-
-        final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
-        resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","1960 x 540","170 x 480");
-        resPicker.setSelected(config.readString());    //Use Config File Here
+        //resPicker initialized above settings
+        resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
         resPicker.setMaxListCount(5);
-        settingsBox.add(resPicker).height(Value.percentHeight(0.075f, settingsBox)).width(resPicker.getPrefWidth()).padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
+
+
+
+        settingsBox.align(Align.top | Align.center);
+        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentHeight(0.25f, settingsBox));
+        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentHeight(0.25f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f));  //.padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
+
+        settingsBox.row();
+
+        Label termLabel = new Label("Preferred Terms:", buttonSkin);
+        resLabel.setFontScaleX(1.25f);
+        resLabel.setFontScaleY(1.25f);
 
 
 
 
 
 
-
-
-
-
-
-
-
+        settingsBox.row();
 
         TextButton applyButton = new TextButton("Apply",buttonSkin,"maroon");
-
         applyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                config.writeString(resPicker.getSelected(), false);
+                configFile.writeString(resPicker.getSelected(), false);
 
             }
         });
+        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.3f, settingsBox));
 
 
 
-        settingsBox.add(applyButton).height(Value.percentHeight(0.1f, settingsBox)).width(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.8f, settingsBox));
+
+
 
 
 
         stage.addActor(Settings);
 
-
-
-
-
-
+//----------------------------------------------------------------------
 
 
 
