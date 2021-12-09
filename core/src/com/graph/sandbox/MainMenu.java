@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.Arrays;
+import java.util.Objects;
 
 
 public class MainMenu implements Screen {
@@ -23,11 +25,13 @@ public class MainMenu implements Screen {
     private final Window settingsBox;
     private final Window openGraphBox;
 
-
+    final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
+    String text = configFile.readString();
+    String[] configArray = text.split("\\r?\\n");
 
 
     public MainMenu() {
-        final FileHandle configFile = Gdx.files.local("config.txt");
+        System.out.println(Arrays.toString(configArray));
 
 
 
@@ -104,7 +108,7 @@ public class MainMenu implements Screen {
 
 //--------------------------------------------------------------
 
-        final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
+
 
 
 
@@ -139,26 +143,11 @@ public class MainMenu implements Screen {
         Settings.setWidth(Gdx.graphics.getWidth() * (0.2f));
         Settings.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.60f)));
 
-        Settings.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-                if (settingsOpen) {
-                    settingsOpen = false;
-                    settingsBox.setVisible(false);
-                    settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
-                } else {
-                    resPicker.setSelected(configFile.readString());
-                    settingsOpen = true;
-                    settingsBox.setVisible(true);
-                }
-
-            }
-        });
 
 
 
 
+// fullscreen;  preferred names;  Default settings;
 
 
 
@@ -167,7 +156,7 @@ public class MainMenu implements Screen {
         resLabel.setFontScaleX(1.25f);
         resLabel.setFontScaleY(1.25f);
 
-        //resPicker initialized above settings
+        final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
         resPicker.setMaxListCount(5);
 
@@ -177,11 +166,68 @@ public class MainMenu implements Screen {
         settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentHeight(0.25f, settingsBox));
         settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentHeight(0.25f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f));  //.padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
 
+
+
+        settingsBox.row();
+
+        //fullscreen
+
+
+
         settingsBox.row();
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
-        resLabel.setFontScaleX(1.25f);
-        resLabel.setFontScaleY(1.25f);
+        termLabel.setFontScaleX(1.25f);
+        termLabel.setFontScaleY(1.25f);
+        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentHeight(0.125f, settingsBox));
+
+
+        final CheckBox prefNameVertex = new CheckBox("  Vertex", buttonSkin);
+        settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox));
+
+        final CheckBox prefNameNode = new CheckBox("  Node", buttonSkin);
+        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentHeight(-0.125f, settingsBox));
+
+
+
+
+
+
+
+
+
+        if(Objects.equals(configArray[1], "vertex")){
+            prefNameVertex.toggle();
+        }
+        else{
+            prefNameNode.toggle();
+        }
+
+
+        prefNameVertex.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                prefNameVertex.setChecked(true);
+                prefNameNode.setChecked(false);
+                prefNameVertex.setDisabled(true);
+                prefNameNode.setDisabled(false);
+
+            }
+        });
+
+        prefNameNode.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                prefNameNode.setChecked(true);
+                prefNameVertex.setChecked(false);
+                prefNameNode.setDisabled(true);
+                prefNameVertex.setDisabled(false);
+            }
+        });
+
+
+
+
 
 
 
@@ -189,12 +235,23 @@ public class MainMenu implements Screen {
 
 
         settingsBox.row();
+
+
 
         TextButton applyButton = new TextButton("Apply",buttonSkin,"maroon");
         applyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                configFile.writeString(resPicker.getSelected(), false);
+                configArray[0] = resPicker.getSelected();
+
+                if(prefNameVertex.isChecked()){
+                    configArray[1] = "vertex";
+                }
+                else{
+                    configArray[1] = "node";
+                }
+
+                configFile.writeString(  configArray[0]+  "\n"  +  configArray[1], false);     //  add more configArray[]
 
             }
         });
@@ -202,6 +259,32 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+        Settings.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                if (settingsOpen) {
+                    settingsOpen = false;
+                    settingsBox.setVisible(false);
+                    settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
+                } else {
+                    resPicker.setSelected(configArray[0]);
+                    settingsOpen = true;
+                    settingsBox.setVisible(true);
+
+
+                }
+
+            }
+        });
 
 
 
