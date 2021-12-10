@@ -174,23 +174,39 @@ public class MainMenu implements Screen {
 
 
 
+
+
         settingsBox.row();
+
+
+
+
+
+
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
         termLabel.setFontScaleX(1.25f);
         termLabel.setFontScaleY(1.25f);
-        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentHeight(0.125f, settingsBox));
+        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
 
 
         final CheckBox prefNameVertex = new CheckBox("  Vertex", buttonSkin);
         settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox));
 
         final CheckBox prefNameNode = new CheckBox("  Node", buttonSkin);
-        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentHeight(-0.125f, settingsBox));
+        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(-0.125f, settingsBox));
 
 
+        settingsBox.row();
+
+        settingsBox.add();
 
 
+        final CheckBox prefNameEdge = new CheckBox("  Edge", buttonSkin);
+        settingsBox.add(prefNameEdge).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.02f, settingsBox));
+
+        final CheckBox prefNameArc = new CheckBox("  Arc", buttonSkin);
+        settingsBox.add(prefNameArc).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.1385f, settingsBox));
 
 
 
@@ -202,7 +218,6 @@ public class MainMenu implements Screen {
         else{
             prefNameNode.toggle();
         }
-
 
         prefNameVertex.addListener(new ClickListener() {
             @Override
@@ -230,11 +245,46 @@ public class MainMenu implements Screen {
 
 
 
+        if(Objects.equals(configArray[1], "edge")){
+            prefNameEdge.toggle();
+        }
+        else{
+            prefNameArc.toggle();
+        }
+
+        prefNameEdge.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                prefNameEdge.setChecked(true);
+                prefNameArc.setChecked(false);
+                prefNameEdge.setDisabled(true);
+                prefNameArc.setDisabled(false);
+
+            }
+        });
+
+        prefNameArc.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                prefNameArc.setChecked(true);
+                prefNameEdge.setChecked(false);
+                prefNameArc.setDisabled(true);
+                prefNameEdge.setDisabled(false);
+            }
+        });
+
+
+
+
 
 
 
 
         settingsBox.row();
+
+
+
+
 
 
 
@@ -251,7 +301,14 @@ public class MainMenu implements Screen {
                     configArray[1] = "node";
                 }
 
-                configFile.writeString(  configArray[0]+  "\n"  +  configArray[1], false);     //  add more configArray[]
+                if(prefNameEdge.isChecked()){
+                    configArray[2] = "edge";
+                }
+                else{
+                    configArray[2] = "arc";
+                }
+
+                configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2], false);     //  add more configArray[]
 
             }
         });
@@ -279,6 +336,8 @@ public class MainMenu implements Screen {
                     resPicker.setSelected(configArray[0]);
                     settingsOpen = true;
                     settingsBox.setVisible(true);
+
+
 
 
                 }
