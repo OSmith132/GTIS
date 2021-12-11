@@ -29,9 +29,12 @@ public class MainMenu implements Screen {
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
+    String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge"};
+
+
 
     public MainMenu() {
-        System.out.println(Arrays.toString(configArray));
+
 
 
 
@@ -106,8 +109,6 @@ public class MainMenu implements Screen {
 
 
 
-//--------------------------------------------------------------
-
 
 
 
@@ -131,7 +132,7 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 settingsBox.setVisible(false);
                 settingsOpen = false;
-                settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
+
 
             }
         });
@@ -144,12 +145,13 @@ public class MainMenu implements Screen {
         Settings.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.60f)));
 
 
+        {//--------------------------------------------------------------
 
 
 
-// fullscreen;  preferred names;  Default settings;
 
 
+        settingsBox.align(Align.top | Align.center);
 
 
         Label resLabel = new Label("Resolution:", buttonSkin);
@@ -161,27 +163,25 @@ public class MainMenu implements Screen {
         resPicker.setMaxListCount(5);
 
 
-
-        settingsBox.align(Align.top | Align.center);
-        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentHeight(0.25f, settingsBox));
-        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentHeight(0.25f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f));  //.padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
-
-
-
-        settingsBox.row();
-
-        //fullscreen
-
-
-
+        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
+        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f));  //.padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
 
 
         settingsBox.row();
 
 
+        Label fullscreenLabel = new Label("Fullscreen:",buttonSkin);
+        fullscreenLabel.setFontScaleX(1.25f);
+        fullscreenLabel.setFontScaleY(1.25f);
+        settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
+
+        final CheckBox fullscreenButton = new CheckBox("",buttonSkin,"switch-text");
+        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox));
+
+        fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
 
 
-
+        settingsBox.row();
 
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
@@ -210,47 +210,27 @@ public class MainMenu implements Screen {
 
 
 
+            prefNameVertex.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    prefNameVertex.setChecked(true);
+                    prefNameNode.setChecked(false);
+                    prefNameVertex.setDisabled(true);
+                    prefNameNode.setDisabled(false);
 
+                }
+            });
 
-        if(Objects.equals(configArray[1], "vertex")){
-            prefNameVertex.toggle();
-        }
-        else{
-            prefNameNode.toggle();
-        }
+            prefNameNode.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    prefNameNode.setChecked(true);
+                    prefNameVertex.setChecked(false);
+                    prefNameNode.setDisabled(true);
+                    prefNameVertex.setDisabled(false);
+                }
+            });
 
-        prefNameVertex.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                prefNameVertex.setChecked(true);
-                prefNameNode.setChecked(false);
-                prefNameVertex.setDisabled(true);
-                prefNameNode.setDisabled(false);
-
-            }
-        });
-
-        prefNameNode.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                prefNameNode.setChecked(true);
-                prefNameVertex.setChecked(false);
-                prefNameNode.setDisabled(true);
-                prefNameVertex.setDisabled(false);
-            }
-        });
-
-
-
-
-
-
-        if(Objects.equals(configArray[1], "edge")){
-            prefNameEdge.toggle();
-        }
-        else{
-            prefNameArc.toggle();
-        }
 
         prefNameEdge.addListener(new ClickListener() {
             @Override
@@ -273,42 +253,57 @@ public class MainMenu implements Screen {
             }
         });
 
-
-
-
-
-
-
-
         settingsBox.row();
 
 
 
 
 
+            TextButton cancelButton = new TextButton("Cancel",buttonSkin);
+            cancelButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    settingsOpen = false;
+                    settingsBox.setVisible(false);
+                }
+            });
+
+            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.3f, settingsBox));
 
 
-        TextButton applyButton = new TextButton("Apply",buttonSkin,"maroon");
+
+
+
+
+
+            TextButton applyButton = new TextButton("Apply",buttonSkin);
         applyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 configArray[0] = resPicker.getSelected();
 
-                if(prefNameVertex.isChecked()){
-                    configArray[1] = "vertex";
+                if(fullscreenButton.isChecked()){
+                    configArray[1] = "fullscreen";
                 }
                 else{
-                    configArray[1] = "node";
+                    configArray[1] = "windowed";
+                }
+
+                if(prefNameVertex.isChecked()){
+                    configArray[2] = "vertex";
+                }
+                else{
+                    configArray[2] = "node";
                 }
 
                 if(prefNameEdge.isChecked()){
-                    configArray[2] = "edge";
+                    configArray[3] = "edge";
                 }
                 else{
-                    configArray[2] = "arc";
+                    configArray[3] = "arc";
                 }
 
-                configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2], false);     //  add more configArray[]
+                configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3], false);     //  add more configArray[]
 
             }
         });
@@ -323,8 +318,7 @@ public class MainMenu implements Screen {
 
 
 
-
-        Settings.addListener(new ClickListener() {
+            Settings.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -334,6 +328,31 @@ public class MainMenu implements Screen {
                     settingsBox.setPosition((Gdx.graphics.getWidth() * (0.35f)), (Gdx.graphics.getHeight() * (0.2f)));
                 } else {
                     resPicker.setSelected(configArray[0]);
+
+                    fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
+
+
+
+                    if(Objects.equals(configArray[2], "vertex")){
+                        prefNameVertex.setChecked(true);
+                        prefNameNode.setChecked(false);
+                    }
+                    else{
+                        prefNameNode.setChecked(true);
+                        prefNameVertex.setChecked(false);
+                    }
+
+                    if(Objects.equals(configArray[3], "edge")){
+                        prefNameEdge.setChecked(true);
+                        prefNameArc.setChecked(false);
+                    }
+                    else{
+                        prefNameArc.setChecked(true);
+                        prefNameEdge.setChecked(false);
+                    }
+
+
+
                     settingsOpen = true;
                     settingsBox.setVisible(true);
 
@@ -352,6 +371,7 @@ public class MainMenu implements Screen {
         stage.addActor(Settings);
 
 //----------------------------------------------------------------------
+}    // settings menu stuff
 
 
 
