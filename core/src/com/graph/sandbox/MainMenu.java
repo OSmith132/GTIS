@@ -163,8 +163,8 @@ public class MainMenu implements Screen {
         resPicker.setMaxListCount(5);
 
 
-        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
-        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f));  //.padRight(Value.percentHeight(0.1f, settingsBox)).padTop(Value.percentHeight(0.075f, settingsBox));
+        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f)).colspan(2);
 
 
         settingsBox.row();
@@ -173,10 +173,10 @@ public class MainMenu implements Screen {
         Label fullscreenLabel = new Label("Fullscreen:",buttonSkin);
         fullscreenLabel.setFontScaleX(1.25f);
         fullscreenLabel.setFontScaleY(1.25f);
-        settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
+        settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
         final CheckBox fullscreenButton = new CheckBox("",buttonSkin,"switch-text");
-        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox));
+        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
         fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
 
@@ -187,14 +187,14 @@ public class MainMenu implements Screen {
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
         termLabel.setFontScaleX(1.25f);
         termLabel.setFontScaleY(1.25f);
-        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox));
+        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 
         final CheckBox prefNameVertex = new CheckBox("  Vertex", buttonSkin);
         settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox));
 
         final CheckBox prefNameNode = new CheckBox("  Node", buttonSkin);
-        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(-0.125f, settingsBox));
+        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(-0.125f, settingsBox)).colspan(2);
 
 
         settingsBox.row();
@@ -203,10 +203,10 @@ public class MainMenu implements Screen {
 
 
         final CheckBox prefNameEdge = new CheckBox("  Edge", buttonSkin);
-        settingsBox.add(prefNameEdge).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.02f, settingsBox));
+        settingsBox.add(prefNameEdge).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(0.225f, settingsBox)).colspan(2);
 
         final CheckBox prefNameArc = new CheckBox("  Arc", buttonSkin);
-        settingsBox.add(prefNameArc).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.1385f, settingsBox));
+        settingsBox.add(prefNameArc).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.139f, settingsBox)).colspan(2);
 
 
 
@@ -253,7 +253,14 @@ public class MainMenu implements Screen {
             }
         });
 
+
+
+        settingsBox.row().size(Value.percentHeight(0.25f, settingsBox));
+
+        settingsBox.add();
+
         settingsBox.row();
+
 
 
 
@@ -268,8 +275,43 @@ public class MainMenu implements Screen {
                 }
             });
 
-            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.3f, settingsBox));
+            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
 
+
+
+
+
+
+            TextButton defaultButton = new TextButton("Reset To Default",buttonSkin);
+            defaultButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    resPicker.setSelected(defaultConfigArray[0]);
+
+                    fullscreenButton.setChecked(Objects.equals(defaultConfigArray[1], "fullscreen"));
+
+                    if (Objects.equals(defaultConfigArray[2], "vertex")) {
+                        prefNameVertex.setChecked(true);
+                        prefNameNode.setChecked(false);
+                    } else {
+                        prefNameNode.setChecked(true);
+                        prefNameVertex.setChecked(false);
+                    }
+
+                    if (Objects.equals(defaultConfigArray[3], "edge")) {
+                        prefNameEdge.setChecked(true);
+                        prefNameArc.setChecked(false);
+                    } else {
+                        prefNameEdge.setChecked(false);
+                        prefNameArc.setChecked(true);
+                    }
+
+                }
+
+
+            });
+
+            settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
 
 
 
@@ -307,7 +349,7 @@ public class MainMenu implements Screen {
 
             }
         });
-        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.3f, settingsBox));
+        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
 
 
 
