@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -25,11 +26,13 @@ public class MainMenu implements Screen {
     private final Window settingsBox;
     private final Window openGraphBox;
 
+
     final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
     String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge"};
+
 
 
 
@@ -164,7 +167,7 @@ public class MainMenu implements Screen {
 
 
         settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
-        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f)).colspan(2);
+        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f)).colspan(2);
 
 
         settingsBox.row();
@@ -176,12 +179,19 @@ public class MainMenu implements Screen {
         settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
         final CheckBox fullscreenButton = new CheckBox("",buttonSkin,"switch-text");
-        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).colspan(2);
 
         fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
 
 
         settingsBox.row();
+
+
+
+
+
+
+
 
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
@@ -190,23 +200,40 @@ public class MainMenu implements Screen {
         settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 
+
         final CheckBox prefNameVertex = new CheckBox("  Vertex", buttonSkin);
-        settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox));
+        settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox)).left();
 
         final CheckBox prefNameNode = new CheckBox("  Node", buttonSkin);
-        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).padLeft(Value.percentWidth(-0.125f, settingsBox)).colspan(2);
+        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).left().padLeft(Value.percentWidth(-0.15f, settingsBox));
+
+
 
 
         settingsBox.row();
 
-        settingsBox.add();
+
+
+
+        Label invislabel = new Label("", buttonSkin);
+        settingsBox.add(invislabel).padTop(Value.percentHeight(0.015f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+
+
 
 
         final CheckBox prefNameEdge = new CheckBox("  Edge", buttonSkin);
-        settingsBox.add(prefNameEdge).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(0.225f, settingsBox)).colspan(2);
+        settingsBox.add(prefNameEdge).padTop(Value.percentHeight(0.015f, settingsBox)).left();
 
         final CheckBox prefNameArc = new CheckBox("  Arc", buttonSkin);
-        settingsBox.add(prefNameArc).padTop(Value.percentHeight(0.015f, settingsBox)).padLeft(Value.percentWidth(-0.139f, settingsBox)).colspan(2);
+        settingsBox.add(prefNameArc).padTop(Value.percentHeight(0.015f, settingsBox)).left().padLeft(Value.percentWidth(-0.15f, settingsBox));
+
+
+
+
+
+
+
+
 
 
 
@@ -266,6 +293,10 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
             TextButton cancelButton = new TextButton("Cancel",buttonSkin);
             cancelButton.addListener(new ClickListener() {
                 @Override
@@ -275,7 +306,7 @@ public class MainMenu implements Screen {
                 }
             });
 
-            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
+            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
 
 
 
@@ -311,7 +342,7 @@ public class MainMenu implements Screen {
 
             });
 
-            settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
+            settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
 
 
 
@@ -347,9 +378,13 @@ public class MainMenu implements Screen {
 
                 configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3], false);     //  add more configArray[]
 
+
+
+
+
             }
         });
-        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox));
+        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
 
 
 
@@ -411,6 +446,7 @@ public class MainMenu implements Screen {
 
 
         stage.addActor(Settings);
+
 
 //----------------------------------------------------------------------
 }    // settings menu stuff
@@ -475,6 +511,11 @@ public class MainMenu implements Screen {
         if (openGraphBox.getX() <= Gdx.graphics.getWidth() * (0.25f)-1) {
             openGraphBox.setX(Gdx.graphics.getWidth() * (0.25f)-1);
         }
+
+
+
+
+
 
         stage.act();
         stage.draw();

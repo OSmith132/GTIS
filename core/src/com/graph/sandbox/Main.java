@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 
+
+
 public class Main extends Game {
 
 
@@ -15,8 +17,6 @@ public class Main extends Game {
 	public void create() {
 		Gdx.graphics.setTitle("GTIS");
 
-
-		System.out.println();
 		setScreen(new MainMenu());
 		//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 	}
