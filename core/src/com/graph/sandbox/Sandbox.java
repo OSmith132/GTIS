@@ -2,9 +2,11 @@ package com.graph.sandbox;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,17 +14,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.ArrayList;
+
 
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
 
-    private boolean saved = true;
+    private boolean newVertexClicked = false;
+    private boolean newEdgeClicked = false;
 
+    private boolean saved = true;
 
     String vertexName = "Node";  // Node or Vertex
     String edgeName = "Arc";     // Arc or Edge
 
+
+    ArrayList<ArrayList<int[]>> vertexcoords = new ArrayList<>();
+    ArrayList<Integer> vertexCoordsX = new ArrayList<>();
+    ArrayList<Integer> vertexCoordsY = new ArrayList<>();
 
 
 
@@ -31,45 +41,20 @@ public class Sandbox implements Screen {
 
     public Sandbox() {
 
+
+        vertexCoordsX.add(400);
+        vertexCoordsY.add(500);
+        vertexCoordsX.add(800);
+        vertexCoordsY.add(200);
+
+        System.out.println(vertexCoordsX + " " + vertexCoordsY);
+
+
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
         final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
         errorText.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
         //errorText.getFontScaleX()
-
-
-
-
-
-
-        final Window saveBox = new Window("Would you like to save and exit?",buttonSkin,"maroon");
-        saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
-        saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
-        saveBox.setModal(true);
-        saveBox.setMovable(false);
-        saveBox.getTitleLabel().setAlignment(1);
-
-
-        TextButton yesButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
-
-        TextButton noButton = new TextButton(("Save"), buttonSkin, "maroon");
-        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
-
-        saveBox.align(Align.center);
-        stage.addActor(saveBox);
-        saveBox.setVisible(false);
-
-
-
-
-
-
-
-
-
-
 
 
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
@@ -79,7 +64,9 @@ public class Sandbox implements Screen {
         stage.addActor(Rectangle);
 
 
-        TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");
+
+
+        TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");                 //New Vertex
         newVertex.setHeight(Gdx.graphics.getHeight() * (0.1f));
         newVertex.setWidth(Gdx.graphics.getWidth() * (0.08f));
         newVertex.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.85f)));
@@ -89,11 +76,14 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 saved = false;
+                newVertexClicked = true;
 
-                stage.addActor(errorText);
+
 
             }
         });
+
+
 
 
         TextButton newEdge = new TextButton(("New " + edgeName), buttonSkin, "maroon");
@@ -111,12 +101,6 @@ public class Sandbox implements Screen {
 
             }
         });
-
-
-
-
-
-
 
 
 
@@ -154,6 +138,55 @@ public class Sandbox implements Screen {
 
 
 
+
+        final Window saveBox = new Window("Would you like to save and exit?",buttonSkin,"maroon");
+        saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
+        saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        saveBox.setModal(true);
+        saveBox.setMovable(false);
+        saveBox.getTitleLabel().setAlignment(1);
+
+
+
+
+        TextButton noButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                saveBox.setVisible(false);
+            }
+        });
+
+
+        TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
+        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
+        yesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                saveBox.setVisible(false);
+                saved = true;
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                errorText.remove();
+
+
+                //save the doc here
+            }
+        });
+
+
+
+
+        saveBox.align(Align.center);
+        stage.addActor(saveBox);
+        saveBox.setVisible(false);
+
+
+
+
+
         TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
         mainMenu.setHeight(Gdx.graphics.getHeight() * (0.1f));
         mainMenu.setWidth(Gdx.graphics.getWidth() * (0.1725f));
@@ -170,7 +203,9 @@ public class Sandbox implements Screen {
                     errorText.remove();
                 }
                 else{
+
                     saveBox.setVisible(true);
+
                 }
 
 
@@ -195,18 +230,40 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
+        drawExistingVertex();
+
+
+        if(newVertexClicked && mouseLookValid()) {
+            drawMovingVertex();
+
+            if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+
+
+                if(Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f))  &&  mousePlaceValid()){
+                    newVertexClicked = false;
+                    vertexCoordsX.add(Gdx.input.getX());
+                    vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+                }
+
+                if(Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))){
+                    newVertexClicked = false;
+                }
+            }
+        }
+
+
+
+
+
         stage.act();
         stage.draw();
 
-
-
-
-        drawSaveBackground();
-
-
-
-
     }
+
 
 
     private void drawSaveBackground() {
@@ -221,8 +278,40 @@ public class Sandbox implements Screen {
 
 
 
+    private void drawExistingVertex() {
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(0.07f, 0.07f, 0.07f,1);
 
 
+        for(int i = 0; i < vertexCoordsX.size();i++) {
+            sr.circle(vertexCoordsX.get(i),vertexCoordsY.get(i),Gdx.graphics.getWidth() * (0.015f));
+        }
+
+
+
+        sr.end();
+    }
+
+
+    private void drawMovingVertex(){
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(0f, 0f, 0,1);
+
+
+        sr.circle(Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()),Gdx.graphics.getWidth() * (0.015f));
+
+        sr.end();
+}
+
+
+
+    private boolean mouseLookValid(){
+        return ((Gdx.input.getX() < Gdx.graphics.getWidth())  && (Gdx.input.getY() < Gdx.graphics.getHeight())  && (Gdx.input.getY() > 0));
+    }
+
+    private boolean mousePlaceValid(){
+        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getWidth() * (0.985f)))  && (Gdx.input.getY() > (Gdx.graphics.getWidth()) * (0.015f)));
+    }
 
 
 
