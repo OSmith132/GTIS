@@ -229,12 +229,8 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-
-
-
-
-
         drawExistingVertex();
+
 
 
         if(newVertexClicked && mouseLookValid()) {
@@ -256,6 +252,9 @@ public class Sandbox implements Screen {
         }
 
 
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            System.out.println(clickedVertex());
+        }
 
 
 
@@ -292,7 +291,6 @@ public class Sandbox implements Screen {
         sr.end();
     }
 
-
     private void drawMovingVertex(){
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(0f, 0f, 0,1);
@@ -303,6 +301,22 @@ public class Sandbox implements Screen {
         sr.end();
 }
 
+
+
+    private int clickedVertex(){
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
+
+            if ( ((Gdx.input.getX() <=(vertexCoordsX.get(i) + Gdx.graphics.getWidth() * (0.015f)) ) && (Gdx.input.getX() >=(vertexCoordsX.get(i) - Gdx.graphics.getWidth() * (0.015f))))  &&  ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (vertexCoordsY.get(i) + (Gdx.graphics.getWidth() * (0.015f))))  && ((Gdx.graphics.getHeight() - Gdx.input.getY()) >= (vertexCoordsY.get(i) - (Gdx.graphics.getWidth() * (0.015f))))) {
+                System.out.println(vertexCoordsX + " " + vertexCoordsY + " " + (Gdx.input.getX()) + " " + (Gdx.graphics.getHeight() - Gdx.input.getY()) );
+
+                return i;
+
+
+
+            }
+        }
+        return -1;
+    }
 
 
     private boolean mouseLookValid(){
