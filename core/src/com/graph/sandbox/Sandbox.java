@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -24,15 +25,22 @@ public class Sandbox implements Screen {
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
 
+    private int vertexClicked = -1;
+
     private boolean saved = true;
 
     String vertexName = "Node";  // Node or Vertex
     String edgeName = "Arc";     // Arc or Edge
 
 
-    ArrayList<ArrayList<int[]>> vertexcoords = new ArrayList<>();
+
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
     ArrayList<Integer> vertexCoordsY = new ArrayList<>();
+
+    ArrayList<Integer> edgeListFrom = new ArrayList<>();
+    ArrayList<Integer> edgeListTo = new ArrayList<>();
+
+
 
 
 
@@ -46,6 +54,9 @@ public class Sandbox implements Screen {
         vertexCoordsY.add(500);
         vertexCoordsX.add(800);
         vertexCoordsY.add(200);
+
+        edgeListFrom.add(0);
+        edgeListTo.add(1);
 
         System.out.println(vertexCoordsX + " " + vertexCoordsY);
 
@@ -77,6 +88,7 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 saved = false;
                 newVertexClicked = true;
+                newEdgeClicked = false;
 
 
 
@@ -97,7 +109,8 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 saved = false;
 
-                stage.addActor(errorText);
+                newEdgeClicked = true;
+                newVertexClicked = false;
 
             }
         });
@@ -228,38 +241,70 @@ public class Sandbox implements Screen {
         Gdx.gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        stage.act();
+        stage.draw();
 
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            vertexClicked = findClickedVertex();
+        }
+
+
+        {
+            if (newEdgeClicked  &&  (vertexClicked != -1)){
+                System.out.println(edgeListFrom);
+                System.out.println(edgeListTo);
+
+                drawMovingEdge(vertexClicked);
+
+
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                    edgeListFrom.add(vertexClicked);
+                }
+
+                System.out.println(edgeListFrom);
+                System.out.println(edgeListTo);
+
+
+            }
+        } //New Edge
+
+
+        drawExistingEdge();
         drawExistingVertex();
 
 
 
-        if(newVertexClicked && mouseLookValid()) {
-            drawMovingVertex();
 
-            if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+        {
+            if (newVertexClicked && mouseLookValid() && !newEdgeClicked) {
+                drawMovingVertex();
+
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 
 
-                if(Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f))  &&  mousePlaceValid()){
-                    newVertexClicked = false;
-                    vertexCoordsX.add(Gdx.input.getX());
-                    vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
-                }
+                    if (Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f)) && mousePlaceValid()) {
+                        newVertexClicked = false;
+                        vertexCoordsX.add(Gdx.input.getX());
+                        vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+                    }
 
-                if(Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))){
-                    newVertexClicked = false;
+                    if (Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))) {
+                        newVertexClicked = false;
+                    }
                 }
             }
+        } //New Vertex
+
+
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (vertexClicked != -1) && !newEdgeClicked) {
+            vertexCoordsX.set(vertexClicked,Gdx.input.getX());
+            vertexCoordsY.set(vertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
         }
 
 
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            System.out.println(clickedVertex());
-        }
 
 
 
-        stage.act();
-        stage.draw();
 
     }
 
@@ -278,22 +323,55 @@ public class Sandbox implements Screen {
 
 
     private void drawExistingVertex() {
+
+
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(0.07f, 0.07f, 0.07f,1);
 
 
         for(int i = 0; i < vertexCoordsX.size();i++) {
+
             sr.circle(vertexCoordsX.get(i),vertexCoordsY.get(i),Gdx.graphics.getWidth() * (0.015f));
+        }
+        sr.end();
+    }
+
+    private void drawExistingEdge(){
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(Color.RED);
+
+
+        for(int i = 0; i < vertexCoordsX.size();i++) {
+
+            if (vertexCoordsY.get(i) < (Gdx.graphics.getWidth() * (0.015f))) {                                  // this keeps the vertex in bounds
+                vertexCoordsY.set(i, (int) (Gdx.graphics.getWidth() * (0.015f)));
+            } else if (vertexCoordsY.get(i) > (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f)))) {
+                vertexCoordsY.set(i, (int) (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f))));
+            }
+
+            if (vertexCoordsX.get(i) < (Gdx.graphics.getWidth() * (0.215f))) {
+                vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() * (0.215f)));
+            } else if (vertexCoordsX.get(i) > (Gdx.graphics.getWidth() * (0.985f))) {
+                vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() * (0.985f)));
+            }
+        }
+
+
+        for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
+
+            sr.rectLine(vertexCoordsX.get(edgeListFrom.get(i)), vertexCoordsY.get(edgeListFrom.get(i)),  vertexCoordsX.get(edgeListTo.get(i)),  vertexCoordsY.get(edgeListTo.get(i)),Gdx.graphics.getWidth() * 0.005f);
+
         }
 
 
 
         sr.end();
+
     }
 
     private void drawMovingVertex(){
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(0f, 0f, 0,1);
+        sr.setColor(Color.BLACK);
 
 
         sr.circle(Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()),Gdx.graphics.getWidth() * (0.015f));
@@ -301,13 +379,21 @@ public class Sandbox implements Screen {
         sr.end();
 }
 
+    private void drawMovingEdge(int vertex){
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(Color.RED);
+
+        sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)),Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()), Gdx.graphics.getWidth() * 0.005f);
 
 
-    private int clickedVertex(){
+        sr.end();
+    }
+
+    private int findClickedVertex(){
         for (int i = 0; i < vertexCoordsX.size(); i++) {
 
             if ( ((Gdx.input.getX() <=(vertexCoordsX.get(i) + Gdx.graphics.getWidth() * (0.015f)) ) && (Gdx.input.getX() >=(vertexCoordsX.get(i) - Gdx.graphics.getWidth() * (0.015f))))  &&  ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (vertexCoordsY.get(i) + (Gdx.graphics.getWidth() * (0.015f))))  && ((Gdx.graphics.getHeight() - Gdx.input.getY()) >= (vertexCoordsY.get(i) - (Gdx.graphics.getWidth() * (0.015f))))) {
-                System.out.println(vertexCoordsX + " " + vertexCoordsY + " " + (Gdx.input.getX()) + " " + (Gdx.graphics.getHeight() - Gdx.input.getY()) );
+               // System.out.println(vertexCoordsX + " " + vertexCoordsY + " " + (Gdx.input.getX()) + " " + (Gdx.graphics.getHeight() - Gdx.input.getY()) );
 
                 return i;
 
@@ -324,7 +410,7 @@ public class Sandbox implements Screen {
     }
 
     private boolean mousePlaceValid(){
-        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getWidth() * (0.985f)))  && (Gdx.input.getY() > (Gdx.graphics.getWidth()) * (0.015f)));
+        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f))))  && (Gdx.input.getY() > (Gdx.graphics.getWidth() * (0.015f))));
     }
 
 
