@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Sandbox implements Screen {
@@ -25,7 +26,8 @@ public class Sandbox implements Screen {
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
 
-    private int vertexClicked = -1;
+    private int lastVertexClicked = -1;
+    private boolean firstVertexClicked = false;
 
     private boolean saved = true;
 
@@ -241,32 +243,23 @@ public class Sandbox implements Screen {
         Gdx.gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act();
-        stage.draw();
-
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            vertexClicked = findClickedVertex();
+            lastVertexClicked = findClickedVertex();
         }
 
 
-        {
-            if (newEdgeClicked  &&  (vertexClicked != -1)){
-                System.out.println(edgeListFrom);
-                System.out.println(edgeListTo);
-
-                drawMovingEdge(vertexClicked);
 
 
-                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                    edgeListFrom.add(vertexClicked);
-                }
 
-                System.out.println(edgeListFrom);
-                System.out.println(edgeListTo);
+        placeNewEdge();
+        placeNewVertex();
 
+        if (edgeListFrom.size() == edgeListTo.size()) {
+            removeDuplicateEdges();
+        }
 
-            }
-        } //New Edge
+        System.out.println(edgeListFrom);
+        System.out.println(edgeListTo);
 
 
         drawExistingEdge();
@@ -274,37 +267,16 @@ public class Sandbox implements Screen {
 
 
 
-
-        {
-            if (newVertexClicked && mouseLookValid() && !newEdgeClicked) {
-                drawMovingVertex();
-
-                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-
-
-                    if (Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f)) && mousePlaceValid()) {
-                        newVertexClicked = false;
-                        vertexCoordsX.add(Gdx.input.getX());
-                        vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
-                    }
-
-                    if (Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))) {
-                        newVertexClicked = false;
-                    }
-                }
-            }
-        } //New Vertex
-
-
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (vertexClicked != -1) && !newEdgeClicked) {
-            vertexCoordsX.set(vertexClicked,Gdx.input.getX());
-            vertexCoordsY.set(vertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked) {
+            vertexCoordsX.set(lastVertexClicked,Gdx.input.getX());
+            vertexCoordsY.set(lastVertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
         }
 
 
 
 
-
+        stage.draw();
+        stage.act();
 
     }
 
@@ -404,6 +376,102 @@ public class Sandbox implements Screen {
         return -1;
     }
 
+    private void placeNewVertex(){
+
+        if (newVertexClicked && mouseLookValid() && !newEdgeClicked) {
+            drawMovingVertex();
+
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
+
+                if (Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f)) && mousePlaceValid()) {
+                    newVertexClicked = false;
+                    vertexCoordsX.add(Gdx.input.getX());
+                    vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+                }
+
+                if (Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))) {
+                    newVertexClicked = false;
+                }
+            }
+        }
+
+    }
+
+    private void placeNewEdge(){
+
+
+        {
+            if (newEdgeClicked   &&  (lastVertexClicked != -1)){
+
+                drawMovingEdge(lastVertexClicked);
+
+
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !firstVertexClicked){
+                    firstVertexClicked = true;
+                    edgeListFrom.add(lastVertexClicked);
+
+                }
+                else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked){
+                    edgeListTo.add(lastVertexClicked);
+                    firstVertexClicked = false;
+                    newEdgeClicked = false;
+                }
+
+
+
+
+
+
+            }
+            else if(newEdgeClicked && firstVertexClicked){
+                edgeListFrom.remove(edgeListFrom.size() - 1);
+                firstVertexClicked = false;
+                newEdgeClicked = false;
+            }
+
+        }
+    }
+
+    private void removeDuplicateEdges(){
+        for(int i = 0; i < edgeListFrom.size();i++){
+
+            if (Objects.equals(edgeListFrom.get(i), edgeListTo.get(i))){  // Same Vertex
+                edgeListFrom.remove(i);
+                edgeListTo.remove(i);
+                i -= 1;
+            }
+
+            else{
+
+                for(int k =0; k < edgeListFrom.size(); k++) {                              //This works. Don't touch it.
+                    for (int j = k; j < edgeListFrom.size(); j++) {
+
+                         if (k != j  && Objects.equals(edgeListFrom.get(k), edgeListFrom.get(j)) && Objects.equals(edgeListTo.get(k), edgeListTo.get(j))) {
+                             edgeListFrom.remove(j);
+                             edgeListTo.remove(j);
+                             j -= 1;
+                        }
+
+                    }
+                }
+
+
+                for(int k =0; k < edgeListFrom.size(); k++) {                              //This also works. Don't touch it either.
+                    for (int j = k; j < edgeListFrom.size(); j++) {
+
+                        if (k != j  && Objects.equals(edgeListFrom.get(k), edgeListTo.get(j)) && Objects.equals(edgeListTo.get(k), edgeListFrom.get(j))) {
+                            edgeListFrom.remove(j);
+                            edgeListTo.remove(j);
+                            j -= 1;
+                        }
+
+                    }
+                }
+
+            }
+        }
+    }
 
     private boolean mouseLookValid(){
         return ((Gdx.input.getX() < Gdx.graphics.getWidth())  && (Gdx.input.getY() < Gdx.graphics.getHeight())  && (Gdx.input.getY() > 0));
