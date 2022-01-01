@@ -1,9 +1,7 @@
 package com.graph.sandbox;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,23 +15,21 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+//this can be deleted
 
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
+
 
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
 
     private int lastVertexClicked = -1;
     private boolean firstVertexClicked = false;
+    private boolean allowVertexMove = true;
 
     private boolean saved = true;
-
-    String vertexName = "Node";  // Node or Vertex
-    String edgeName = "Arc";     // Arc or Edge
-
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -41,6 +37,19 @@ public class Sandbox implements Screen {
 
     ArrayList<Integer> edgeListFrom = new ArrayList<>();
     ArrayList<Integer> edgeListTo = new ArrayList<>();
+
+
+
+    final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
+    String text = configFile.readString();
+    String[] configArray = text.split("\\r?\\n");
+
+    String vertexName = configArray[2];  // Node or Vertex
+    String edgeName = configArray[3];     // Arc or Edge
+
+
+
+
 
 
 
@@ -61,6 +70,8 @@ public class Sandbox implements Screen {
         edgeListTo.add(1);
 
         System.out.println(vertexCoordsX + " " + vertexCoordsY);
+
+
 
 
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
@@ -248,6 +259,16 @@ public class Sandbox implements Screen {
         }
 
 
+        if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !allowVertexMove) {
+            allowVertexMove = true;
+        }
+
+
+
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked  &&  allowVertexMove) {
+            vertexCoordsX.set(lastVertexClicked,Gdx.input.getX());
+            vertexCoordsY.set(lastVertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
+        }
 
 
 
@@ -267,10 +288,8 @@ public class Sandbox implements Screen {
 
 
 
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked) {
-            vertexCoordsX.set(lastVertexClicked,Gdx.input.getX());
-            vertexCoordsY.set(lastVertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
-        }
+
+
 
 
 
@@ -404,6 +423,8 @@ public class Sandbox implements Screen {
         {
             if (newEdgeClicked   &&  (lastVertexClicked != -1)){
 
+                allowVertexMove = false;
+
                 drawMovingEdge(lastVertexClicked);
 
 
@@ -411,11 +432,16 @@ public class Sandbox implements Screen {
                     firstVertexClicked = true;
                     edgeListFrom.add(lastVertexClicked);
 
+
+
                 }
                 else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked){
                     edgeListTo.add(lastVertexClicked);
                     firstVertexClicked = false;
                     newEdgeClicked = false;
+
+
+
                 }
 
 
