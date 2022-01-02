@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 import java.util.Objects;
-//this can be deleted
+
 
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
@@ -30,6 +30,7 @@ public class Sandbox implements Screen {
     private boolean allowVertexMove = true;
 
     private boolean saved = true;
+    private boolean modalBoxVisible = false;
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -52,8 +53,8 @@ public class Sandbox implements Screen {
 
 
 
-
-
+    Image binOpen = new Image(new Texture(Gdx.files.internal("binOpen.png")));
+    Image binClosed = new Image(new Texture(Gdx.files.internal("binClosed.png")));
 
 
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
@@ -90,6 +91,70 @@ public class Sandbox implements Screen {
 
 
 
+        final Window clearAllBox = new Window("Are you sure you want to clear all?",buttonSkin,"maroon");
+        clearAllBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        clearAllBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        clearAllBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        clearAllBox.setModal(true);
+        clearAllBox.setMovable(false);
+        clearAllBox.getTitleLabel().setAlignment(1);
+        clearAllBox.setVisible(false);
+        stage.addActor(clearAllBox);
+
+
+        TextButton noClearButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        clearAllBox.add(noClearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.3f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
+        noClearButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                clearAllBox.setVisible(false);
+                modalBoxVisible = false;
+
+            }
+        });
+
+
+        TextButton clearButton = new TextButton(("Clear All"), buttonSkin, "maroon");
+        clearAllBox.add(clearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.3f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
+        clearButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clearAll();
+                saved = false;
+                clearAllBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+
+
+
+        //Bin closed initialized above^
+        binClosed.setScale(Gdx.graphics.getHeight() / (2700f));
+        binClosed.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
+        stage.addActor(binClosed);
+
+        //Bin open initialized above^
+        binOpen.setScale(Gdx.graphics.getHeight() / (2700f));
+        binOpen.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
+        binOpen.setVisible(false);
+        stage.addActor(binOpen);
+
+        binOpen.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clearAllBox.setVisible(true);
+
+            }
+        });
+
+
+
+
+
+
         TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");                 //New Vertex
         newVertex.setHeight(Gdx.graphics.getHeight() * (0.1f));
         newVertex.setWidth(Gdx.graphics.getWidth() * (0.08f));
@@ -99,7 +164,7 @@ public class Sandbox implements Screen {
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                saved = false;
+
                 newVertexClicked = true;
                 newEdgeClicked = false;
 
@@ -120,7 +185,7 @@ public class Sandbox implements Screen {
         newEdge.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                saved = false;
+
 
                 newEdgeClicked = true;
                 newVertexClicked = false;
@@ -140,6 +205,7 @@ public class Sandbox implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                save();
                 saved = true;
 
             }
@@ -155,7 +221,7 @@ public class Sandbox implements Screen {
         saveAsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                save();
                 saved = true;
 
             }
@@ -166,8 +232,8 @@ public class Sandbox implements Screen {
 
 
         final Window saveBox = new Window("Would you like to save and exit?",buttonSkin,"maroon");
-        saveBox.setHeight(Gdx.graphics.getHeight() * (0.15f));
-        saveBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        saveBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        saveBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
         saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
         saveBox.setModal(true);
         saveBox.setMovable(false);
@@ -176,29 +242,38 @@ public class Sandbox implements Screen {
 
 
 
-        TextButton noButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
-        noButton.addListener(new ClickListener() {
+        TextButton cancelButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        saveBox.add(cancelButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
+        cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 saveBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+        TextButton noButton = new TextButton(("Don't Save"), buttonSkin, "maroon");
+        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
 
 
         TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
-        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.4f, saveBox)).pad(Value.percentWidth(0.05f,saveBox));
+        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
         yesButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                save();
                 saveBox.setVisible(false);
                 saved = true;
 
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                errorText.remove();
 
-
-                //save the doc here
             }
         });
 
@@ -231,6 +306,8 @@ public class Sandbox implements Screen {
                 else{
 
                     saveBox.setVisible(true);
+                    modalBoxVisible = true;
+
 
                 }
 
@@ -258,8 +335,11 @@ public class Sandbox implements Screen {
             lastVertexClicked = findClickedVertex();
         }
 
+        if (modalBoxVisible){
+            allowVertexMove = false;
+        }
 
-        if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !allowVertexMove) {
+        if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !allowVertexMove && !modalBoxVisible ) {
             allowVertexMove = true;
         }
 
@@ -268,6 +348,7 @@ public class Sandbox implements Screen {
         if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked  &&  allowVertexMove) {
             vertexCoordsX.set(lastVertexClicked,Gdx.input.getX());
             vertexCoordsY.set(lastVertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
+            saved = false;
         }
 
 
@@ -279,8 +360,8 @@ public class Sandbox implements Screen {
             removeDuplicateEdges();
         }
 
-        System.out.println(edgeListFrom);
-        System.out.println(edgeListTo);
+//        System.out.println(edgeListFrom);
+//        System.out.println(edgeListTo);
 
 
         drawExistingEdge();
@@ -288,7 +369,7 @@ public class Sandbox implements Screen {
 
 
 
-
+        binAnimation();
 
 
 
@@ -312,6 +393,9 @@ public class Sandbox implements Screen {
     }           // Draw the save background
 
 
+    private void save(){
+        System.out.println("Saved");
+    }
 
     private void drawExistingVertex() {
 
@@ -407,6 +491,7 @@ public class Sandbox implements Screen {
                     newVertexClicked = false;
                     vertexCoordsX.add(Gdx.input.getX());
                     vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+                    saved = false;
                 }
 
                 if (Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.2f))) {
@@ -439,7 +524,7 @@ public class Sandbox implements Screen {
                     edgeListTo.add(lastVertexClicked);
                     firstVertexClicked = false;
                     newEdgeClicked = false;
-
+                    saved = false;
 
 
                 }
@@ -507,7 +592,30 @@ public class Sandbox implements Screen {
         return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f))))  && (Gdx.input.getY() > (Gdx.graphics.getWidth() * (0.015f))));
     }
 
+    private void binAnimation(){
+        if (!modalBoxVisible && (Gdx.input.getX() >= (Gdx.graphics.getWidth() * (0.955f))) && ((Gdx.graphics.getHeight() - Gdx.input.getY()) <=(200 * (Gdx.graphics.getHeight() / (2700f))))){
+            binOpen.setVisible(true);
+            binClosed.setVisible(false);
+        }
+        else{
+            binOpen.setVisible(false);
+            binClosed.setVisible(true);
+        }
 
+
+
+
+
+//        binOpen.setVisible(false);
+//        binOpen.setVisible(true);
+    }
+
+    private void clearAll(){
+        vertexCoordsX.clear();
+        vertexCoordsY.clear();
+        edgeListFrom.clear();
+        edgeListTo.clear();
+    }
 
 
 

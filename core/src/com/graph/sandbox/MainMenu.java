@@ -119,7 +119,7 @@ public class MainMenu implements Screen {
 
 
 
-
+        //settingsBox Initialized above^
         settingsBox= new Window("Settings", buttonSkin);                                                                                                                 //Settings Button
         settingsBox.setHeight(Gdx.graphics.getHeight() * (0.5f));
         settingsBox.setWidth(Gdx.graphics.getWidth() * (0.4f));
@@ -152,14 +152,12 @@ public class MainMenu implements Screen {
 
 
 
-
-
         settingsBox.align(Align.top | Align.center);
 
 
         Label resLabel = new Label("Resolution:", buttonSkin);
-        resLabel.setFontScaleX(1.25f);
-        resLabel.setFontScaleY(1.25f);
+        resLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
+        resLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
 
         final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
@@ -173,9 +171,10 @@ public class MainMenu implements Screen {
         settingsBox.row();
 
 
+
         Label fullscreenLabel = new Label("Fullscreen:",buttonSkin);
-        fullscreenLabel.setFontScaleX(1.25f);
-        fullscreenLabel.setFontScaleY(1.25f);
+        fullscreenLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
+        fullscreenLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
         settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
         final CheckBox fullscreenButton = new CheckBox("",buttonSkin,"switch-text");
@@ -195,8 +194,8 @@ public class MainMenu implements Screen {
 
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
-        termLabel.setFontScaleX(1.25f);
-        termLabel.setFontScaleY(1.25f);
+        termLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
+        termLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
         settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 

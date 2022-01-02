@@ -1,4 +1,4 @@
-1600 x 900
+2560 x 1440
 windowed
 vertex
 edge
