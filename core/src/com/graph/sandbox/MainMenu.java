@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,24 +13,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 
-import java.util.Arrays;
+
 import java.util.Objects;
 
 
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
-    private final ShapeRenderer sr = new ShapeRenderer();
     private boolean settingsOpen = false;
     private boolean openGraphOpen = false;
     private final Window settingsBox;
     private final Window openGraphBox;
 
-
     final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
-    String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge"};
+    String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge", "medium"};
 
 
 
@@ -129,6 +126,8 @@ public class MainMenu implements Screen {
         settingsBox.setVisible(false);
         settingsBox.getTitleTable().align(Align.top | Align.right);
 
+
+
         TextButton settingsClose = new TextButton("X", buttonSkin, "orange-smallX");
         settingsClose.addListener(new ClickListener() {
             @Override
@@ -150,7 +149,7 @@ public class MainMenu implements Screen {
 
         {//--------------------------------------------------------------
 
-
+         float windowTopPadding = (Gdx.graphics.getHeight() * (0.03f));
 
         settingsBox.align(Align.top | Align.center);
 
@@ -164,8 +163,10 @@ public class MainMenu implements Screen {
         resPicker.setMaxListCount(5);
 
 
-        settingsBox.add(resLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
-        settingsBox.add(resPicker).padTop(Value.percentHeight(0.075f, settingsBox)).height(Value.percentHeight(0.09f, settingsBox)).width(resPicker.getPrefWidth()*(1.2f)).colspan(2);
+
+
+        settingsBox.add(resLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+        settingsBox.add(resPicker).padTop(windowTopPadding).height(Gdx.graphics.getHeight() * (0.045f)).width(Gdx.graphics.getWidth() * (0.1f)).colspan(2);
 
 
         settingsBox.row();
@@ -175,10 +176,12 @@ public class MainMenu implements Screen {
         Label fullscreenLabel = new Label("Fullscreen:",buttonSkin);
         fullscreenLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
         fullscreenLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
-        settingsBox.add(fullscreenLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+        settingsBox.add(fullscreenLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+
 
         final CheckBox fullscreenButton = new CheckBox("",buttonSkin,"switch-text");
-        settingsBox.add(fullscreenButton).padTop(Value.percentHeight(0.075f, settingsBox)).colspan(2);
+
+        settingsBox.add(fullscreenButton).padTop(windowTopPadding).colspan(2);
 
         fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
 
@@ -196,15 +199,15 @@ public class MainMenu implements Screen {
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
         termLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
         termLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
-        settingsBox.add(termLabel).padTop(Value.percentHeight(0.075f, settingsBox)).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+        settingsBox.add(termLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 
 
         final CheckBox prefNameVertex = new CheckBox("  Vertex", buttonSkin);
-        settingsBox.add(prefNameVertex).padTop(Value.percentHeight(0.075f, settingsBox)).left();
+        settingsBox.add(prefNameVertex).padTop(windowTopPadding).left();
 
         final CheckBox prefNameNode = new CheckBox("  Node", buttonSkin);
-        settingsBox.add(prefNameNode).padTop(Value.percentHeight(0.075f, settingsBox)).left().padLeft(Value.percentWidth(-0.15f, settingsBox));
+        settingsBox.add(prefNameNode).padTop(windowTopPadding).left().padLeft(Value.percentWidth(-0.15f, settingsBox));
 
 
 
@@ -280,12 +283,27 @@ public class MainMenu implements Screen {
         });
 
 
+        settingsBox.row();
+
+// vertex slider make it work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+a
+
+        Label vertexSizeLabel = new Label("Vertex Size: " + configArray[4], buttonSkin);
+        vertexSizeLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
+        vertexSizeLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
+        settingsBox.add(vertexSizeLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
+
+        Slider vertexSizeSlider = new Slider(0,2,1,false,buttonSkin);
+        settingsBox.add(vertexSizeSlider).padTop(windowTopPadding).padRight(Value.percentWidth(0.075f, settingsBox)).height(Gdx.graphics.getHeight() * (0.045f)).width(Gdx.graphics.getWidth() * (0.1f)).colspan(2);
+
+
+
 
         settingsBox.row().size(Value.percentHeight(0.25f, settingsBox));
 
-        settingsBox.add();
 
-        settingsBox.row();
+
+
 
 
 
@@ -297,51 +315,51 @@ public class MainMenu implements Screen {
 
 
             TextButton cancelButton = new TextButton("Cancel",buttonSkin);
-            cancelButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    settingsOpen = false;
-                    settingsBox.setVisible(false);
-                }
-            });
-
-            settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
-
+        cancelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                settingsOpen = false;
+                settingsBox.setVisible(false);
+            }
+        });
+        settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand();
 
 
 
 
 
-            TextButton defaultButton = new TextButton("Reset To Default",buttonSkin);
-            defaultButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    resPicker.setSelected(defaultConfigArray[0]);
 
-                    fullscreenButton.setChecked(Objects.equals(defaultConfigArray[1], "fullscreen"));
 
-                    if (Objects.equals(defaultConfigArray[2], "vertex")) {
-                        prefNameVertex.setChecked(true);
-                        prefNameNode.setChecked(false);
-                    } else {
-                        prefNameNode.setChecked(true);
-                        prefNameVertex.setChecked(false);
-                    }
+        TextButton defaultButton = new TextButton("Reset To Default",buttonSkin);
+        defaultButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                resPicker.setSelected(defaultConfigArray[0]);
 
-                    if (Objects.equals(defaultConfigArray[3], "edge")) {
-                        prefNameEdge.setChecked(true);
-                        prefNameArc.setChecked(false);
-                    } else {
-                        prefNameEdge.setChecked(false);
-                        prefNameArc.setChecked(true);
-                    }
+                fullscreenButton.setChecked(Objects.equals(defaultConfigArray[1], "fullscreen"));
 
+                if (Objects.equals(defaultConfigArray[2], "vertex")) {
+                    prefNameVertex.setChecked(true);
+                    prefNameNode.setChecked(false);
+                } else {
+                    prefNameNode.setChecked(true);
+                    prefNameVertex.setChecked(false);
                 }
 
+                if (Objects.equals(defaultConfigArray[3], "edge")) {
+                    prefNameEdge.setChecked(true);
+                    prefNameArc.setChecked(false);
+                } else {
+                    prefNameEdge.setChecked(false);
+                    prefNameArc.setChecked(true);
+                }
 
-            });
+            }
 
-            settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
+
+        });
+
+        settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand();
 
 
 
@@ -383,7 +401,7 @@ public class MainMenu implements Screen {
 
             }
         });
-        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).expand();
+        settingsBox.add(applyButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand();
 
 
 
@@ -451,7 +469,7 @@ public class MainMenu implements Screen {
 }    // settings menu stuff
 
 
-
+      //  settingsBox.debug();
 
 
 

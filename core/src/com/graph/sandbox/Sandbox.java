@@ -47,6 +47,10 @@ public class Sandbox implements Screen {
 
     String vertexName = configArray[2];  // Node or Vertex
     String edgeName = configArray[3];     // Arc or Edge
+    float vertexSize;
+
+
+
 
 
 
@@ -60,6 +64,16 @@ public class Sandbox implements Screen {
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
 
     public Sandbox() {
+
+        if (Objects.equals(configArray[4], "small")){
+            vertexSize = ( Gdx.graphics.getWidth() * (0.01f));
+        }
+        else if (Objects.equals(configArray[4], "medium")){
+            vertexSize = ( Gdx.graphics.getWidth() * (0.015f));
+        }
+        else{
+            vertexSize = ( Gdx.graphics.getWidth() * (0.025f));
+        }
 
 
         vertexCoordsX.add(400);
@@ -93,7 +107,7 @@ public class Sandbox implements Screen {
 
         final Window clearAllBox = new Window("Are you sure you want to clear all?",buttonSkin,"maroon");
         clearAllBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
-        clearAllBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        clearAllBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         clearAllBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
         clearAllBox.setModal(true);
         clearAllBox.setMovable(false);
@@ -103,7 +117,7 @@ public class Sandbox implements Screen {
 
 
         TextButton noClearButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        clearAllBox.add(noClearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.3f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
+        clearAllBox.add(noClearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
         noClearButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -116,7 +130,7 @@ public class Sandbox implements Screen {
 
 
         TextButton clearButton = new TextButton(("Clear All"), buttonSkin, "maroon");
-        clearAllBox.add(clearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.3f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
+        clearAllBox.add(clearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f,clearAllBox));
         clearButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -146,6 +160,7 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearAllBox.setVisible(true);
+                modalBoxVisible = true;
 
             }
         });
@@ -354,7 +369,7 @@ public class Sandbox implements Screen {
 
 
         placeNewEdge();
-        placeNewVertex();
+
 
         if (edgeListFrom.size() == edgeListTo.size()) {
             removeDuplicateEdges();
@@ -367,7 +382,7 @@ public class Sandbox implements Screen {
         drawExistingEdge();
         drawExistingVertex();
 
-
+        placeNewVertex();
 
         binAnimation();
 
@@ -406,7 +421,7 @@ public class Sandbox implements Screen {
 
         for(int i = 0; i < vertexCoordsX.size();i++) {
 
-            sr.circle(vertexCoordsX.get(i),vertexCoordsY.get(i),Gdx.graphics.getWidth() * (0.015f));
+            sr.circle(vertexCoordsX.get(i),vertexCoordsY.get(i),vertexSize);
         }
         sr.end();
     }
@@ -418,16 +433,16 @@ public class Sandbox implements Screen {
 
         for(int i = 0; i < vertexCoordsX.size();i++) {
 
-            if (vertexCoordsY.get(i) < (Gdx.graphics.getWidth() * (0.015f))) {                                  // this keeps the vertex in bounds
-                vertexCoordsY.set(i, (int) (Gdx.graphics.getWidth() * (0.015f)));
-            } else if (vertexCoordsY.get(i) > (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f)))) {
-                vertexCoordsY.set(i, (int) (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f))));
+            if (vertexCoordsY.get(i) < vertexSize) {                                  // this keeps the vertex in bounds
+                vertexCoordsY.set(i, (int) vertexSize);
+            } else if (vertexCoordsY.get(i) > (Gdx.graphics.getHeight() - vertexSize)) {
+                vertexCoordsY.set(i, (int) (Gdx.graphics.getHeight() - vertexSize));
             }
 
-            if (vertexCoordsX.get(i) < (Gdx.graphics.getWidth() * (0.215f))) {
-                vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() * (0.215f)));
-            } else if (vertexCoordsX.get(i) > (Gdx.graphics.getWidth() * (0.985f))) {
-                vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() * (0.985f)));
+            if (vertexCoordsX.get(i) < (Gdx.graphics.getWidth() * (0.2f))  +  vertexSize) {
+                vertexCoordsX.set(i, (int) ((Gdx.graphics.getWidth() * (0.2f))  +  vertexSize));
+            } else if (vertexCoordsX.get(i) > (Gdx.graphics.getWidth() - vertexSize)) {
+                vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() - vertexSize));
             }
         }
 
@@ -449,7 +464,7 @@ public class Sandbox implements Screen {
         sr.setColor(Color.BLACK);
 
 
-        sr.circle(Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()),Gdx.graphics.getWidth() * (0.015f));
+        sr.circle(Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()),vertexSize);
 
         sr.end();
 }
@@ -467,7 +482,7 @@ public class Sandbox implements Screen {
     private int findClickedVertex(){
         for (int i = 0; i < vertexCoordsX.size(); i++) {
 
-            if ( ((Gdx.input.getX() <=(vertexCoordsX.get(i) + Gdx.graphics.getWidth() * (0.015f)) ) && (Gdx.input.getX() >=(vertexCoordsX.get(i) - Gdx.graphics.getWidth() * (0.015f))))  &&  ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (vertexCoordsY.get(i) + (Gdx.graphics.getWidth() * (0.015f))))  && ((Gdx.graphics.getHeight() - Gdx.input.getY()) >= (vertexCoordsY.get(i) - (Gdx.graphics.getWidth() * (0.015f))))) {
+            if ( ((Gdx.input.getX() <=(vertexCoordsX.get(i) + vertexSize) ) && (Gdx.input.getX() >=(vertexCoordsX.get(i) - vertexSize)))  &&  ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (vertexCoordsY.get(i) + vertexSize))  && ((Gdx.graphics.getHeight() - Gdx.input.getY()) >= (vertexCoordsY.get(i) - vertexSize))) {
                // System.out.println(vertexCoordsX + " " + vertexCoordsY + " " + (Gdx.input.getX()) + " " + (Gdx.graphics.getHeight() - Gdx.input.getY()) );
 
                 return i;
@@ -589,7 +604,7 @@ public class Sandbox implements Screen {
     }
 
     private boolean mousePlaceValid(){
-        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getHeight() - (Gdx.graphics.getWidth() * (0.015f))))  && (Gdx.input.getY() > (Gdx.graphics.getWidth() * (0.015f))));
+        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getHeight() - vertexSize))  && (Gdx.input.getY() > vertexSize));
     }
 
     private void binAnimation(){
@@ -616,6 +631,8 @@ public class Sandbox implements Screen {
         edgeListFrom.clear();
         edgeListTo.clear();
     }
+
+
 
 
 
