@@ -424,13 +424,18 @@ public class MainMenu implements Screen {
 
                 if (vertexSizeSlider.getValue() == 0){
                     configArray[4] = "small";
+                    vertexSizeLabel.setText("Vertex Size:  small");
                 }
                 else if (vertexSizeSlider.getValue() == 1){
                     configArray[4] = "medium";
+                    vertexSizeLabel.setText("Vertex Size:   medium");
                 }
                 else{
                     configArray[4] = "large";
+                    vertexSizeLabel.setText("Vertex Size:   large");
                 }
+
+
 
 
                 configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3] +  "\n"  +  configArray[4],false);     //  add more configArray[]
@@ -568,6 +573,8 @@ public class MainMenu implements Screen {
         if (openGraphBox.getX() <= Gdx.graphics.getWidth() * (0.25f)-1) {
             openGraphBox.setX(Gdx.graphics.getWidth() * (0.25f)-1);
         }
+
+
 
 
 
