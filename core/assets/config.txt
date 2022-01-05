@@ -1,5 +1,5 @@
 1600 x 900
 windowed
-vertex
-edge
+node
+arc
 small

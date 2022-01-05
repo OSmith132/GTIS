@@ -15,7 +15,7 @@ public class DesktopLauncher {
 		config.foregroundFPS = 80;
 
 
-		config.height = 900;  // Default:  1600x900
+		config.height = 540;  // Default:  1600x900
 		config.width = config.height * 16 / 9;
 		config.addIcon("titles 2.png", Files.FileType.Internal);
 		config.fullscreen=false;

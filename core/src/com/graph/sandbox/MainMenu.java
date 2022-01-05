@@ -24,7 +24,7 @@ public class MainMenu implements Screen {
     private final Window settingsBox;
     private final Window openGraphBox;
 
-    final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
+    FileHandle configFile = Gdx.files.local("core/assets/config.txt");
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
@@ -155,8 +155,8 @@ public class MainMenu implements Screen {
 
 
         Label resLabel = new Label("Resolution:", buttonSkin);
-        resLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
-        resLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
+        resLabel.setFontScaleX(Gdx.graphics.getHeight() / 600f);
+        resLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
 
         final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
@@ -174,8 +174,8 @@ public class MainMenu implements Screen {
 
 
         Label fullscreenLabel = new Label("Fullscreen:",buttonSkin);
-        fullscreenLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
-        fullscreenLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
+        fullscreenLabel.setFontScaleX(Gdx.graphics.getHeight() / 600f);
+        fullscreenLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
         settingsBox.add(fullscreenLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 
@@ -197,8 +197,8 @@ public class MainMenu implements Screen {
 
 
         Label termLabel = new Label("Preferred Terms:", buttonSkin);
-        termLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
-        termLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
+        termLabel.setFontScaleX(Gdx.graphics.getHeight() / 600f);
+        termLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
         settingsBox.add(termLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
 
@@ -286,24 +286,51 @@ public class MainMenu implements Screen {
         settingsBox.row();
 
 // vertex slider make it work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-a
 
-        Label vertexSizeLabel = new Label("Vertex Size: " + configArray[4], buttonSkin);
-        vertexSizeLabel.setFontScaleX(Gdx.graphics.getHeight() / 720f);
-        vertexSizeLabel.setFontScaleY(Gdx.graphics.getHeight() / 720f);
+
+        final Label vertexSizeLabel = new Label("Vertex Size:   " + configArray[4], buttonSkin);
+        vertexSizeLabel.setFontScaleX(Gdx.graphics.getHeight() / 600f);
+        vertexSizeLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
         settingsBox.add(vertexSizeLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
 
-        Slider vertexSizeSlider = new Slider(0,2,1,false,buttonSkin);
+        final Slider vertexSizeSlider = new Slider(0,2,1,false,buttonSkin);
+
+        if (Objects.equals(configArray[4], "small")){
+            vertexSizeSlider.setValue(0);
+        }
+        else if (Objects.equals(configArray[4], "medium")){
+            vertexSizeSlider.setValue(1);
+        }
+        else{
+            vertexSizeSlider.setValue(2);
+        }
+
         settingsBox.add(vertexSizeSlider).padTop(windowTopPadding).padRight(Value.percentWidth(0.075f, settingsBox)).height(Gdx.graphics.getHeight() * (0.045f)).width(Gdx.graphics.getWidth() * (0.1f)).colspan(2);
+
+
+
+            vertexSizeSlider.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+
+                    if (vertexSizeSlider.getValue() == 0){
+                        vertexSizeLabel.setText("Vertex Size:  small");
+                    }
+                    else if (vertexSizeSlider.getValue() == 1){
+                        vertexSizeLabel.setText("Vertex Size:   medium");
+                    }
+                    else{
+                        vertexSizeLabel.setText("Vertex Size:   large");
+                    }
+
+
+                }
+                                         });
 
 
 
 
         settingsBox.row().size(Value.percentHeight(0.25f, settingsBox));
-
-
-
-
 
 
 
@@ -393,7 +420,20 @@ a
                     configArray[3] = "arc";
                 }
 
-                configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3], false);     //  add more configArray[]
+
+
+                if (vertexSizeSlider.getValue() == 0){
+                    configArray[4] = "small";
+                }
+                else if (vertexSizeSlider.getValue() == 1){
+                    configArray[4] = "medium";
+                }
+                else{
+                    configArray[4] = "large";
+                }
+
+
+                configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3] +  "\n"  +  configArray[4],false);     //  add more configArray[]
 
 
 
@@ -469,7 +509,7 @@ a
 }    // settings menu stuff
 
 
-      //  settingsBox.debug();
+//        settingsBox.debug();
 
 
 
