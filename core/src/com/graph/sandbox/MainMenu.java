@@ -526,7 +526,7 @@ public class MainMenu implements Screen {
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("new","New_graph.txt"));
                 errorText.setVisible(false);
             }
         });

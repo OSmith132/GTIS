@@ -52,28 +52,34 @@ public class Sandbox implements Screen {
 
 
 
-
-
-
-
-
     Image binOpen = new Image(new Texture(Gdx.files.internal("binOpen.png")));
     Image binClosed = new Image(new Texture(Gdx.files.internal("binClosed.png")));
 
 
+
+
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
 
-    public Sandbox() {
+    public Sandbox(String graph_type, String graph_name) {
 
-        if (Objects.equals(configArray[4], "small")){
-            vertexSize = ( Gdx.graphics.getWidth() * (0.01f));
-        }
-        else if (Objects.equals(configArray[4], "medium")){
-            vertexSize = ( Gdx.graphics.getWidth() * (0.015f));
-        }
-        else{
-            vertexSize = ( Gdx.graphics.getWidth() * (0.025f));
-        }
+
+//   http://tutorial-libgdx-android.blogspot.com/2014/02/files-with-libgdx.html
+//   https://github.com/libgdx/libgdx/wiki/File-handling#writing-to-a-file
+
+//        if (Objects.equals(graph_type, "new") && !Gdx.files.external(graph_name).exists()){
+//
+//            FileHandle file = Gdx.files.local(graph_name);
+//            file.writeString("My god, it's full of stars", true);
+//        }
+
+
+
+
+
+
+
+
+
 
 
         vertexCoordsX.add(400);
@@ -85,6 +91,20 @@ public class Sandbox implements Screen {
         edgeListTo.add(1);
 
         System.out.println(vertexCoordsX + " " + vertexCoordsY);
+
+
+
+
+
+        if (Objects.equals(configArray[4], "small")){
+            vertexSize = ( Gdx.graphics.getWidth() * (0.01f));
+        }
+        else if (Objects.equals(configArray[4], "medium")){
+            vertexSize = ( Gdx.graphics.getWidth() * (0.015f));
+        }
+        else{
+            vertexSize = ( Gdx.graphics.getWidth() * (0.025f));
+        }
 
 
 
