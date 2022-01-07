@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 
 
 import java.util.Objects;
+import java.util.Scanner;
 
 
 public class MainMenu implements Screen {
@@ -23,6 +24,9 @@ public class MainMenu implements Screen {
     private boolean openGraphOpen = false;
     private final Window settingsBox;
     private final Window openGraphBox;
+    private  boolean settingsChanged;
+
+    String[] widthHeightArray;
 
     FileHandle configFile = Gdx.files.local("core/assets/config.txt");
     String text = configFile.readString();
@@ -31,7 +35,7 @@ public class MainMenu implements Screen {
     String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge", "medium"};
 
 
-
+// code stacks and queues for pp6
 
     public MainMenu() {
 
@@ -162,7 +166,12 @@ public class MainMenu implements Screen {
         resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
         resPicker.setMaxListCount(5);
 
-
+            resPicker.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    settingsChanged = true;
+                }
+            });
 
 
         settingsBox.add(resLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
@@ -185,6 +194,12 @@ public class MainMenu implements Screen {
 
         fullscreenButton.setChecked(Objects.equals(configArray[1], "fullscreen"));
 
+            fullscreenButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                   settingsChanged = true;
+                }
+            });
 
         settingsBox.row();
 
@@ -285,7 +300,7 @@ public class MainMenu implements Screen {
 
         settingsBox.row();
 
-// vertex slider make it work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
         final Label vertexSizeLabel = new Label("Vertex Size:   " + configArray[4], buttonSkin);
@@ -393,17 +408,38 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
+
             TextButton applyButton = new TextButton("Apply",buttonSkin);
         applyButton.addListener(new ClickListener() {
             @Override
+
             public void clicked(InputEvent event, float x, float y) {
+
+
+
+                widthHeightArray = configArray[0].split(" ");
+//                Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
+//                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+//                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
+
+
                 configArray[0] = resPicker.getSelected();
 
-                if(fullscreenButton.isChecked()){
+
+                if(fullscreenButton.isChecked() && settingsChanged){
                     configArray[1] = "fullscreen";
+                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
-                else{
+                else if (!fullscreenButton.isChecked() && settingsChanged){
                     configArray[1] = "windowed";
+                    Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
 
                 if(prefNameVertex.isChecked()){

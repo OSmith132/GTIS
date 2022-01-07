@@ -366,6 +366,10 @@ public class Sandbox implements Screen {
         Gdx.gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
+
+
+
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             lastVertexClicked = findClickedVertex();
         }
@@ -409,9 +413,9 @@ public class Sandbox implements Screen {
 
 
 
-
         stage.draw();
         stage.act();
+
 
     }
 
