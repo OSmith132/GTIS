@@ -421,7 +421,7 @@ public class MainMenu implements Screen {
 
 
 
-                widthHeightArray = configArray[0].split(" ");
+
 //                Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 //                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
@@ -431,15 +431,13 @@ public class MainMenu implements Screen {
                 configArray[0] = resPicker.getSelected();
 
 
+
                 if(fullscreenButton.isChecked() && settingsChanged){
                     configArray[1] = "fullscreen";
-                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+
                 }
                 else if (!fullscreenButton.isChecked() && settingsChanged){
                     configArray[1] = "windowed";
-                    Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
 
                 if(prefNameVertex.isChecked()){
@@ -476,6 +474,18 @@ public class MainMenu implements Screen {
 
                 configFile.writeString(  configArray[0]  +  "\n"  +  configArray[1]  +  "\n"  +  configArray[2]  +  "\n"  +  configArray[3] +  "\n"  +  configArray[4],false);     //  add more configArray[]
 
+
+                widthHeightArray = configArray[0].split(" ");
+
+
+                if(fullscreenButton.isChecked() && settingsChanged){
+                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                }
+                else if (!fullscreenButton.isChecked() && settingsChanged){
+                    Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                }
 
 
 
