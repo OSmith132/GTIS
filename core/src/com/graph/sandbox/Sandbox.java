@@ -399,8 +399,8 @@ public class Sandbox implements Screen {
             removeDuplicateEdges();
         }
 
-        System.out.println(edgeListFrom);
-        System.out.println(edgeListTo);
+//        System.out.println(edgeListFrom);
+//        System.out.println(edgeListTo);
 
 
         drawExistingEdge();
@@ -473,7 +473,7 @@ public class Sandbox implements Screen {
 
         for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
 
-            sr.rectLine(vertexCoordsX.get(edgeListFrom.get(i)), vertexCoordsY.get(edgeListFrom.get(i)),  vertexCoordsX.get(edgeListTo.get(i)),  vertexCoordsY.get(edgeListTo.get(i)),Gdx.graphics.getWidth() * 0.005f);
+            sr.rectLine(vertexCoordsX.get(edgeListFrom.get(i)), vertexCoordsY.get(edgeListFrom.get(i)),  vertexCoordsX.get(edgeListTo.get(i)),  vertexCoordsY.get(edgeListTo.get(i)),vertexSize/3);
 
         }
 
@@ -497,7 +497,7 @@ public class Sandbox implements Screen {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.RED);
 
-        sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)),Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()), Gdx.graphics.getWidth() * 0.005f);
+        sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)),Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize/3);
 
 
         sr.end();

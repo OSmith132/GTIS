@@ -378,6 +378,8 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 resPicker.setSelected(defaultConfigArray[0]);
 
+                settingsChanged = true;
+
                 fullscreenButton.setChecked(Objects.equals(defaultConfigArray[1], "fullscreen"));
 
                 if (Objects.equals(defaultConfigArray[2], "vertex")) {
