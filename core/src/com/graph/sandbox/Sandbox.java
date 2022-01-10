@@ -399,8 +399,8 @@ public class Sandbox implements Screen {
             removeDuplicateEdges();
         }
 
-//        System.out.println(edgeListFrom);
-//        System.out.println(edgeListTo);
+        System.out.println(edgeListFrom);
+        System.out.println(edgeListTo);
 
 
         drawExistingEdge();
@@ -505,14 +505,11 @@ public class Sandbox implements Screen {
 
     private int findClickedVertex(){
         for (int i = 0; i < vertexCoordsX.size(); i++) {
+            float x=Gdx.input.getX();
+            float y=Gdx.graphics.getHeight()-Gdx.input.getY();
 
-            if ( ((Gdx.input.getX() <=(vertexCoordsX.get(i) + vertexSize) ) && (Gdx.input.getX() >=(vertexCoordsX.get(i) - vertexSize)))  &&  ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (vertexCoordsY.get(i) + vertexSize))  && ((Gdx.graphics.getHeight() - Gdx.input.getY()) >= (vertexCoordsY.get(i) - vertexSize))) {
-               // System.out.println(vertexCoordsX + " " + vertexCoordsY + " " + (Gdx.input.getX()) + " " + (Gdx.graphics.getHeight() - Gdx.input.getY()) );
-
+            if(Math.pow(x-vertexCoordsX.get(i),2)+Math.pow(y-vertexCoordsY.get(i),2)<=vertexSize * vertexSize){
                 return i;
-
-
-
             }
         }
         return -1;
