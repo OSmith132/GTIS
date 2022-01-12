@@ -68,6 +68,33 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+        TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");                                                                              //New Graph Button
+        newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
+        newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
+        newGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
+
+        newGraph.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("New_graph.txt",true));
+
+
+
+            }
+        });
+        stage.addActor(newGraph);
+
+
+
+
+
         openGraphBox = new Window("Open Graph", buttonSkin, "maroon");                                                                           //Open Graph Button
         openGraphBox.setHeight(Gdx.graphics.getHeight() * (0.6f));
         openGraphBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
@@ -566,19 +593,7 @@ public class MainMenu implements Screen {
 
 
 
-        TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");                                                                              //New Graph Button
-        newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
-        newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
-        newGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
 
-        newGraph.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("new","New_graph.txt",true));
-                errorText.setVisible(false);
-            }
-        });
-        stage.addActor(newGraph);
 
 
         TextButton exitButton = new TextButton("Exit", buttonSkin, "maroon");                                                                               //Exit Button
