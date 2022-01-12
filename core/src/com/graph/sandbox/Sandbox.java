@@ -60,17 +60,17 @@ public class Sandbox implements Screen {
 
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
 
-    public Sandbox(String graph_type, String graph_name) {
+    public Sandbox(String graph_type, String graph_name,Boolean graph_new) {
 
 
 //   http://tutorial-libgdx-android.blogspot.com/2014/02/files-with-libgdx.html
 //   https://github.com/libgdx/libgdx/wiki/File-handling#writing-to-a-file
 
-//        if (Objects.equals(graph_type, "new") && !Gdx.files.external(graph_name).exists()){
+        if (Objects.equals(graph_new, true)){
 //
-//            FileHandle file = Gdx.files.local(graph_name);
-//            file.writeString("My god, it's full of stars", true);
-//        }
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name);
+            file.writeString("My god, it's full of stars", true);
+        }
 
 
 
