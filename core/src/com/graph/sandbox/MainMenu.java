@@ -83,7 +83,7 @@ public class MainMenu implements Screen {
 
 
 
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("New_graph.txt",true));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("New_graph",true));
 
 
 

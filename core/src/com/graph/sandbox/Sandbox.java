@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -58,7 +59,7 @@ public class Sandbox implements Screen {
 
 
 
-//I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.
+//I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 
 
 
@@ -69,11 +70,19 @@ public class Sandbox implements Screen {
     private void save(boolean graphIsDigraph, String graph_name, Boolean graph_new, Boolean saveAs) {
 
 
-        
 
-        if (saveAs && graphIsDigraph) {
-            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name);
-            file.writeString("digraph\n", false);
+
+        if (saveAs) {
+
+            if (graphIsDigraph) {
+                FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+                file.writeString("digraph\n", false);
+            }
+
+            else{
+                FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+                file.writeString("graph\n", false);
+            }
 
         }
 
@@ -135,30 +144,6 @@ public class Sandbox implements Screen {
         graphTypeBox.setVisible(false);
         stage.addActor(graphTypeBox);
 
-        TextButton graphButton = new TextButton(("Graph"), buttonSkin, "maroon");
-        graphTypeBox.add(graphButton).height(Value.percentHeight(0.35f, graphTypeBox)).width(Value.percentWidth(0.35f, graphTypeBox)).pad(Value.percentWidth(0.01f, graphTypeBox));
-        graphButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-                graphIsDigraph = false;
-                graphTypeBox.setVisible(false);
-                modalBoxVisible = false;
-
-            }
-        });
-
-        TextButton digraphButton = new TextButton(("Digraph"), buttonSkin, "maroon");
-        graphTypeBox.add(digraphButton).height(Value.percentHeight(0.35f, graphTypeBox)).width(Value.percentWidth(0.35f, graphTypeBox)).pad(Value.percentWidth(0.01f, graphTypeBox));
-        digraphButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-                graphIsDigraph = true;
-                graphTypeBox.setVisible(false);
-                modalBoxVisible = false;
-            }
-        });
 
 
 
@@ -168,20 +153,12 @@ public class Sandbox implements Screen {
 
 
 
-        if (graph_new) {
-            graphTypeBox.setVisible(true);
-            modalBoxVisible = true;
-        }
-        else{
-            modalBoxVisible = false;
-
-            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + graph_name);
-            String text = graphFile.readString();
-            String[] graphFileArray = text.split("\\r?\\n");
 
 
-            graphIsDigraph = Objects.equals(graphFileArray[0], "digraph");
-        }
+
+
+
+
 
 
 
@@ -285,7 +262,7 @@ public class Sandbox implements Screen {
             });
 
 
-        TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");                 //New Vertex
+        final TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");                 //New Vertex
         newVertex.setHeight(Gdx.graphics.getHeight() * (0.1f));
         newVertex.setWidth(Gdx.graphics.getWidth() * (0.08f));
         newVertex.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.85f)));
@@ -303,7 +280,7 @@ public class Sandbox implements Screen {
             }
         });
 
-        TextButton newEdge = new TextButton(("New " + edgeName), buttonSkin, "maroon");
+        final TextButton newEdge = new TextButton(("New " + edgeName), buttonSkin, "maroon");
         newEdge.setHeight(Gdx.graphics.getHeight() * (0.1f));
         newEdge.setWidth(Gdx.graphics.getWidth() * (0.08f));
         newEdge.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.85f)));
@@ -330,7 +307,7 @@ public class Sandbox implements Screen {
 
 
 
-        final Window saveAsBox = new Window("Graph Type:", buttonSkin, "maroon");
+        final Window saveAsBox = new Window("File Name:", buttonSkin, "maroon");
         saveAsBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         saveAsBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         saveAsBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
@@ -340,34 +317,39 @@ public class Sandbox implements Screen {
         saveAsBox.setVisible(false);
         stage.addActor(saveAsBox);
 
+        //saveAsBox.debug();
 
-
-        TextField nameInputField = new TextField(graph_name,buttonSkin);
-        saveAsBox.add(nameInputField).height(Value.percentHeight(0.3f, saveAsBox)).width(Value.percentWidth(0.7f, saveAsBox)).pad(Value.percentWidth(0.01f, saveAsBox)).bottom();
+        final TextField nameInputField = new TextField(graph_name,buttonSkin);
+        saveAsBox.add(nameInputField).height(Value.percentHeight(0.3f, saveAsBox)).width(Value.percentWidth(0.7f, saveAsBox)).colspan(2);
 
 
 
         saveAsBox.row();
 
         TextButton cancelNameButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        saveAsBox.add(cancelNameButton).height(Value.percentHeight(0.2f, saveAsBox)).width(Value.percentWidth(0.35f, saveAsBox)).pad(Value.percentWidth(0.01f, saveAsBox)).bottom();
+        saveAsBox.add(cancelNameButton).height(Value.percentHeight(0.2f, saveAsBox)).width(Value.percentWidth(0.35f, saveAsBox)).pad(Value.percentWidth(0.025f, saveAsBox)).padTop(Value.percentWidth(0.05f, saveAsBox));
         cancelNameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                errorText.setVisible(true);
 
+                saveAsBox.setVisible(false);
+                modalBoxVisible = false;
             }
         });
 
         TextButton ConfirmNameButton = new TextButton(("Ok"), buttonSkin, "maroon");
-        saveAsBox.add(ConfirmNameButton).height(Value.percentHeight(0.2f, saveAsBox)).width(Value.percentWidth(0.35f, saveAsBox)).pad(Value.percentWidth(0.01f, saveAsBox)).bottom();
+        saveAsBox.add(ConfirmNameButton).height(Value.percentHeight(0.2f, saveAsBox)).width(Value.percentWidth(0.35f, saveAsBox)).pad(Value.percentWidth(0.025f, saveAsBox)).padTop(Value.percentWidth(0.05f, saveAsBox));
         ConfirmNameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                errorText.setVisible(true);
+                saveAsBox.setVisible(false);
+                modalBoxVisible = false;
 
+                String currentGraphName = graph_name;
+                currentGraphName = nameInputField.getText();
+                save(graphIsDigraph, currentGraphName, graph_new, true);
             }
         });
 
@@ -380,7 +362,7 @@ public class Sandbox implements Screen {
 
 
 
-        TextButton saveButton = new TextButton(("Save"), buttonSkin, "maroon");
+        final TextButton saveButton = new TextButton(("Save"), buttonSkin, "maroon");
         saveButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
         saveButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
         saveButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
@@ -389,6 +371,8 @@ public class Sandbox implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+
                 save(graphIsDigraph, graph_name, graph_new, false);
                 saved = true;
 
@@ -396,7 +380,7 @@ public class Sandbox implements Screen {
         });
 
 
-        TextButton saveAsButton = new TextButton(("Save As"), buttonSkin, "maroon");
+        final TextButton saveAsButton = new TextButton(("Save As"), buttonSkin, "maroon");
         saveAsButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
         saveAsButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
         saveAsButton.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.16f)));
@@ -409,6 +393,7 @@ public class Sandbox implements Screen {
                 saveAsBox.setVisible(true);
                 save(graphIsDigraph, graph_name, graph_new, true);
                 saved = true;
+                modalBoxVisible = true;
 
             }
         });
@@ -457,12 +442,12 @@ public class Sandbox implements Screen {
 
 
 
-                File file = new File("core/assets/Saved Graphs/" + graph_name);
+                File file = new File("core/assets/Saved Graphs/" + graph_name + ".txt");
 
 
 
 
-                if (file.exists() && graph_name != "New_graph.txt") {
+                if (file.exists() && graph_name != "New_graph") {
                     save(graphIsDigraph, graph_name, graph_new, false);
                 }
                 else {
@@ -499,9 +484,7 @@ public class Sandbox implements Screen {
 
 
 
-
-
-        TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
+        final TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
         mainMenu.setHeight(Gdx.graphics.getHeight() * (0.1f));
         mainMenu.setWidth(Gdx.graphics.getWidth() * (0.1725f));
         mainMenu.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.04f)));
@@ -529,6 +512,86 @@ public class Sandbox implements Screen {
 
 
         });
+
+
+
+
+
+
+
+
+
+
+
+
+        TextButton graphButton = new TextButton(("Graph"), buttonSkin, "maroon");
+        graphTypeBox.add(graphButton).height(Value.percentHeight(0.35f, graphTypeBox)).width(Value.percentWidth(0.35f, graphTypeBox)).pad(Value.percentWidth(0.01f, graphTypeBox));
+        graphButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                graphIsDigraph = false;
+                graphTypeBox.setVisible(false);
+
+
+                modalBoxVisible = false;
+                newVertex.setTouchable(Touchable.enabled);
+                newEdge.setTouchable(Touchable.enabled);
+                saveButton.setTouchable(Touchable.enabled);
+                saveAsButton.setTouchable(Touchable.enabled);
+                mainMenu.setTouchable(Touchable.enabled);
+
+            }
+        });
+
+        TextButton digraphButton = new TextButton(("Digraph"), buttonSkin, "maroon");
+        graphTypeBox.add(digraphButton).height(Value.percentHeight(0.35f, graphTypeBox)).width(Value.percentWidth(0.35f, graphTypeBox)).pad(Value.percentWidth(0.01f, graphTypeBox));
+        digraphButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                graphIsDigraph = true;
+                graphTypeBox.setVisible(false);
+
+
+                modalBoxVisible = false;
+                newVertex.setTouchable(Touchable.enabled);
+                newEdge.setTouchable(Touchable.enabled);
+                saveButton.setTouchable(Touchable.enabled);
+                saveAsButton.setTouchable(Touchable.enabled);
+                mainMenu.setTouchable(Touchable.enabled);
+            }
+        });
+
+
+
+
+        if (graph_new) {
+            graphTypeBox.setVisible(true);
+            modalBoxVisible = true;
+            newVertex.setTouchable(Touchable.disabled);
+            newEdge.setTouchable(Touchable.disabled);
+            saveButton.setTouchable(Touchable.disabled);
+            saveAsButton.setTouchable(Touchable.disabled);
+            mainMenu.setTouchable(Touchable.disabled);
+        }
+        else{
+            modalBoxVisible = false;
+
+            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+            String text = graphFile.readString();
+            String[] graphFileArray = text.split("\\r?\\n");
+
+
+            graphIsDigraph = Objects.equals(graphFileArray[0], "digraph");
+
+        }
+
+
+
+
+
+
 
     }
 
