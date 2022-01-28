@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -35,6 +35,7 @@ public class Sandbox implements Screen {
     private boolean modalBoxVisible;
 
     private boolean graphIsDigraph;
+    private boolean firstTimeSave;
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -52,11 +53,13 @@ public class Sandbox implements Screen {
     String edgeName = configArray[3];     // Arc or Edge
     float vertexSize;
 
+    String currentGraphName;
 
     Image binOpen = new Image(new Texture(Gdx.files.internal("binOpen.png")));
     Image binClosed = new Image(new Texture(Gdx.files.internal("binClosed.png")));
 
-
+    Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
+    final Label savedLabel = new Label("Graph Saved Successfully.", buttonSkin, "error");
 
 
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
@@ -67,28 +70,106 @@ public class Sandbox implements Screen {
 
 
 
+    private String existingFileNameChanger(String graph_name,int i){
+
+        FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+
+        if (file.exists()){
+
+
+
+            if ((graph_name.charAt(graph_name.length()-3)) == '('){
+                graph_name = graph_name.substring(0, graph_name.length() - 3) + "(" + i + ")";
+            }
+            else{
+                graph_name = graph_name + "(" + i + ")";
+            }
+
+            return(existingFileNameChanger(graph_name,i+1));
+
+        }
+        else{
+            return(graph_name);
+        }
+}
+
+
+
+
+
     private void save(boolean graphIsDigraph, String graph_name, Boolean graph_new, Boolean saveAs) {
 
 
-
+        firstTimeSave = false;
 
         if (saveAs) {
 
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + existingFileNameChanger(graph_name,1) + ".txt");
+            currentGraphName = existingFileNameChanger(graph_name,1);
+
             if (graphIsDigraph) {
-                FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
                 file.writeString("digraph\n", false);
             }
-
             else{
-                FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
                 file.writeString("graph\n", false);
             }
+
+
+            for (Integer coordsX : vertexCoordsX) {
+                file.writeString(coordsX + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer integer : vertexCoordsY) {
+                file.writeString(integer + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer integer : edgeListFrom) {
+                file.writeString(integer + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer listTo : edgeListTo) {
+                file.writeString(listTo + " ", true);
+            }
+
+
+
+        }
+        else{
+
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+
+            if (graphIsDigraph) {
+                file.writeString("digraph\n", false);
+            }
+            else{
+                file.writeString("graph\n", false);
+            }
+
+
+            for (Integer coordsX : vertexCoordsX) {
+                file.writeString(coordsX + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer integer : vertexCoordsY) {
+                file.writeString(integer + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer integer : edgeListFrom) {
+                file.writeString(integer + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Integer listTo : edgeListTo) {
+                file.writeString(listTo + " ", true);
+            }
+
+
+        }
 
         }
 
 
 
-    }
+
 
 
     public Sandbox(final String graph_name, final Boolean graph_new) {
@@ -96,6 +177,10 @@ public class Sandbox implements Screen {
 
 
 
+        firstTimeSave = graph_new;
+
+        if (graph_new)
+            currentGraphName = "New_Graph";
 
 
 
@@ -115,24 +200,11 @@ public class Sandbox implements Screen {
 
 
 
-//        vertexCoordsX.add(400);
-//        vertexCoordsY.add(500);
-//        vertexCoordsX.add(800);
-//        vertexCoordsY.add(200);
-//
-//        edgeListFrom.add(0);
-//        edgeListTo.add(1);
-//
-//        System.out.println(vertexCoordsX + " " + vertexCoordsY);
 
 
 
 
 
-
-
-
-        Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
         final Window graphTypeBox = new Window("Graph Type:", buttonSkin, "maroon");
         graphTypeBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
@@ -302,8 +374,19 @@ public class Sandbox implements Screen {
 
 
 
+        // savedLabel initialized above
+        savedLabel.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
+        stage.addActor(savedLabel);
+        savedLabel.setVisible(false);
 
 
+
+
+
+        final Label saveBoxLabel = new Label("Graph already exists!", buttonSkin, "error");
+        saveBoxLabel.setPosition(Gdx.graphics.getWidth() * (0.45f),Gdx.graphics.getHeight() * (0.47f));
+        stage.addActor(saveBoxLabel);
+        saveBoxLabel.setVisible(false);
 
 
 
@@ -319,7 +402,7 @@ public class Sandbox implements Screen {
 
         //saveAsBox.debug();
 
-        final TextField nameInputField = new TextField(graph_name,buttonSkin);
+        final TextField nameInputField = new TextField(currentGraphName,buttonSkin);
         saveAsBox.add(nameInputField).height(Value.percentHeight(0.3f, saveAsBox)).width(Value.percentWidth(0.7f, saveAsBox)).colspan(2);
 
 
@@ -344,12 +427,15 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
+
+
                 saveAsBox.setVisible(false);
                 modalBoxVisible = false;
 
-                String currentGraphName = graph_name;
                 currentGraphName = nameInputField.getText();
                 save(graphIsDigraph, currentGraphName, graph_new, true);
+
+
             }
         });
 
@@ -373,8 +459,15 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                save(graphIsDigraph, graph_name, graph_new, false);
+                if (firstTimeSave){
+                    saveAsBox.setVisible(true);
+                }
+                else {
+                    save(graphIsDigraph, currentGraphName, graph_new, false);
+                }
+
                 saved = true;
+
 
             }
         });
@@ -391,7 +484,7 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
                 saveAsBox.setVisible(true);
-                save(graphIsDigraph, graph_name, graph_new, true);
+
                 saved = true;
                 modalBoxVisible = true;
 
@@ -442,25 +535,24 @@ public class Sandbox implements Screen {
 
 
 
-                File file = new File("core/assets/Saved Graphs/" + graph_name + ".txt");
 
-
-
-
-                if (file.exists() && graph_name != "New_graph") {
-                    save(graphIsDigraph, graph_name, graph_new, false);
+                if (firstTimeSave){
+                    saveAsBox.setVisible(true);
                 }
                 else {
-                    save(graphIsDigraph, graph_name, graph_new,true);
+                    save(graphIsDigraph, currentGraphName, graph_new, false);
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
+
+
+
 
 
 
 
                 saveBox.setVisible(false);
-                saved = true;
 
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+
 
             }
         });
@@ -578,7 +670,7 @@ public class Sandbox implements Screen {
         else{
             modalBoxVisible = false;
 
-            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".txt");  //  maybe change back to graph_name
             String text = graphFile.readString();
             String[] graphFileArray = text.split("\\r?\\n");
 
@@ -652,7 +744,7 @@ public class Sandbox implements Screen {
         binAnimation();
 
 
-
+        savedLabel.setVisible(saved && !firstTimeSave);
 
         stage.draw();
         stage.act();
