@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -72,7 +73,7 @@ public class Sandbox implements Screen {
 
     private String existingFileNameChanger(String graph_name,int i){
 
-        FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+        FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".graph");
 
         if (file.exists()){
 
@@ -104,7 +105,7 @@ public class Sandbox implements Screen {
 
         if (saveAs) {
 
-            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + existingFileNameChanger(graph_name,1) + ".txt");
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + existingFileNameChanger(graph_name,1) + ".graph");
             currentGraphName = existingFileNameChanger(graph_name,1);
 
             if (graphIsDigraph) {
@@ -136,7 +137,7 @@ public class Sandbox implements Screen {
         }
         else{
 
-            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".txt");
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".graph");
 
             if (graphIsDigraph) {
                 file.writeString("digraph\n", false);
@@ -670,7 +671,7 @@ public class Sandbox implements Screen {
         else{
             modalBoxVisible = false;
 
-            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".txt");  //  maybe change back to graph_name
+            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".graph");  //  maybe change back to graph_name
             String text = graphFile.readString();
             String[] graphFileArray = text.split("\\r?\\n");
 
@@ -735,9 +736,12 @@ public class Sandbox implements Screen {
 //        System.out.println(edgeListFrom);
 //        System.out.println(edgeListTo);
 
+        drawDigraphArrows();
 
         drawExistingEdge();
         drawExistingVertex();
+
+
 
         placeNewVertex();
 
@@ -970,6 +974,57 @@ public class Sandbox implements Screen {
         edgeListTo.clear();
     }
 
+    private void drawDigraphArrows(){
+
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(Color.RED);
+
+
+        for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
+
+
+            float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
+            float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
+
+
+//            sr.identity();
+            //  sr.translate(0,0,0);
+//            sr.rotate(0, 0, 1, 0);
+
+
+          //  Matrix4 rotationMatrix = new Matrix4();// insert the rotation matrix
+          //  Matrix4 translationMatrix = new Matrix4();// insert the transformation matrix
+
+           // rotationMatrix.rotate(0,0,1,45);
+            // rotationMatrix.setToRotation(vertexCoordsX.get(edgeListFrom.get(i)),vertexCoordsY.get(edgeListFrom.get(i)),0,vertexCoordsX.get(edgeListTo.get(i)),vertexCoordsY.get(edgeListTo.get(i)),0);
+           // translationMatrix.mulLeft(rotationMatrix);
+            //sr.setProjectionMatrix(translationMatrix);
+
+            sr.identity();
+            sr.rotate(0, 0, 1, 90);
+            System.out.println(sr.getProjectionMatrix());
+
+
+            sr.triangle(midpointX - vertexSize, (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX + vertexSize, (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX, (float)(midpointY + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))));
+   //   check the matrix with the midpoint values
+
+            //  sr.triangle(midpointX - 2*vertexSize, (float)(midpointY -  Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX, (float)(midpointY - Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX - vertexSize, (float)(midpointY));
+            //sr.rect(midpointX,midpointY,vertexSize*4,vertexSize*2);
+
+        }
+
+        sr.end();
+
+        sr.identity();
+
+    }
+
+
+
+
+
+
+    //end of new code
 
 
 

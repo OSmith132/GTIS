@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 
-
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 
 public class MainMenu implements Screen {
@@ -67,10 +67,6 @@ public class MainMenu implements Screen {
         stage.addActor(Rectangle);
 
 
-
-
-
-
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");                                                                              //New Graph Button
         newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
         newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
@@ -80,12 +76,7 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-
-
-
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox("New_graph",true));
-
-
 
             }
         });
@@ -95,12 +86,41 @@ public class MainMenu implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         openGraphBox = new Window("Open Graph", buttonSkin, "maroon");                                                                           //Open Graph Button
         openGraphBox.setHeight(Gdx.graphics.getHeight() * (0.6f));
         openGraphBox.setWidth(Gdx.graphics.getWidth() * (0.5f));
         openGraphBox.setPosition((Gdx.graphics.getWidth() * (0.3f)), (Gdx.graphics.getHeight() * (0.25f)));
-        stage.addActor(openGraphBox);
         openGraphBox.setVisible(false);
+        stage.addActor(openGraphBox);
 
 
         TextButton openGraphClose = new TextButton("X", buttonSkin, "maroonX");
@@ -115,7 +135,164 @@ public class MainMenu implements Screen {
             }
         });
         openGraphBox.getTitleTable().add(openGraphClose).height(Value.percentHeight(.05f, openGraphBox)).width(Value.percentWidth(.05f, openGraphBox));
-        openGraphBox.align(Align.top | Align.right);
+        openGraphBox.align(Align.top | Align.center);
+
+
+
+
+
+
+
+
+        File folder = new File("core/assets/Saved Graphs");
+        final File[] listOfFiles = folder.listFiles();
+
+
+        final ArrayList<String> listOfFileNames = new ArrayList<>();
+        assert listOfFiles != null;
+        for (File listOfFile : listOfFiles) {
+
+            if (listOfFile.isFile() && listOfFile.getName().endsWith(".graph"))
+                listOfFileNames.add(listOfFile.getName());
+        }
+
+
+
+
+
+
+        final List openGraphList = new List(buttonSkin, "dimmed");
+        openGraphBox.add(openGraphList).height(Value.percentHeight(.75f, openGraphBox)).width(Value.percentWidth(.6f, openGraphBox)).padTop(Value.percentWidth(.025f, openGraphBox)).colspan(3);
+        openGraphList.setTypeToSelect(true);
+
+
+        openGraphList.setItems(listOfFileNames.toArray());      // NOTE: Could make it so that I can select different pages in the list using a list.size()
+
+
+
+
+
+
+
+
+
+
+        openGraphBox.row();
+
+
+
+
+        final Window deleteFileBox = new Window("Are you sure you want to delete this file?",buttonSkin);
+        deleteFileBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        deleteFileBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        deleteFileBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        deleteFileBox.setModal(true);
+        deleteFileBox.setMovable(false);
+        deleteFileBox.getTitleLabel().setAlignment(1);
+        deleteFileBox.align(Align.center);
+        deleteFileBox.setVisible(false);
+
+        stage.addActor(deleteFileBox);
+
+
+
+
+
+
+
+
+        TextButton deleteFileNo = new TextButton(("Don't delete"), buttonSkin);
+        deleteFileBox.add(deleteFileNo).height(Value.percentHeight(0.35f, deleteFileBox)).width(Value.percentWidth(0.3f, deleteFileBox)).pad(Value.percentWidth(0.01f,deleteFileBox));
+
+        deleteFileNo.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                deleteFileBox.setVisible(false);
+            }
+        });
+
+        TextButton deleteFileYes = new TextButton(("Delete"), buttonSkin);
+        deleteFileBox.add(deleteFileYes).height(Value.percentHeight(0.35f, deleteFileBox)).width(Value.percentWidth(0.3f, deleteFileBox)).pad(Value.percentWidth(0.01f,deleteFileBox));
+
+        deleteFileYes.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                Gdx.files.local((String) ("core/assets/Saved Graphs/" + openGraphList.getSelected())).delete();
+
+
+                listOfFileNames.clear();
+                for (File listOfFile : listOfFiles) {
+
+                    if (listOfFile.isFile() && listOfFile.getName().endsWith(".graph"))
+                        listOfFileNames.add(listOfFile.getName());
+                }
+
+                openGraphList.setItems(listOfFileNames.toArray());
+
+
+                deleteFileBox.setVisible(false);
+
+            }
+        });
+
+
+
+
+        TextButton deleteGraphButton = new TextButton("Delete", buttonSkin,"maroon");
+        openGraphBox.add(deleteGraphButton).height(Value.percentHeight(.06f, openGraphBox)).width(Value.percentWidth(.2f, openGraphBox)).pad(Value.percentWidth(.025f, openGraphBox));
+
+        deleteGraphButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+
+                deleteFileBox.setVisible(true);
+                deleteFileBox.toFront();
+            }
+        });
+
+
+
+
+
+        TextButton editGraphButton = new TextButton("Edit", buttonSkin,"maroon");
+        openGraphBox.add(editGraphButton).height(Value.percentHeight(.06f, openGraphBox)).width(Value.percentWidth(.2f, openGraphBox)).pad(Value.percentWidth(.025f, openGraphBox));
+
+        editGraphButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //Here Goes the code for editing a file
+            }
+        });
+
+
+
+        TextButton openGraphButton = new TextButton("Open", buttonSkin,"maroon");
+        openGraphBox.add(openGraphButton).height(Value.percentHeight(.06f, openGraphBox)).width(Value.percentWidth(.2f, openGraphBox)).pad(Value.percentWidth(.025f, openGraphBox));
+
+        openGraphButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //Here Goes the code for opening a file
+                errorText.setVisible(true);
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
 
         TextButton openGraph = new TextButton("Open Graph", buttonSkin, "maroon");
         openGraph.setHeight(Gdx.graphics.getHeight() * (0.1f));
@@ -137,6 +314,39 @@ public class MainMenu implements Screen {
             }
         });
         stage.addActor(openGraph);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
