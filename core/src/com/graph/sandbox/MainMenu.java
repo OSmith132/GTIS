@@ -161,7 +161,7 @@ public class MainMenu implements Screen {
 
 
 
-        final List openGraphList = new List(buttonSkin, "dimmed");
+        final List<Object> openGraphList = new List<>(buttonSkin, "dimmed");
         openGraphBox.add(openGraphList).height(Value.percentHeight(.75f, openGraphBox)).width(Value.percentWidth(.6f, openGraphBox)).padTop(Value.percentWidth(.025f, openGraphBox)).colspan(3);
         openGraphList.setTypeToSelect(true);
 
@@ -220,7 +220,7 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                Gdx.files.local((String) ("core/assets/Saved Graphs/" + openGraphList.getSelected())).delete();
+                Gdx.files.local(("core/assets/Saved Graphs/" + openGraphList.getSelected())).delete();
 
 
                 listOfFileNames.clear();
@@ -657,14 +657,6 @@ public class MainMenu implements Screen {
             @Override
 
             public void clicked(InputEvent event, float x, float y) {
-
-
-
-
-//                Gdx.graphics.setWindowedMode(Integer.parseInt(widthHeightArray[0]),Integer.parseInt(widthHeightArray[2]));
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-//                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-
 
 
                 configArray[0] = resPicker.getSelected();
