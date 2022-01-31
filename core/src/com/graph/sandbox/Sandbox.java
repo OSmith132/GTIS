@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -50,6 +51,8 @@ public class Sandbox implements Screen {
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
+    Integer resolutionW = Integer.parseInt(   configArray[0].split(" ")[0]);
+    Integer resolutionH = Integer.parseInt(   configArray[0].split(" ")[2]);
     String vertexName = configArray[2];  // Node or Vertex
     String edgeName = configArray[3];     // Arc or Edge
     float vertexSize;
@@ -95,9 +98,6 @@ public class Sandbox implements Screen {
 }
 
 
-
-
-
     private void save(boolean graphIsDigraph, String graph_name, Boolean graph_new, Boolean saveAs) {
 
 
@@ -117,15 +117,15 @@ public class Sandbox implements Screen {
 
 
             for (Integer coordsX : vertexCoordsX) {
-                file.writeString(coordsX + " ", true);
+                file.writeString((int)(((float)coordsX / resolutionW) * 2560) + " ", true);
             }
             file.writeString("\n", true);
-            for (Integer integer : vertexCoordsY) {
-                file.writeString(integer + " ", true);
+            for (Integer coordsY : vertexCoordsY) {
+                file.writeString((int)(((float)coordsY / resolutionH) * 1440) + " ", true);
             }
             file.writeString("\n", true);
-            for (Integer integer : edgeListFrom) {
-                file.writeString(integer + " ", true);
+            for (Integer listFrom : edgeListFrom) {
+                file.writeString(listFrom + " ", true);
             }
             file.writeString("\n", true);
             for (Integer listTo : edgeListTo) {
@@ -171,10 +171,11 @@ public class Sandbox implements Screen {
 
 
 
-
-
     public Sandbox(final String graph_name, final Boolean graph_new) {
-        //         graph / digraph          "New Graph"         true / false
+        //         "New Graph"         true / false
+
+
+
 
 
 
@@ -183,10 +184,63 @@ public class Sandbox implements Screen {
         if (graph_new)
             currentGraphName = "New_Graph";
 
+        else {
+
+            saved = false;
+            currentGraphName = graph_name.substring(0, graph_name.length() - 6);
+
+            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".graph");  //  maybe change back to graph_name
+            String text = graphFile.readString();
+            String[] graphFileArray = text.split("\\r?\\n");
+
+            graphIsDigraph = Objects.equals(graphFileArray[0], "digraph");
 
 
+            if (graphFileArray.length > 1) {
 
 
+                String[] vertexXStringList = graphFileArray[1].split(" ");
+                Integer[] vertexXIntegerList = new Integer[vertexXStringList.length];
+
+                String[] vertexYStringList = graphFileArray[2].split(" ");
+                Integer[] vertexYIntegerList = new Integer[vertexYStringList.length];
+
+                for (int i = 0; i < vertexXStringList.length; i++) {
+
+                    vertexXIntegerList[i] = (int)(((float)Integer.parseInt(vertexXStringList[i]) / 2560) * resolutionW);
+                    vertexCoordsX.add(vertexXIntegerList[i]);
+                    System.out.println(vertexXIntegerList[i]);
+
+                    vertexYIntegerList[i] = (int)(((float)Integer.parseInt(vertexYStringList[i]) / 1440) * resolutionH);
+                    vertexCoordsY.add(vertexYIntegerList[i]);
+
+                }
+
+
+                if (graphFileArray.length > 3) {
+
+
+                    String[] edgeToStringList = graphFileArray[3].split(" ");
+                    Integer[] edgeToIntegerList = new Integer[edgeToStringList.length];
+
+                    String[] edgeFromStringList = graphFileArray[4].split(" ");
+                    Integer[] edgeFromIntegerList = new Integer[edgeFromStringList.length];
+
+
+                    for (int i = 0; i < edgeToStringList.length; i++) {
+
+                        edgeToIntegerList[i] = Integer.parseInt(edgeToStringList[i]);
+                        edgeListTo.add(edgeToIntegerList[i]);
+
+                        edgeFromIntegerList[i] = Integer.parseInt(edgeFromStringList[i]);
+                        edgeListFrom.add(edgeFromIntegerList[i]);
+
+                    }
+
+
+                }
+            }
+        }
 
 
 
@@ -384,10 +438,7 @@ public class Sandbox implements Screen {
 
 
 
-        final Label saveBoxLabel = new Label("Graph already exists!", buttonSkin, "error");
-        saveBoxLabel.setPosition(Gdx.graphics.getWidth() * (0.45f),Gdx.graphics.getHeight() * (0.47f));
-        stage.addActor(saveBoxLabel);
-        saveBoxLabel.setVisible(false);
+
 
 
 
@@ -668,17 +719,7 @@ public class Sandbox implements Screen {
             saveAsButton.setTouchable(Touchable.disabled);
             mainMenu.setTouchable(Touchable.disabled);
         }
-        else{
-            modalBoxVisible = false;
 
-            FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".graph");  //  maybe change back to graph_name
-            String text = graphFile.readString();
-            String[] graphFileArray = text.split("\\r?\\n");
-
-
-            graphIsDigraph = Objects.equals(graphFileArray[0], "digraph");
-
-        }
 
 
 

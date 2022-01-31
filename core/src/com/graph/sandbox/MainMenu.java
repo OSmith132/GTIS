@@ -265,9 +265,17 @@ public class MainMenu implements Screen {
         editGraphButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //Here Goes the code for editing a file
+
+                if (listOfFileNames.size() > 0) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox((String) openGraphList.getSelected(),false));
+                }
+
+
+
             }
         });
+
+
 
 
 
