@@ -151,7 +151,6 @@ public class MainMenu implements Screen {
         final ArrayList<String> listOfFileNames = new ArrayList<>();
         assert listOfFiles != null;
         for (File listOfFile : listOfFiles) {
-
             if (listOfFile.isFile() && listOfFile.getName().endsWith(".graph"))
                 listOfFileNames.add(listOfFile.getName());
         }
@@ -162,7 +161,8 @@ public class MainMenu implements Screen {
 
 
         final List<Object> openGraphList = new List<>(buttonSkin, "dimmed");
-        openGraphBox.add(openGraphList).height(Value.percentHeight(.75f, openGraphBox)).width(Value.percentWidth(.6f, openGraphBox)).padTop(Value.percentWidth(.025f, openGraphBox)).colspan(3);
+        final ScrollPane openGraphActualList = new ScrollPane(openGraphList, buttonSkin,"android");
+        openGraphBox.add(openGraphActualList).height(Value.percentHeight(.75f, openGraphBox)).width(Value.percentWidth(.6f, openGraphBox)).padTop(Value.percentWidth(.025f, openGraphBox)).colspan(3);
         openGraphList.setTypeToSelect(true);
 
 

@@ -83,7 +83,7 @@ public class Sandbox implements Screen {
                 graph_name = graph_name.substring(0, graph_name.length() - 3) + "(" + i + ")";
             }
             else{
-                graph_name = graph_name + "(" + i + ")";
+                graph_name += "(" + i + ")";
             }
 
             return(existingFileNameChanger(graph_name,i+1));
@@ -743,6 +743,8 @@ public class Sandbox implements Screen {
 
 
 
+        drawDigraphArrows();
+
         placeNewVertex();
 
         binAnimation();
@@ -1025,6 +1027,12 @@ public class Sandbox implements Screen {
 
 
     //end of new code
+
+
+
+
+   
+
 
 
 
