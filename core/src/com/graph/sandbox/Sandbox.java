@@ -38,8 +38,8 @@ public class Sandbox implements Screen {
     private boolean firstTimeSave;
 
 
-    ArrayList<Integer> vertexCoordsX = new ArrayList<Integer>();
-    ArrayList<Integer> vertexCoordsY = new ArrayList<Integer>();
+    ArrayList<Integer> vertexCoordsX = new ArrayList<>();
+    ArrayList<Integer> vertexCoordsY = new ArrayList<>();
 
     ArrayList<Integer> edgeListFrom = new ArrayList<>();
     ArrayList<Integer> edgeListTo = new ArrayList<>();
@@ -96,7 +96,7 @@ public class Sandbox implements Screen {
 }
 
 
-    private void save(boolean graphIsDigraph, String graph_name, Boolean graph_new, Boolean saveAs) {
+    private void save(boolean graphIsDigraph, String graph_name, Boolean saveAs) {
 
 
         firstTimeSave = false;
@@ -484,7 +484,7 @@ public class Sandbox implements Screen {
                 modalBoxVisible = false;
 
                 currentGraphName = nameInputField.getText();
-                save(graphIsDigraph, currentGraphName, graph_new, true);
+                save(graphIsDigraph, currentGraphName, true);
 
 
             }
@@ -514,7 +514,7 @@ public class Sandbox implements Screen {
                     saveAsBox.setVisible(true);
                 }
                 else {
-                    save(graphIsDigraph, currentGraphName, graph_new, false);
+                    save(graphIsDigraph, currentGraphName, false);
                 }
 
                 saved = true;
@@ -591,7 +591,7 @@ public class Sandbox implements Screen {
                     saveAsBox.setVisible(true);
                 }
                 else {
-                    save(graphIsDigraph, currentGraphName, graph_new, false);
+                    save(graphIsDigraph, currentGraphName, false);
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
 
