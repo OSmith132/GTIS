@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -17,7 +16,6 @@ import com.badlogic.gdx.utils.Align;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -40,8 +38,8 @@ public class Sandbox implements Screen {
     private boolean firstTimeSave;
 
 
-    ArrayList<Integer> vertexCoordsX = new ArrayList<>();
-    ArrayList<Integer> vertexCoordsY = new ArrayList<>();
+    ArrayList<Integer> vertexCoordsX = new ArrayList<Integer>();
+    ArrayList<Integer> vertexCoordsY = new ArrayList<Integer>();
 
     ArrayList<Integer> edgeListFrom = new ArrayList<>();
     ArrayList<Integer> edgeListTo = new ArrayList<>();
@@ -117,11 +115,11 @@ public class Sandbox implements Screen {
 
 
             for (Integer coordsX : vertexCoordsX) {
-                file.writeString((int)(((float)coordsX / resolutionW) * 2560) + " ", true);
+                file.writeString((((float)coordsX / resolutionW) * 1600) + " ", true);
             }
             file.writeString("\n", true);
             for (Integer coordsY : vertexCoordsY) {
-                file.writeString((int)(((float)coordsY / resolutionH) * 1440) + " ", true);
+                file.writeString((((float)coordsY / resolutionH) * 900) + " ", true);
             }
             file.writeString("\n", true);
             for (Integer listFrom : edgeListFrom) {
@@ -200,19 +198,20 @@ public class Sandbox implements Screen {
 
 
                 String[] vertexXStringList = graphFileArray[1].split(" ");
-                Integer[] vertexXIntegerList = new Integer[vertexXStringList.length];
+                Float[] vertexXIntegerList = new Float[vertexXStringList.length];
 
                 String[] vertexYStringList = graphFileArray[2].split(" ");
-                Integer[] vertexYIntegerList = new Integer[vertexYStringList.length];
+                Float[] vertexYIntegerList = new Float[vertexYStringList.length];
 
                 for (int i = 0; i < vertexXStringList.length; i++) {
 
-                    vertexXIntegerList[i] = (int)(((float)Integer.parseInt(vertexXStringList[i]) / 2560) * resolutionW);
-                    vertexCoordsX.add(vertexXIntegerList[i]);
+                    vertexXIntegerList[i] = (Float.parseFloat(vertexXStringList[i]) / 1600) * resolutionW;
+                    vertexCoordsX.add(Math.round(vertexXIntegerList[i]));
+
                     System.out.println(vertexXIntegerList[i]);
 
-                    vertexYIntegerList[i] = (int)(((float)Integer.parseInt(vertexYStringList[i]) / 1440) * resolutionH);
-                    vertexCoordsY.add(vertexYIntegerList[i]);
+                    vertexYIntegerList[i] = (Float.parseFloat(vertexYStringList[i]) / 900) * resolutionH;
+                    vertexCoordsY.add(Math.round(vertexYIntegerList[i]));
 
                 }
 
