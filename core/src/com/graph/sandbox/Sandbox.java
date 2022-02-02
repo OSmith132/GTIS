@@ -43,14 +43,15 @@ public class Sandbox implements Screen {
 
     ArrayList<Integer> edgeListFrom = new ArrayList<>();
     ArrayList<Integer> edgeListTo = new ArrayList<>();
+    ArrayList<Float> edgeWeightList = new ArrayList<>();
 
 
     final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
     String text = configFile.readString();
     String[] configArray = text.split("\\r?\\n");
 
-    Integer resolutionW = Integer.parseInt(   configArray[0].split(" ")[0]);
-    Integer resolutionH = Integer.parseInt(   configArray[0].split(" ")[2]);
+    Integer resolutionW = Integer.parseInt(configArray[0].split(" ")[0]);
+    Integer resolutionH = Integer.parseInt(configArray[0].split(" ")[2]);
     String vertexName = configArray[2];  // Node or Vertex
     String edgeName = configArray[3];     // Arc or Edge
     float vertexSize;
@@ -60,6 +61,10 @@ public class Sandbox implements Screen {
     Image binOpen = new Image(new Texture(Gdx.files.internal("binOpen.png")));
     Image binClosed = new Image(new Texture(Gdx.files.internal("binClosed.png")));
 
+    TextButton confirmEdgeWeight;
+    final TextField edgeWeightInputField;
+    final Window edgeWeightBox;
+
     Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
     final Label savedLabel = new Label("Graph Saved Successfully.", buttonSkin, "error");
 
@@ -67,33 +72,25 @@ public class Sandbox implements Screen {
 //I made this long line for no reason other than to show Kamil this line when he asks what the longest line in my code is for the fourth time. It doesn't matter as his longest line will be longer than this one anyway; and probably by a fair margin.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 
 
-
-
-
-
-
-    private String existingFileNameChanger(String graph_name,int i){
+    private String existingFileNameChanger(String graph_name, int i) {
 
         FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".graph");
 
-        if (file.exists()){
+        if (file.exists()) {
 
 
-
-            if ((graph_name.charAt(graph_name.length()-3)) == '('){
+            if ((graph_name.charAt(graph_name.length() - 3)) == '(') {
                 graph_name = graph_name.substring(0, graph_name.length() - 3) + "(" + i + ")";
-            }
-            else{
+            } else {
                 graph_name += "(" + i + ")";
             }
 
-            return(existingFileNameChanger(graph_name,i+1));
+            return (existingFileNameChanger(graph_name, i + 1));
 
+        } else {
+            return (graph_name);
         }
-        else{
-            return(graph_name);
-        }
-}
+    }
 
 
     private void save(boolean graphIsDigraph, String graph_name, Boolean saveAs) {
@@ -103,23 +100,22 @@ public class Sandbox implements Screen {
 
         if (saveAs) {
 
-            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + existingFileNameChanger(graph_name,1) + ".graph");
-            currentGraphName = existingFileNameChanger(graph_name,1);
+            FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + existingFileNameChanger(graph_name, 1) + ".graph");
+            currentGraphName = existingFileNameChanger(graph_name, 1);
 
             if (graphIsDigraph) {
                 file.writeString("digraph\n", false);
-            }
-            else{
+            } else {
                 file.writeString("graph\n", false);
             }
 
 
             for (Integer coordsX : vertexCoordsX) {
-                file.writeString((((float)coordsX / resolutionW) * 1600) + " ", true);
+                file.writeString((((float) coordsX / resolutionW) * 1600) + " ", true);
             }
             file.writeString("\n", true);
             for (Integer coordsY : vertexCoordsY) {
-                file.writeString((((float)coordsY / resolutionH) * 900) + " ", true);
+                file.writeString((((float) coordsY / resolutionH) * 900) + " ", true);
             }
             file.writeString("\n", true);
             for (Integer listFrom : edgeListFrom) {
@@ -131,16 +127,13 @@ public class Sandbox implements Screen {
             }
 
 
-
-        }
-        else{
+        } else {
 
             FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".graph");
 
             if (graphIsDigraph) {
                 file.writeString("digraph\n", false);
-            }
-            else{
+            } else {
                 file.writeString("graph\n", false);
             }
 
@@ -164,17 +157,11 @@ public class Sandbox implements Screen {
 
         }
 
-        }
-
-
+    }
 
 
     public Sandbox(final String graph_name, final Boolean graph_new) {
         //         "New Graph"         true / false
-
-
-
-
 
 
         firstTimeSave = graph_new;
@@ -242,24 +229,6 @@ public class Sandbox implements Screen {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         final Window graphTypeBox = new Window("Graph Type:", buttonSkin, "maroon");
         graphTypeBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         graphTypeBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
@@ -271,121 +240,83 @@ public class Sandbox implements Screen {
         stage.addActor(graphTypeBox);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        if (Objects.equals(configArray[4], "small")){
-            vertexSize = ( Gdx.graphics.getWidth() * (0.0075f));
-        }
-        else if (Objects.equals(configArray[4], "medium")){
-            vertexSize = ( Gdx.graphics.getWidth() * (0.015f));
-        }
-        else{
-            vertexSize = ( Gdx.graphics.getWidth() * (0.025f));
+        if (Objects.equals(configArray[4], "small")) {
+            vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
+        } else if (Objects.equals(configArray[4], "medium")) {
+            vertexSize = (Gdx.graphics.getWidth() * (0.015f));
+        } else {
+            vertexSize = (Gdx.graphics.getWidth() * (0.025f));
         }
 
 
+        final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
+        errorText.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
+        //errorText.getFontScaleX()
 
 
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
+        Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
+        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        Rectangle.setPosition(0, -1);
+        stage.addActor(Rectangle);
 
 
-            final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
-            errorText.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
-            //errorText.getFontScaleX()
+        final Window clearAllBox = new Window("Are you sure you want to clear all?", buttonSkin, "maroon");
+        clearAllBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        clearAllBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        clearAllBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        clearAllBox.setModal(true);
+        clearAllBox.setMovable(false);
+        clearAllBox.getTitleLabel().setAlignment(1);
+        clearAllBox.setVisible(false);
+        stage.addActor(clearAllBox);
 
 
-            Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
-            Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
-            Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
-            Rectangle.setPosition(0, -1);
-            stage.addActor(Rectangle);
+        TextButton noClearButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        clearAllBox.add(noClearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f, clearAllBox));
+        noClearButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                clearAllBox.setVisible(false);
+                modalBoxVisible = false;
+
+            }
+        });
 
 
-            final Window clearAllBox = new Window("Are you sure you want to clear all?", buttonSkin, "maroon");
-            clearAllBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
-            clearAllBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
-            clearAllBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
-            clearAllBox.setModal(true);
-            clearAllBox.setMovable(false);
-            clearAllBox.getTitleLabel().setAlignment(1);
-            clearAllBox.setVisible(false);
-            stage.addActor(clearAllBox);
+        TextButton clearButton = new TextButton(("Clear All"), buttonSkin, "maroon");
+        clearAllBox.add(clearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f, clearAllBox));
+        clearButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clearAll();
+                saved = false;
+                clearAllBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
 
 
-            TextButton noClearButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-            clearAllBox.add(noClearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f, clearAllBox));
-            noClearButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
+        //Bin closed initialized above^
+        binClosed.setScale(Gdx.graphics.getHeight() / (2700f));
+        binClosed.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
+        stage.addActor(binClosed);
 
-                    clearAllBox.setVisible(false);
-                    modalBoxVisible = false;
+        //Bin open initialized above^
+        binOpen.setScale(Gdx.graphics.getHeight() / (2700f));
+        binOpen.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
+        binOpen.setVisible(false);
+        stage.addActor(binOpen);
 
-                }
-            });
+        binOpen.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clearAllBox.setVisible(true);
+                modalBoxVisible = true;
 
-
-            TextButton clearButton = new TextButton(("Clear All"), buttonSkin, "maroon");
-            clearAllBox.add(clearButton).height(Value.percentHeight(0.35f, clearAllBox)).width(Value.percentWidth(0.35f, clearAllBox)).pad(Value.percentWidth(0.01f, clearAllBox));
-            clearButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    clearAll();
-                    saved = false;
-                    clearAllBox.setVisible(false);
-                    modalBoxVisible = false;
-                }
-            });
-
-
-            //Bin closed initialized above^
-            binClosed.setScale(Gdx.graphics.getHeight() / (2700f));
-            binClosed.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
-            stage.addActor(binClosed);
-
-            //Bin open initialized above^
-            binOpen.setScale(Gdx.graphics.getHeight() / (2700f));
-            binOpen.setPosition(Gdx.graphics.getWidth() * (0.955f), Gdx.graphics.getHeight() * (0.01f));
-            binOpen.setVisible(false);
-            stage.addActor(binOpen);
-
-            binOpen.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    clearAllBox.setVisible(true);
-                    modalBoxVisible = true;
-
-                }
-            });
+            }
+        });
 
 
         final TextButton newVertex = new TextButton(("New " + vertexName), buttonSkin, "maroon");                 //New Vertex
@@ -400,7 +331,6 @@ public class Sandbox implements Screen {
 
                 newVertexClicked = true;
                 newEdgeClicked = false;
-
 
 
             }
@@ -424,21 +354,10 @@ public class Sandbox implements Screen {
         });
 
 
-
-
-
-
         // savedLabel initialized above
         savedLabel.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
         stage.addActor(savedLabel);
         savedLabel.setVisible(false);
-
-
-
-
-
-
-
 
 
         final Window saveAsBox = new Window("File Name:", buttonSkin, "maroon");
@@ -451,11 +370,9 @@ public class Sandbox implements Screen {
         saveAsBox.setVisible(false);
         stage.addActor(saveAsBox);
 
-        //saveAsBox.debug();
 
-        final TextField nameInputField = new TextField(currentGraphName,buttonSkin);
+        final TextField nameInputField = new TextField(currentGraphName, buttonSkin);
         saveAsBox.add(nameInputField).height(Value.percentHeight(0.3f, saveAsBox)).width(Value.percentWidth(0.7f, saveAsBox)).colspan(2);
-
 
 
         saveAsBox.row();
@@ -479,7 +396,6 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-
                 saveAsBox.setVisible(false);
                 modalBoxVisible = false;
 
@@ -489,14 +405,6 @@ public class Sandbox implements Screen {
 
             }
         });
-
-
-
-
-
-
-
-
 
 
         final TextButton saveButton = new TextButton(("Save"), buttonSkin, "maroon");
@@ -510,10 +418,9 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                if (firstTimeSave){
+                if (firstTimeSave) {
                     saveAsBox.setVisible(true);
-                }
-                else {
+                } else {
                     save(graphIsDigraph, currentGraphName, false);
                 }
 
@@ -543,9 +450,7 @@ public class Sandbox implements Screen {
         });
 
 
-
-
-        final Window saveBox = new Window("Would you like to save and exit?",buttonSkin,"maroon");
+        final Window saveBox = new Window("Would you like to save and exit?", buttonSkin, "maroon");
         saveBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         saveBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
         saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
@@ -554,10 +459,8 @@ public class Sandbox implements Screen {
         saveBox.getTitleLabel().setAlignment(1);
 
 
-
-
         TextButton cancelButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        saveBox.add(cancelButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
+        saveBox.add(cancelButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
         cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -568,7 +471,7 @@ public class Sandbox implements Screen {
 
 
         TextButton noButton = new TextButton(("Don't Save"), buttonSkin, "maroon");
-        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
+        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
         noButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -578,53 +481,30 @@ public class Sandbox implements Screen {
 
 
         TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
-        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f,saveBox));
+        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
         yesButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
 
-
-
-
-                if (firstTimeSave){
+                if (firstTimeSave) {
                     saveAsBox.setVisible(true);
-                }
-                else {
+                } else {
                     save(graphIsDigraph, currentGraphName, false);
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 }
 
 
-
-
-
-
-
                 saveBox.setVisible(false);
-
 
 
             }
         });
 
 
-
-
         saveBox.align(Align.center);
         stage.addActor(saveBox);
         saveBox.setVisible(false);
-
-
-
-
-
-
-
-
-
-
-
 
 
         final TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
@@ -638,11 +518,10 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                if (saved){
+                if (saved) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                     errorText.remove();
-                }
-                else{
+                } else {
 
                     saveBox.setVisible(true);
                     modalBoxVisible = true;
@@ -655,16 +534,6 @@ public class Sandbox implements Screen {
 
 
         });
-
-
-
-
-
-
-
-
-
-
 
 
         TextButton graphButton = new TextButton(("Graph"), buttonSkin, "maroon");
@@ -709,6 +578,106 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+
+        edgeWeightBox = new Window(vertexName + " Weight:", buttonSkin, "maroon");
+        edgeWeightBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        edgeWeightBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        edgeWeightBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        edgeWeightBox.setModal(true);
+        edgeWeightBox.setMovable(false);
+        edgeWeightBox.getTitleLabel().setAlignment(1);
+        edgeWeightBox.setVisible(false);
+        stage.addActor(edgeWeightBox);
+
+
+        edgeWeightInputField = new TextField("", buttonSkin);
+        edgeWeightBox.add(edgeWeightInputField).height(Value.percentHeight(0.3f, edgeWeightBox)).width(Value.percentWidth(0.7f, edgeWeightBox)).colspan(2);
+
+
+        edgeWeightBox.row();
+
+        TextButton cancelEdgeWeight = new TextButton(("Cancel"), buttonSkin, "maroon");
+        edgeWeightBox.add(cancelEdgeWeight).height(Value.percentHeight(0.2f, edgeWeightBox)).width(Value.percentWidth(0.35f, edgeWeightBox)).pad(Value.percentWidth(0.025f, edgeWeightBox)).padTop(Value.percentWidth(0.05f, edgeWeightBox));
+        cancelEdgeWeight.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                edgeWeightBox.setVisible(false);
+                modalBoxVisible = false;
+
+                edgeListTo.remove(edgeListTo.size() -1);
+                edgeListFrom.remove(edgeListFrom.size() -1);
+
+            }
+        });
+
+
+        confirmEdgeWeight = new TextButton(("Ok"), buttonSkin, "maroon");
+        edgeWeightBox.add(confirmEdgeWeight).height(Value.percentHeight(0.2f, edgeWeightBox)).width(Value.percentWidth(0.35f, edgeWeightBox)).pad(Value.percentWidth(0.025f, edgeWeightBox)).padTop(Value.percentWidth(0.05f, edgeWeightBox));
+        confirmEdgeWeight.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+
+
+
+                if((Objects.equals(edgeWeightInputField.getText(), ""))) {
+                    confirmEdgeWeight.setText("---");
+                    System.out.println(edgeWeightInputField.getText());
+                }
+
+                else{
+                    try{
+                        Float.parseFloat(edgeWeightInputField.getText());
+
+                        confirmEdgeWeight.setText("Ok");
+                        edgeWeightInputField.setText("");
+
+                        edgeWeightBox.setVisible(false);
+                        modalBoxVisible = false;
+                        saved = false;
+
+                        //add weight to list
+
+
+                    }catch(NumberFormatException e){
+                        confirmEdgeWeight.setText("---");
+                    }
+
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (graph_new) {
             graphTypeBox.setVisible(true);
             modalBoxVisible = true;
@@ -720,14 +689,7 @@ public class Sandbox implements Screen {
         }
 
 
-
-
-
-
-
-
     }
-
 
 
     @Override
@@ -743,27 +705,45 @@ public class Sandbox implements Screen {
 
 
 
+        if((Objects.equals(edgeWeightInputField.getText(), ""))) {
+            confirmEdgeWeight.setText("---");
+            System.out.println(edgeWeightInputField.getText());
+        }
 
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        else{
+            try{
+                Float.parseFloat(edgeWeightInputField.getText());
+                confirmEdgeWeight.setText("Ok");
+            }catch(NumberFormatException e){
+                confirmEdgeWeight.setText("---");
+            }
+
+        }
+
+
+
+
+
+
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             lastVertexClicked = findClickedVertex();
         }
 
-        if (modalBoxVisible){
+        if (modalBoxVisible) {
             allowVertexMove = false;
         }
 
-        if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !allowVertexMove && !modalBoxVisible ) {
+        if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !allowVertexMove && !modalBoxVisible) {
             allowVertexMove = true;
         }
 
 
-
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked  &&  allowVertexMove) {
-            vertexCoordsX.set(lastVertexClicked,Gdx.input.getX());
-            vertexCoordsY.set(lastVertexClicked,(Gdx.graphics.getHeight() - Gdx.input.getY()));
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked && allowVertexMove) {
+            vertexCoordsX.set(lastVertexClicked, Gdx.input.getX());
+            vertexCoordsY.set(lastVertexClicked, (Gdx.graphics.getHeight() - Gdx.input.getY()));
             saved = false;
         }
-
 
 
         placeNewEdge();
@@ -777,13 +757,12 @@ public class Sandbox implements Screen {
 //        System.out.println(edgeListTo);
 
 
-
         drawExistingEdge();
+
+        if (graphIsDigraph)
+            drawDigraphArrows();
+
         drawExistingVertex();
-
-
-        drawDigraphArrows();
-
 
         placeNewVertex();
 
@@ -796,9 +775,8 @@ public class Sandbox implements Screen {
         stage.act();
 
 
+
     }
-
-
 
 
 
@@ -806,22 +784,22 @@ public class Sandbox implements Screen {
 
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(0.07f, 0.07f, 0.07f,1);
+        sr.setColor(0.07f, 0.07f, 0.07f, 1);
 
 
-        for(int i = 0; i < vertexCoordsX.size();i++) {
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
 
-            sr.circle(vertexCoordsX.get(i),vertexCoordsY.get(i),vertexSize);
+            sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
         }
         sr.end();
     }
 
-    private void drawExistingEdge(){
+    private void drawExistingEdge() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.RED);
 
 
-        for(int i = 0; i < vertexCoordsX.size();i++) {
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
 
             if (vertexCoordsY.get(i) < vertexSize) {                                  // this keeps the vertex in bounds
                 vertexCoordsY.set(i, (int) vertexSize);
@@ -829,59 +807,61 @@ public class Sandbox implements Screen {
                 vertexCoordsY.set(i, (int) (Gdx.graphics.getHeight() - vertexSize));
             }
 
-            if (vertexCoordsX.get(i) < (Gdx.graphics.getWidth() * (0.2f))  +  vertexSize) {
-                vertexCoordsX.set(i, (int) ((Gdx.graphics.getWidth() * (0.2f))  +  vertexSize));
+            if (vertexCoordsX.get(i) < (Gdx.graphics.getWidth() * (0.2f)) + vertexSize) {
+                vertexCoordsX.set(i, (int) ((Gdx.graphics.getWidth() * (0.2f)) + vertexSize));
             } else if (vertexCoordsX.get(i) > (Gdx.graphics.getWidth() - vertexSize)) {
                 vertexCoordsX.set(i, (int) (Gdx.graphics.getWidth() - vertexSize));
             }
         }
 
 
-        for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
+        for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
 
-            sr.rectLine(vertexCoordsX.get(edgeListFrom.get(i)), vertexCoordsY.get(edgeListFrom.get(i)),  vertexCoordsX.get(edgeListTo.get(i)),  vertexCoordsY.get(edgeListTo.get(i)),vertexSize/3);
+            sr.rectLine(vertexCoordsX.get(edgeListFrom.get(i)), vertexCoordsY.get(edgeListFrom.get(i)), vertexCoordsX.get(edgeListTo.get(i)), vertexCoordsY.get(edgeListTo.get(i)), vertexSize / 3);
 
         }
-
 
 
         sr.end();
 
     }
 
-    private void drawMovingVertex(){
+    private void drawMovingVertex() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.BLACK);
 
 
-        sr.circle(Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()),vertexSize);
+        sr.circle(Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize);
 
         sr.end();
-}
+    }
 
-    private void drawMovingEdge(int vertex){
+    private void drawMovingEdge(int vertex) {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.RED);
 
-        sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)),Gdx.input.getX(),(Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize/3);
+        sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)), Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize / 3);
 
 
         sr.end();
     }
 
-    private int findClickedVertex(){
-        for (int i = 0; i < vertexCoordsX.size(); i++) {
-            float x=Gdx.input.getX();
-            float y=Gdx.graphics.getHeight()-Gdx.input.getY();
+    private int findClickedVertex() {
+        if (!modalBoxVisible) {
+            for (int i = 0; i < vertexCoordsX.size(); i++) {
+                float x = Gdx.input.getX();
+                float y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-            if(Math.pow(x-vertexCoordsX.get(i),2)+Math.pow(y-vertexCoordsY.get(i),2)<=vertexSize * vertexSize){
-                return i;
+                if (Math.pow(x - vertexCoordsX.get(i), 2) + Math.pow(y - vertexCoordsY.get(i), 2) <= vertexSize * vertexSize) {
+                    return i;
+                }
             }
+            return -1;
         }
-        return -1;
+        return lastVertexClicked;
     }
 
-    private void placeNewVertex(){
+    private void placeNewVertex() {
 
         if (newVertexClicked && mouseLookValid() && !newEdgeClicked) {
             drawMovingVertex();
@@ -904,40 +884,42 @@ public class Sandbox implements Screen {
 
     }
 
-    private void placeNewEdge(){
+    private void placeNewEdge() {
 
 
         {
-            if (newEdgeClicked   &&  (lastVertexClicked != -1)){
+            if (newEdgeClicked && (lastVertexClicked != -1)) {
 
                 allowVertexMove = false;
 
                 drawMovingEdge(lastVertexClicked);
 
 
-                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !firstVertexClicked){
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !firstVertexClicked) {
                     firstVertexClicked = true;
                     edgeListFrom.add(lastVertexClicked);
 
 
+                } else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked) {
 
-                }
-                else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked){
+                    edgeWeightBox.setVisible(true);
+                    modalBoxVisible = true;
+
                     edgeListTo.add(lastVertexClicked);
                     firstVertexClicked = false;
                     newEdgeClicked = false;
-                    saved = false;
+
+
+
+
+
+
 
 
                 }
 
 
-
-
-
-
-            }
-            else if(newEdgeClicked && firstVertexClicked){
+            } else if (newEdgeClicked && firstVertexClicked) {
                 edgeListFrom.remove(edgeListFrom.size() - 1);
                 firstVertexClicked = false;
                 newEdgeClicked = false;
@@ -946,34 +928,32 @@ public class Sandbox implements Screen {
         }
     }
 
-    private void removeDuplicateEdges(){
-        for(int i = 0; i < edgeListFrom.size();i++){
+    private void removeDuplicateEdges() {
+        for (int i = 0; i < edgeListFrom.size(); i++) {
 
-            if (Objects.equals(edgeListFrom.get(i), edgeListTo.get(i))){  // Same Vertex
+            if (Objects.equals(edgeListFrom.get(i), edgeListTo.get(i))) {  // Same Vertex
                 edgeListFrom.remove(i);
                 edgeListTo.remove(i);
                 i -= 1;
-            }
+            } else {
 
-            else{
-
-                for(int k =0; k < edgeListFrom.size(); k++) {                              //This works. Don't touch it.
+                for (int k = 0; k < edgeListFrom.size(); k++) {                              //This works. Don't touch it.
                     for (int j = k; j < edgeListFrom.size(); j++) {
 
-                         if (k != j  && Objects.equals(edgeListFrom.get(k), edgeListFrom.get(j)) && Objects.equals(edgeListTo.get(k), edgeListTo.get(j))) {
-                             edgeListFrom.remove(j);
-                             edgeListTo.remove(j);
-                             j -= 1;
+                        if (k != j && Objects.equals(edgeListFrom.get(k), edgeListFrom.get(j)) && Objects.equals(edgeListTo.get(k), edgeListTo.get(j))) {
+                            edgeListFrom.remove(j);
+                            edgeListTo.remove(j);
+                            j -= 1;
                         }
 
                     }
                 }
 
 
-                for(int k =0; k < edgeListFrom.size(); k++) {                              //This also works. Don't touch it either.
+                for (int k = 0; k < edgeListFrom.size(); k++) {                              //This also works. Don't touch it either.
                     for (int j = k; j < edgeListFrom.size(); j++) {
 
-                        if (k != j  && Objects.equals(edgeListFrom.get(k), edgeListTo.get(j)) && Objects.equals(edgeListTo.get(k), edgeListFrom.get(j))) {
+                        if (k != j && Objects.equals(edgeListFrom.get(k), edgeListTo.get(j)) && Objects.equals(edgeListTo.get(k), edgeListFrom.get(j))) {
                             edgeListFrom.remove(j);
                             edgeListTo.remove(j);
                             j -= 1;
@@ -986,100 +966,110 @@ public class Sandbox implements Screen {
         }
     }
 
-    private boolean mouseLookValid(){
-        return ((Gdx.input.getX() < Gdx.graphics.getWidth())  && (Gdx.input.getY() < Gdx.graphics.getHeight())  && (Gdx.input.getY() > 0));
+    private boolean mouseLookValid() {
+        return ((Gdx.input.getX() < Gdx.graphics.getWidth()) && (Gdx.input.getY() < Gdx.graphics.getHeight()) && (Gdx.input.getY() > 0));
     }
 
-    private boolean mousePlaceValid(){
-        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f)))  &&  (Gdx.input.getY() < (Gdx.graphics.getHeight() - vertexSize))  && (Gdx.input.getY() > vertexSize));
+    private boolean mousePlaceValid() {
+        return ((Gdx.input.getX() < (Gdx.graphics.getWidth() * (0.985f))) && (Gdx.input.getY() < (Gdx.graphics.getHeight() - vertexSize)) && (Gdx.input.getY() > vertexSize));
     }
 
-    private void binAnimation(){
-        if (!modalBoxVisible && (Gdx.input.getX() >= (Gdx.graphics.getWidth() * (0.955f))) && ((Gdx.graphics.getHeight() - Gdx.input.getY()) <=(200 * (Gdx.graphics.getHeight() / (2700f))))){
+    private void binAnimation() {
+        if (!modalBoxVisible && (Gdx.input.getX() >= (Gdx.graphics.getWidth() * (0.955f))) && ((Gdx.graphics.getHeight() - Gdx.input.getY()) <= (200 * (Gdx.graphics.getHeight() / (2700f))))) {
             binOpen.setVisible(true);
             binClosed.setVisible(false);
-        }
-        else{
+        } else {
             binOpen.setVisible(false);
             binClosed.setVisible(true);
         }
 
 
-
-
     }
 
-    private void clearAll(){
+    private void clearAll() {
         vertexCoordsX.clear();
         vertexCoordsY.clear();
         edgeListFrom.clear();
         edgeListTo.clear();
     }
 
-    private void drawDigraphArrows(){
+    private void drawDigraphArrows() {
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.RED);
 
 
-
-
-
-        for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
+        for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
 
 
             float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
             float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
 
+            float x1 = 0 - vertexSize;
+            float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x2 = 0 + vertexSize;
+            float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x3 = 0;
+            float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            double rotationAngle;
 
+            if (vertexCoordsX.get(edgeListTo.get(i)) < vertexCoordsX.get(edgeListFrom.get(i)))
+                rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+            else
+                rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
+            System.out.println(rotationAngle);
 
-            float x1 = midpointX - vertexSize;
-            float y1 = (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-            float x2 = midpointX + vertexSize;
-            float y2 = (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-            float x3 = midpointX;
-            float y3 = (float)(midpointY + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-            double rotationAngle = (0.5f * Math.PI) +  Math.atan(  (double)(vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))) );
-
-            for (int k=0; k<3; k++){
-
-                System.out.println(rotationAngle);
-
-                x1 = (double)(((x1 * Math.cos(rotationAngle)) - (y1 * Math.sin(rotationAngle)));
-
-            }
-
-
-
-
-
-
-
-            sr.triangle(x1,y1 ,x2 ,y2, x3, y3);
-
-
-
+            sr.identity();
+            sr.translate(midpointX, midpointY, 0);
+            sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
+            sr.triangle(x1, y1, x2, y2, x3, y3);
 
 
         }
 
         sr.end();
-
+        sr.identity();
 
     }
 
 
+    private void drawFloatValues() {
+
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(Color.RED);
 
 
+        for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
 
 
-    //end of new code
+            float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
+            float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
+
+            float x1 = 0 - vertexSize;
+            float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x2 = 0 + vertexSize;
+            float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x3 = 0;
+            float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
 
 
+            double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+            System.out.println(rotationAngle);
+
+            sr.identity();
+            sr.translate(midpointX, midpointY, 0);
+            sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
+            sr.triangle(x1, y1, x2, y2, x3, y3);
 
 
-   
+        }
+
+        sr.end();
+        sr.identity();
+
+    }
 
 
 

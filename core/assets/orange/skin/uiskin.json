@@ -72,6 +72,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: button-maroon,
 		down: button-maroon
 	},
+	maroon-faded: {
+		font: font,
+		fontColor: { a: 1, b: 1, g: 1, r: 1 },
+		downFontColor: {  a: 1, b: 1, g: 1, r: 1 },
+		up: button-maroon-down,
+		down: button-maroon-down
+	},
 	maroon-toggle: {
 		font: font,
 		fontColor: { a: 1, b: 1, g: 1, r: 1 },
