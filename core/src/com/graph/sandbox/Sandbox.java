@@ -776,14 +776,14 @@ public class Sandbox implements Screen {
 //        System.out.println(edgeListFrom);
 //        System.out.println(edgeListTo);
 
-        drawDigraphArrows();
+
 
         drawExistingEdge();
         drawExistingVertex();
 
 
-
         drawDigraphArrows();
+
 
         placeNewVertex();
 
@@ -1022,6 +1022,9 @@ public class Sandbox implements Screen {
         sr.setColor(Color.RED);
 
 
+
+
+
         for(int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()) ;i++) {
 
 
@@ -1029,35 +1032,40 @@ public class Sandbox implements Screen {
             float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
 
 
-//            sr.identity();
-            //  sr.translate(0,0,0);
-//            sr.rotate(0, 0, 1, 0);
 
 
-          //  Matrix4 rotationMatrix = new Matrix4();// insert the rotation matrix
-          //  Matrix4 translationMatrix = new Matrix4();// insert the transformation matrix
+            float x1 = midpointX - vertexSize;
+            float y1 = (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x2 = midpointX + vertexSize;
+            float y2 = (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x3 = midpointX;
+            float y3 = (float)(midpointY + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            double rotationAngle = (0.5f * Math.PI) +  Math.atan(  (double)(vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))) );
 
-           // rotationMatrix.rotate(0,0,1,45);
-            // rotationMatrix.setToRotation(vertexCoordsX.get(edgeListFrom.get(i)),vertexCoordsY.get(edgeListFrom.get(i)),0,vertexCoordsX.get(edgeListTo.get(i)),vertexCoordsY.get(edgeListTo.get(i)),0);
-           // translationMatrix.mulLeft(rotationMatrix);
-            //sr.setProjectionMatrix(translationMatrix);
+            for (int k=0; k<3; k++){
 
-            sr.identity();
-            sr.rotate(0, 0, 1, 90);
-            System.out.println(sr.getProjectionMatrix());
+                System.out.println(rotationAngle);
+
+                x1 = (double)(((x1 * Math.cos(rotationAngle)) - (y1 * Math.sin(rotationAngle)));
+
+            }
 
 
-            sr.triangle(midpointX - vertexSize, (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX + vertexSize, (float)(midpointY - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX, (float)(midpointY + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))));
-   //   check the matrix with the midpoint values
 
-            //  sr.triangle(midpointX - 2*vertexSize, (float)(midpointY -  Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX, (float)(midpointY - Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize))), midpointX - vertexSize, (float)(midpointY));
-            //sr.rect(midpointX,midpointY,vertexSize*4,vertexSize*2);
+
+
+
+
+            sr.triangle(x1,y1 ,x2 ,y2, x3, y3);
+
+
+
+
 
         }
 
         sr.end();
 
-        sr.identity();
 
     }
 
