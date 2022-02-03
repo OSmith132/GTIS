@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,6 +25,10 @@ import java.util.Objects;
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
+
+    SpriteBatch batch = new SpriteBatch();
+    BitmapFont font = new BitmapFont(Gdx.files.internal("font.fnt"));
+    GlyphLayout layout = new GlyphLayout();
 
 
     private boolean newVertexClicked = false;
@@ -612,6 +619,7 @@ public class Sandbox implements Screen {
 
                 edgeWeightBox.setVisible(false);
                 modalBoxVisible = false;
+                edgeWeightInputField.setText("");
 
                 edgeListTo.remove(edgeListTo.size() -1);
                 edgeListFrom.remove(edgeListFrom.size() -1);
@@ -632,12 +640,12 @@ public class Sandbox implements Screen {
 
                 if((Objects.equals(edgeWeightInputField.getText(), ""))) {
                     confirmEdgeWeight.setText("---");
-                    System.out.println(edgeWeightInputField.getText());
+
                 }
 
                 else{
                     try{
-                        Float.parseFloat(edgeWeightInputField.getText());
+                        edgeWeightList.add(Float.parseFloat(edgeWeightInputField.getText()));
 
                         confirmEdgeWeight.setText("Ok");
                         edgeWeightInputField.setText("");
@@ -646,7 +654,7 @@ public class Sandbox implements Screen {
                         modalBoxVisible = false;
                         saved = false;
 
-                        //add weight to list
+
 
 
                     }catch(NumberFormatException e){
@@ -689,13 +697,24 @@ public class Sandbox implements Screen {
         }
 
 
+
     }
+
+
+
+
+
+
+
+
 
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
+
+
 
     @Override
     public void render(float delta) {
@@ -704,11 +723,9 @@ public class Sandbox implements Screen {
 
 
 
-
-        if((Objects.equals(edgeWeightInputField.getText(), ""))) {
+        if((Objects.equals(edgeWeightInputField.getText(), "")))
             confirmEdgeWeight.setText("---");
-            System.out.println(edgeWeightInputField.getText());
-        }
+
 
         else{
             try{
@@ -746,8 +763,6 @@ public class Sandbox implements Screen {
         }
 
 
-        placeNewEdge();
-
 
         if (edgeListFrom.size() == edgeListTo.size()) {
             removeDuplicateEdges();
@@ -757,10 +772,15 @@ public class Sandbox implements Screen {
 //        System.out.println(edgeListTo);
 
 
+        placeNewEdge();
+
+
         drawExistingEdge();
 
         if (graphIsDigraph)
             drawDigraphArrows();
+
+        drawFloatValues();
 
         drawExistingVertex();
 
@@ -900,30 +920,45 @@ public class Sandbox implements Screen {
                     edgeListFrom.add(lastVertexClicked);
 
 
-                } else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked) {
-
-                    edgeWeightBox.setVisible(true);
-                    modalBoxVisible = true;
-
-                    edgeListTo.add(lastVertexClicked);
-                    firstVertexClicked = false;
-                    newEdgeClicked = false;
+                } else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked && (lastVertexClicked != edgeListFrom.get(edgeListFrom.size()-1))) {
+                    boolean notDuplicateEdge = true;
 
 
 
+                    for (int i=0; i < edgeListFrom.size()-1; i++){
+
+                        if (edgeListTo.size() != 0 && (Objects.equals(edgeListFrom.get(edgeListFrom.size() - 1), edgeListFrom.get(i)) && edgeListTo.get(i) == lastVertexClicked)    ||       (Objects.equals(edgeListTo.get(i), edgeListFrom.get(edgeListFrom.size() - 1))   &&   edgeListFrom.get(i) == lastVertexClicked  )     ) {
+                            notDuplicateEdge = false;
+                            break;
+                        }
 
 
+                    }
 
+
+                    if (notDuplicateEdge){
+                        edgeWeightBox.setVisible(true);
+                        modalBoxVisible = true;
+
+                        edgeListTo.add(lastVertexClicked);
+                        firstVertexClicked = false;
+                        newEdgeClicked = false;
+                    }
+                    else {
+                        lastVertexClicked = -1;
+                    }
 
 
                 }
 
 
-            } else if (newEdgeClicked && firstVertexClicked) {
-                edgeListFrom.remove(edgeListFrom.size() - 1);
-                firstVertexClicked = false;
-                newEdgeClicked = false;
-            }
+
+                } else if (newEdgeClicked && firstVertexClicked) {
+                    edgeListFrom.remove(edgeListFrom.size() - 1);
+                    firstVertexClicked = false;
+                    newEdgeClicked = false;
+                }
+
 
         }
     }
@@ -991,6 +1026,7 @@ public class Sandbox implements Screen {
         vertexCoordsY.clear();
         edgeListFrom.clear();
         edgeListTo.clear();
+        edgeWeightList.clear();
     }
 
     private void drawDigraphArrows() {
@@ -1018,7 +1054,7 @@ public class Sandbox implements Screen {
             else
                 rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
-            System.out.println(rotationAngle);
+
 
             sr.identity();
             sr.translate(midpointX, midpointY, 0);
@@ -1034,40 +1070,75 @@ public class Sandbox implements Screen {
     }
 
 
+
+
+
+
     private void drawFloatValues() {
 
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(Color.RED);
+        System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
 
 
-        for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
+        if (edgeWeightList.size() != edgeListFrom.size()  ||  (edgeListTo.size() != edgeListFrom.size())){
 
+            for (int i = 0; (i < edgeListFrom.size()-1); i++) {
 
-            float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
-            float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
+                float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
+                float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
+                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
-            float x1 = 0 - vertexSize;
-            float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-            float x2 = 0 + vertexSize;
-            float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-            float x3 = 0;
-            float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+                Float weight = edgeWeightList.get(i);
+                String weightText;
+                if (weight == Math.round(weight))
+                    weightText = Integer.toString(Math.round(weight));
+                else
+                    weightText = Float.toString(weight);
 
+                layout.setText(font, weightText);
+                float fontWidth = layout.width;
+                float fontHeight = layout.height;
 
-            double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+                batch.begin();
+               // System.out.println(weightText + " " + weight);
+                if (graphIsDigraph)
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 2.25f * fontHeight);
+                else
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 1.5f * fontHeight);
 
-            System.out.println(rotationAngle);
-
-            sr.identity();
-            sr.translate(midpointX, midpointY, 0);
-            sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
-            sr.triangle(x1, y1, x2, y2, x3, y3);
-
+                batch.end();
+            }
 
         }
+        else{
 
-        sr.end();
-        sr.identity();
+            for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
+
+                float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
+                float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
+                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+                Float weight = edgeWeightList.get(i);
+                String weightText;
+                if (weight == Math.round(weight))
+                    weightText = Integer.toString(Math.round(weight));
+                else
+                    weightText = Float.toString(weight);
+
+                layout.setText(font, weightText);
+                float fontWidth = layout.width;
+                float fontHeight = layout.height;
+
+                batch.begin();
+
+                if (graphIsDigraph)
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 2.25f * fontHeight);
+                else
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 1.5f * fontHeight);
+
+                batch.end();
+            }
+
+        }
 
     }
 
@@ -1099,5 +1170,7 @@ public class Sandbox implements Screen {
     public void dispose() {
         stage.dispose();
         sr.dispose();
+        batch.dispose();
     }
+
 }
