@@ -132,6 +132,10 @@ public class Sandbox implements Screen {
             for (Integer listTo : edgeListTo) {
                 file.writeString(listTo + " ", true);
             }
+            file.writeString("\n", true);
+            for (Float Weights : edgeWeightList) {
+                file.writeString(Weights + " ", true);
+            }
 
 
         } else {
@@ -159,6 +163,10 @@ public class Sandbox implements Screen {
             file.writeString("\n", true);
             for (Integer listTo : edgeListTo) {
                 file.writeString(listTo + " ", true);
+            }
+            file.writeString("\n", true);
+            for (Float Weights : edgeWeightList) {
+                file.writeString(Weights + " ", true);
             }
 
 
@@ -212,12 +220,14 @@ public class Sandbox implements Screen {
 
                 if (graphFileArray.length > 3) {
 
+                    String[] edgeFromStringList = graphFileArray[3].split(" ");
+                    Integer[] edgeFromIntegerList = new Integer[edgeFromStringList.length];
 
-                    String[] edgeToStringList = graphFileArray[3].split(" ");
+                    String[] edgeToStringList = graphFileArray[4].split(" ");
                     Integer[] edgeToIntegerList = new Integer[edgeToStringList.length];
 
-                    String[] edgeFromStringList = graphFileArray[4].split(" ");
-                    Integer[] edgeFromIntegerList = new Integer[edgeFromStringList.length];
+                    String[] edgeWeightStringList = graphFileArray[5].split(" ");
+                    Float[] edgeWeightIntegerList = new Float[edgeWeightStringList.length];
 
 
                     for (int i = 0; i < edgeToStringList.length; i++) {
@@ -227,6 +237,9 @@ public class Sandbox implements Screen {
 
                         edgeFromIntegerList[i] = Integer.parseInt(edgeFromStringList[i]);
                         edgeListFrom.add(edgeFromIntegerList[i]);
+
+                        edgeWeightIntegerList[i] = Float.parseFloat(edgeWeightStringList[i]);
+                        edgeWeightList.add(edgeWeightIntegerList[i]);
 
                     }
 
@@ -1069,14 +1082,9 @@ public class Sandbox implements Screen {
 
     }
 
-
-
-
-
-
     private void drawFloatValues() {
 
-        System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
+        //System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
 
 
         if (edgeWeightList.size() != edgeListFrom.size()  ||  (edgeListTo.size() != edgeListFrom.size())){
@@ -1085,7 +1093,22 @@ public class Sandbox implements Screen {
 
                 float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
                 float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
-                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+              //  double rotationAngle =Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+
+                double rotationAngle;
+                if (vertexCoordsX.get(edgeListTo.get(i)) < vertexCoordsX.get(edgeListFrom.get(i)))
+                    rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+                else
+                    rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+
+                float addY = (float)(25 * Math.sin(2*rotationAngle));
+                float addX = (float)(25 * Math.cos(2*rotationAngle));
+
+                System.out.println("rotate angle: " + rotationAngle);
+             //   System.out.println("sin: " + Math.sin(2*rotationAngle));
+               // System.out.println("cos: " + Math.cos(2*rotationAngle));
 
                 Float weight = edgeWeightList.get(i);
                 String weightText;
@@ -1099,11 +1122,10 @@ public class Sandbox implements Screen {
                 float fontHeight = layout.height;
 
                 batch.begin();
-               // System.out.println(weightText + " " + weight);
                 if (graphIsDigraph)
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 2.25f * fontHeight);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 2.25f * fontHeight   +   addY);
                 else
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 1.5f * fontHeight);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 1.5f * fontHeight    +    addY);
 
                 batch.end();
             }
@@ -1115,7 +1137,24 @@ public class Sandbox implements Screen {
 
                 float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
                 float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
-                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+               // double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+                double rotationAngle;
+                if (vertexCoordsX.get(edgeListTo.get(i)) < vertexCoordsX.get(edgeListFrom.get(i)))
+                    rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+                else
+                    rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+
+                float addY = (float)(25 * Math.sin(2*rotationAngle));
+                float addX = (float)(25 * Math.cos(2*rotationAngle));
+
+                System.out.println("rotate angle: " + rotationAngle);
+
+//
+//                float addY = 0;
+//                float addX = 0;
+
 
                 Float weight = edgeWeightList.get(i);
                 String weightText;
@@ -1128,12 +1167,15 @@ public class Sandbox implements Screen {
                 float fontWidth = layout.width;
                 float fontHeight = layout.height;
 
+
+
                 batch.begin();
 
+
                 if (graphIsDigraph)
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 2.25f * fontHeight);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 2.25f * fontHeight    +    addY);
                 else
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth, midpointY + 1.5f * fontHeight);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 1.5f * fontHeight    +    addY);
 
                 batch.end();
             }
