@@ -607,7 +607,7 @@ public class Sandbox implements Screen {
 
 
 
-        edgeWeightBox = new Window(vertexName + " Weight:", buttonSkin, "maroon");
+        edgeWeightBox = new Window(edgeName + " Weight:", buttonSkin, "maroon");
         edgeWeightBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         edgeWeightBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         edgeWeightBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
@@ -812,7 +812,6 @@ public class Sandbox implements Screen {
     }
 
 
-
     private void drawExistingVertex() {
 
 
@@ -933,14 +932,13 @@ public class Sandbox implements Screen {
                     edgeListFrom.add(lastVertexClicked);
 
 
-                } else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked && (lastVertexClicked != edgeListFrom.get(edgeListFrom.size()-1))) {
+                } else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && firstVertexClicked && (lastVertexClicked != edgeListFrom.get(edgeListFrom.size() - 1))) {
                     boolean notDuplicateEdge = true;
 
 
+                    for (int i = 0; i < edgeListFrom.size() - 1; i++) {
 
-                    for (int i=0; i < edgeListFrom.size()-1; i++){
-
-                        if (edgeListTo.size() != 0 && (Objects.equals(edgeListFrom.get(edgeListFrom.size() - 1), edgeListFrom.get(i)) && edgeListTo.get(i) == lastVertexClicked)    ||       (Objects.equals(edgeListTo.get(i), edgeListFrom.get(edgeListFrom.size() - 1))   &&   edgeListFrom.get(i) == lastVertexClicked  )     ) {
+                        if (edgeListTo.size() != 0 && (Objects.equals(edgeListFrom.get(edgeListFrom.size() - 1), edgeListFrom.get(i)) && edgeListTo.get(i) == lastVertexClicked) || (Objects.equals(edgeListTo.get(i), edgeListFrom.get(edgeListFrom.size() - 1)) && edgeListFrom.get(i) == lastVertexClicked)) {
                             notDuplicateEdge = false;
                             break;
                         }
@@ -949,15 +947,14 @@ public class Sandbox implements Screen {
                     }
 
 
-                    if (notDuplicateEdge){
+                    if (notDuplicateEdge) {
                         edgeWeightBox.setVisible(true);
                         modalBoxVisible = true;
 
                         edgeListTo.add(lastVertexClicked);
                         firstVertexClicked = false;
                         newEdgeClicked = false;
-                    }
-                    else {
+                    } else {
                         lastVertexClicked = -1;
                     }
 
@@ -965,12 +962,11 @@ public class Sandbox implements Screen {
                 }
 
 
-
-                } else if (newEdgeClicked && firstVertexClicked) {
-                    edgeListFrom.remove(edgeListFrom.size() - 1);
-                    firstVertexClicked = false;
-                    newEdgeClicked = false;
-                }
+            } else if (newEdgeClicked && firstVertexClicked) {
+                edgeListFrom.remove(edgeListFrom.size() - 1);
+                firstVertexClicked = false;
+                newEdgeClicked = false;
+            }
 
 
         }
@@ -1068,7 +1064,6 @@ public class Sandbox implements Screen {
                 rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
 
-
             sr.identity();
             sr.translate(midpointX, midpointY, 0);
             sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
@@ -1087,28 +1082,19 @@ public class Sandbox implements Screen {
         //System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
 
 
-        if (edgeWeightList.size() != edgeListFrom.size()  ||  (edgeListTo.size() != edgeListFrom.size())){
+        if (edgeWeightList.size() != edgeListFrom.size() || (edgeListTo.size() != edgeListFrom.size())) {
 
-            for (int i = 0; (i < edgeListFrom.size()-1); i++) {
+            for (int i = 0; (i < edgeListFrom.size() - 1); i++) {
 
                 float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
                 float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
-              //  double rotationAngle =Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+
+                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
 
-                double rotationAngle;
-                if (vertexCoordsX.get(edgeListTo.get(i)) < vertexCoordsX.get(edgeListFrom.get(i)))
-                    rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
-                else
-                    rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+                float addY = (float) (2 * vertexSize * Math.sin(rotationAngle));
+                float addX = (float) (2 * vertexSize * Math.cos(rotationAngle));
 
-
-                float addY = (float)(25 * Math.sin(2*rotationAngle));
-                float addX = (float)(25 * Math.cos(2*rotationAngle));
-
-                System.out.println("rotate angle: " + rotationAngle);
-             //   System.out.println("sin: " + Math.sin(2*rotationAngle));
-               // System.out.println("cos: " + Math.cos(2*rotationAngle));
 
                 Float weight = edgeWeightList.get(i);
                 String weightText;
@@ -1123,37 +1109,25 @@ public class Sandbox implements Screen {
 
                 batch.begin();
                 if (graphIsDigraph)
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 2.25f * fontHeight   +   addY);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth + addX, midpointY + 0.5f * fontHeight + addY);
                 else
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 1.5f * fontHeight    +    addY);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth + 0.75f * addX, midpointY + 0.5f * fontHeight + 0.75f * addY);
 
                 batch.end();
             }
 
-        }
-        else{
+        } else {
 
             for (int i = 0; (i < edgeListFrom.size()) && (i < edgeListTo.size()); i++) {
 
                 float midpointX = (vertexCoordsX.get(edgeListFrom.get(i)) + vertexCoordsX.get(edgeListTo.get(i))) * 0.5f;
                 float midpointY = (vertexCoordsY.get(edgeListFrom.get(i)) + vertexCoordsY.get(edgeListTo.get(i))) * 0.5f;
-               // double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
-                double rotationAngle;
-                if (vertexCoordsX.get(edgeListTo.get(i)) < vertexCoordsX.get(edgeListFrom.get(i)))
-                    rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
-                else
-                    rotationAngle = -(0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
+                double rotationAngle = (0.5f * Math.PI) + Math.atan((double) (vertexCoordsY.get(edgeListTo.get(i)) - vertexCoordsY.get(edgeListFrom.get(i))) / (vertexCoordsX.get(edgeListTo.get(i)) - vertexCoordsX.get(edgeListFrom.get(i))));
 
 
-                float addY = (float)(25 * Math.sin(2*rotationAngle));
-                float addX = (float)(25 * Math.cos(2*rotationAngle));
-
-                System.out.println("rotate angle: " + rotationAngle);
-
-//
-//                float addY = 0;
-//                float addX = 0;
+                float addY = (float) (2 * vertexSize * Math.sin(rotationAngle));
+                float addX = (float) (2 * vertexSize * Math.cos(rotationAngle));
 
 
                 Float weight = edgeWeightList.get(i);
@@ -1168,14 +1142,12 @@ public class Sandbox implements Screen {
                 float fontHeight = layout.height;
 
 
-
                 batch.begin();
 
-
                 if (graphIsDigraph)
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 2.25f * fontHeight    +    addY);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth + addX, midpointY + 0.5f * fontHeight + addY);
                 else
-                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth    +    addX, midpointY + 1.5f * fontHeight    +    addY);
+                    font.draw(batch, weightText, midpointX - 0.5f * fontWidth + 0.75f * addX, midpointY + 0.5f * fontHeight + 0.75f * addY);
 
                 batch.end();
             }
@@ -1183,9 +1155,6 @@ public class Sandbox implements Screen {
         }
 
     }
-
-
-
 
 
     @Override
