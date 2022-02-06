@@ -28,6 +28,7 @@ public class Sandbox implements Screen {
 
     SpriteBatch batch = new SpriteBatch();
     BitmapFont font = new BitmapFont(Gdx.files.internal("font.fnt"));
+    BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("whiteFont.fnt"));
     GlyphLayout layout = new GlyphLayout();
 
 
@@ -150,15 +151,15 @@ public class Sandbox implements Screen {
 
 
             for (Integer coordsX : vertexCoordsX) {
-                file.writeString(coordsX + " ", true);
+                file.writeString((((float) coordsX / resolutionW) * 1600) + " ", true);
             }
             file.writeString("\n", true);
-            for (Integer integer : vertexCoordsY) {
-                file.writeString(integer + " ", true);
+            for (Integer coordsY : vertexCoordsY) {
+                file.writeString((((float) coordsY / resolutionH) * 900) + " ", true);
             }
             file.writeString("\n", true);
-            for (Integer integer : edgeListFrom) {
-                file.writeString(integer + " ", true);
+            for (Integer listFrom : edgeListFrom) {
+                file.writeString(listFrom + " ", true);
             }
             file.writeString("\n", true);
             for (Integer listTo : edgeListTo) {
@@ -374,6 +375,55 @@ public class Sandbox implements Screen {
         });
 
 
+
+        
+        
+        
+        
+        
+
+
+
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
         // savedLabel initialized above
         savedLabel.setPosition(Gdx.graphics.getWidth() * (0.2f) + 10, 5);
         stage.addActor(savedLabel);
@@ -428,9 +478,9 @@ public class Sandbox implements Screen {
 
 
         final TextButton saveButton = new TextButton(("Save"), buttonSkin, "maroon");
-        saveButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        saveButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         saveButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
-        saveButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
+        saveButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.27f)));
         stage.addActor(saveButton);
 
         saveButton.addListener(new ClickListener() {
@@ -452,9 +502,9 @@ public class Sandbox implements Screen {
 
 
         final TextButton saveAsButton = new TextButton(("Save As"), buttonSkin, "maroon");
-        saveAsButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        saveAsButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         saveAsButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
-        saveAsButton.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.16f)));
+        saveAsButton.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.27f)));
         stage.addActor(saveAsButton);
 
         saveAsButton.addListener(new ClickListener() {
@@ -527,6 +577,120 @@ public class Sandbox implements Screen {
         saveBox.setVisible(false);
 
 
+
+
+
+
+
+
+
+        final Window algorithmsBox = new Window("You will need to the save the graph first", buttonSkin, "maroon");
+        algorithmsBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        algorithmsBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        algorithmsBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        algorithmsBox.setModal(true);
+        algorithmsBox.setMovable(false);
+        algorithmsBox.getTitleLabel().setAlignment(1);
+
+
+        TextButton noExitButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        algorithmsBox.add(noExitButton).height(Value.percentHeight(0.35f, algorithmsBox)).width(Value.percentWidth(0.3f, algorithmsBox)).pad(Value.percentWidth(0.01f, algorithmsBox));
+        noExitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                algorithmsBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+        TextButton exitButton = new TextButton(("Save"), buttonSkin, "maroon");
+        algorithmsBox.add(exitButton).height(Value.percentHeight(0.35f, algorithmsBox)).width(Value.percentWidth(0.3f, algorithmsBox)).pad(Value.percentWidth(0.01f, algorithmsBox));
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                if (firstTimeSave) {
+                    saveAsBox.setVisible(true);
+                    algorithmsBox.setVisible(false);
+                } else {
+                    save(graphIsDigraph, currentGraphName, false);
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
+                }
+
+                saved = true;
+
+
+
+            }
+        });
+
+        algorithmsBox.align(Align.center);
+        stage.addActor(algorithmsBox);
+        algorithmsBox.setVisible(false);
+
+
+
+
+
+
+
+        final TextButton AlgorithmExecutor = new TextButton(("Run Algorithms"), buttonSkin, "maroon");
+        AlgorithmExecutor.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        AlgorithmExecutor.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        AlgorithmExecutor.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
+        stage.addActor(AlgorithmExecutor);
+
+        AlgorithmExecutor.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                if (saved && !firstTimeSave) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
+                } else {
+
+                    algorithmsBox.setVisible(true);
+                    modalBoxVisible = true;
+
+
+                }
+
+
+
+            }
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         final TextButton mainMenu = new TextButton(("Main Menu"), buttonSkin, "maroon");
         mainMenu.setHeight(Gdx.graphics.getHeight() * (0.1f));
         mainMenu.setWidth(Gdx.graphics.getWidth() * (0.1725f));
@@ -571,6 +735,7 @@ public class Sandbox implements Screen {
                 newEdge.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
+                AlgorithmExecutor.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
 
             }
@@ -591,6 +756,7 @@ public class Sandbox implements Screen {
                 newEdge.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
+                AlgorithmExecutor.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
             }
         });
@@ -706,6 +872,7 @@ public class Sandbox implements Screen {
             newEdge.setTouchable(Touchable.disabled);
             saveButton.setTouchable(Touchable.disabled);
             saveAsButton.setTouchable(Touchable.disabled);
+            AlgorithmExecutor.setTouchable(Touchable.disabled);
             mainMenu.setTouchable(Touchable.disabled);
         }
 
@@ -735,6 +902,8 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.N))
+            newVertexClicked = true;
 
         if((Objects.equals(edgeWeightInputField.getText(), "")))
             confirmEdgeWeight.setText("---");
@@ -770,8 +939,12 @@ public class Sandbox implements Screen {
 
 
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && (lastVertexClicked != -1) && !newEdgeClicked && allowVertexMove) {
+
             vertexCoordsX.set(lastVertexClicked, Gdx.input.getX());
             vertexCoordsY.set(lastVertexClicked, (Gdx.graphics.getHeight() - Gdx.input.getY()));
+
+
+
             saved = false;
         }
 
@@ -787,11 +960,12 @@ public class Sandbox implements Screen {
 
         placeNewEdge();
 
-
         drawExistingEdge();
+
 
         if (graphIsDigraph)
             drawDigraphArrows();
+
 
         drawFloatValues();
 
@@ -814,17 +988,46 @@ public class Sandbox implements Screen {
 
     private void drawExistingVertex() {
 
-
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(0.07f, 0.07f, 0.07f, 1);
-
-
         for (int i = 0; i < vertexCoordsX.size(); i++) {
 
-            sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+            if (i != lastVertexClicked) {
+                sr.begin(ShapeRenderer.ShapeType.Filled);
+                sr.setColor(0.07f, 0.07f, 0.07f, 1);
+                sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+                sr.end();
+
+                String letter = String.valueOf((char)(65+i));
+
+
+                layout.setText(whiteFont, letter);   // add label here
+                float fontWidth = layout.width;
+                float fontHeight = layout.height;
+                batch.begin();
+                whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+                batch.end();
+            }
         }
-        sr.end();
-    }
+
+        if (lastVertexClicked != -1) {
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.setColor(0.07f, 0.07f, 0.07f, 1);
+            sr.circle(vertexCoordsX.get(lastVertexClicked), vertexCoordsY.get(lastVertexClicked), vertexSize);
+            sr.end();
+
+            String letter = String.valueOf((char)(65+lastVertexClicked));
+
+            layout.setText(whiteFont, letter);   // add label here
+            float fontWidth = layout.width;
+            float fontHeight = layout.height;
+            batch.begin();
+            whiteFont.draw(batch, letter, vertexCoordsX.get(lastVertexClicked) - 0.5f * fontWidth, vertexCoordsY.get(lastVertexClicked) + 0.5f * fontHeight);
+            batch.end();
+
+        }
+
+
+
+    }  //letter in here
 
     private void drawExistingEdge() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -862,11 +1065,20 @@ public class Sandbox implements Screen {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.BLACK);
 
-
         sr.circle(Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize);
 
         sr.end();
-    }
+
+        String letter = String.valueOf((char)(65+vertexCoordsX.size()));
+
+
+        layout.setText(whiteFont, letter);   // add label here
+        float fontWidth = layout.width;
+        float fontHeight = layout.height;
+        batch.begin();
+        whiteFont.draw(batch, letter, Gdx.input.getX() - 0.5f * fontWidth, (Gdx.graphics.getHeight() - Gdx.input.getY()) + 0.5f * fontHeight);
+        batch.end();
+    }  //letter in here
 
     private void drawMovingEdge(int vertex) {
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -903,8 +1115,10 @@ public class Sandbox implements Screen {
 
                 if (Gdx.input.getX() > (Gdx.graphics.getWidth() * (0.215f)) && mousePlaceValid()) {
                     newVertexClicked = false;
+
                     vertexCoordsX.add(Gdx.input.getX());
                     vertexCoordsY.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+
                     saved = false;
                 }
 
@@ -1103,9 +1317,11 @@ public class Sandbox implements Screen {
                 else
                     weightText = Float.toString(weight);
 
+
                 layout.setText(font, weightText);
                 float fontWidth = layout.width;
                 float fontHeight = layout.height;
+
 
                 batch.begin();
                 if (graphIsDigraph)
@@ -1149,12 +1365,19 @@ public class Sandbox implements Screen {
                 else
                     font.draw(batch, weightText, midpointX - 0.5f * fontWidth + 0.75f * addX, midpointY + 0.5f * fontHeight + 0.75f * addY);
 
+                whiteFont.draw(batch, "A", vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+
                 batch.end();
             }
 
         }
 
     }
+
+
+
+
+
 
 
     @Override

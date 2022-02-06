@@ -285,8 +285,8 @@ public class MainMenu implements Screen {
         openGraphButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //Here Goes the code for opening a file
-                errorText.setVisible(true);
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor((String) openGraphList.getSelected()));
             }
         });
 
