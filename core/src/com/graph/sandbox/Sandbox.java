@@ -263,10 +263,14 @@ public class Sandbox implements Screen {
 
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
+            font.getData().setScale(0.5f,0.5f);
+            whiteFont.getData().setScale(0.5f,0.5f);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
+            font.getData().setScale(5f/3f,5f/3f);
+            whiteFont.getData().setScale(5f/3f,5f/3f);
         }
 
 
@@ -902,8 +906,11 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.N))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.V) && !newEdgeClicked)
             newVertexClicked = true;
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !newVertexClicked)
+            newEdgeClicked = true;
 
         if((Objects.equals(edgeWeightInputField.getText(), "")))
             confirmEdgeWeight.setText("---");
@@ -996,8 +1003,8 @@ public class Sandbox implements Screen {
                 sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
                 sr.end();
 
-                String letter = String.valueOf((char)(65+i));
-
+                String letter = String.valueOf(i);
+                //letter = String.valueOf((char)(65+i));
 
                 layout.setText(whiteFont, letter);   // add label here
                 float fontWidth = layout.width;
@@ -1014,7 +1021,9 @@ public class Sandbox implements Screen {
             sr.circle(vertexCoordsX.get(lastVertexClicked), vertexCoordsY.get(lastVertexClicked), vertexSize);
             sr.end();
 
-            String letter = String.valueOf((char)(65+lastVertexClicked));
+
+            String letter = String.valueOf(lastVertexClicked);
+            //letter = String.valueOf((char)(65+lastVertexClicked));
 
             layout.setText(whiteFont, letter);   // add label here
             float fontWidth = layout.width;
@@ -1069,8 +1078,9 @@ public class Sandbox implements Screen {
 
         sr.end();
 
-        String letter = String.valueOf((char)(65+vertexCoordsX.size()));
 
+        String letter = String.valueOf(vertexCoordsX.size());
+        //letter = String.valueOf((char)(65+vertexCoordsX.size()));
 
         layout.setText(whiteFont, letter);   // add label here
         float fontWidth = layout.width;
