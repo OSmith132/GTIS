@@ -87,11 +87,25 @@ public class Sandbox implements Screen {
         if (file.exists()) {
 
 
-            if ((graph_name.charAt(graph_name.length() - 3)) == '(') {
-                graph_name = graph_name.substring(0, graph_name.length() - 3) + "(" + i + ")";
+
+            System.out.println((int)Math.floor((i/10f)));
+            if ((graph_name.charAt(graph_name.length() - 1)) == ')') {
+
+                String[] parts = graph_name.split("\\(" );
+                String[] intPart = parts[parts.length-1].split("\\)");
+                System.out.println(intPart[0]);
+                System.out.println(Integer.parseInt(intPart[0]));
+                graph_name = graph_name.substring(0, graph_name.length() -( 3 +    (int)Math.floor(       (Integer.parseInt(intPart[0]))/10f)        )        ) + "(" + i + ")";
+
+
+
             } else {
                 graph_name += "(" + i + ")";
             }
+
+
+
+
 
             return (existingFileNameChanger(graph_name, i + 1));
 
@@ -187,7 +201,7 @@ public class Sandbox implements Screen {
 
         else {
 
-            saved = false;
+            saved = true;
             currentGraphName = graph_name.substring(0, graph_name.length() - 6);
 
             FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".graph");  //  maybe change back to graph_name
@@ -640,13 +654,13 @@ public class Sandbox implements Screen {
 
 
 
-        final TextButton AlgorithmExecutor = new TextButton(("Run Algorithms"), buttonSkin, "maroon");
-        AlgorithmExecutor.setHeight(Gdx.graphics.getHeight() * (0.09f));
-        AlgorithmExecutor.setWidth(Gdx.graphics.getWidth() * (0.1725f));
-        AlgorithmExecutor.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
-        stage.addActor(AlgorithmExecutor);
+        final TextButton algorithmExecutor = new TextButton(("Run Algorithms"), buttonSkin, "maroon");
+        algorithmExecutor.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        algorithmExecutor.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        algorithmExecutor.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
+        stage.addActor(algorithmExecutor);
 
-        AlgorithmExecutor.addListener(new ClickListener() {
+        algorithmExecutor.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -739,7 +753,7 @@ public class Sandbox implements Screen {
                 newEdge.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
-                AlgorithmExecutor.setTouchable(Touchable.enabled);
+                algorithmExecutor.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
 
             }
@@ -760,7 +774,7 @@ public class Sandbox implements Screen {
                 newEdge.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
-                AlgorithmExecutor.setTouchable(Touchable.enabled);
+                algorithmExecutor.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
             }
         });
@@ -828,15 +842,17 @@ public class Sandbox implements Screen {
 
                 else{
                     try{
-                        edgeWeightList.add(Float.parseFloat(edgeWeightInputField.getText()));
 
-                        confirmEdgeWeight.setText("Ok");
-                        edgeWeightInputField.setText("");
+                        if (Float.parseFloat(edgeWeightInputField.getText()) > 0) {
 
-                        edgeWeightBox.setVisible(false);
-                        modalBoxVisible = false;
-                        saved = false;
+                            edgeWeightList.add(Float.parseFloat(edgeWeightInputField.getText()));
+                            confirmEdgeWeight.setText("Ok");
+                            edgeWeightInputField.setText("");
 
+                            edgeWeightBox.setVisible(false);
+                            modalBoxVisible = false;
+                            saved = false;
+                        }
 
 
 
@@ -876,7 +892,7 @@ public class Sandbox implements Screen {
             newEdge.setTouchable(Touchable.disabled);
             saveButton.setTouchable(Touchable.disabled);
             saveAsButton.setTouchable(Touchable.disabled);
-            AlgorithmExecutor.setTouchable(Touchable.disabled);
+            algorithmExecutor.setTouchable(Touchable.disabled);
             mainMenu.setTouchable(Touchable.disabled);
         }
 
@@ -906,11 +922,20 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.V) && !newEdgeClicked)
+        if(Gdx.input.isKeyJustPressed(Input.Keys.V) && !modalBoxVisible){
+            newEdgeClicked = false;
             newVertexClicked = true;
+        }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !newVertexClicked)
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !modalBoxVisible) {
+            newVertexClicked = false;
+            lastVertexClicked = -1;
+            edgeWeightInputField.setText("");
             newEdgeClicked = true;
+        }
+
+
+
 
         if((Objects.equals(edgeWeightInputField.getText(), "")))
             confirmEdgeWeight.setText("---");
@@ -918,8 +943,10 @@ public class Sandbox implements Screen {
 
         else{
             try{
-                Float.parseFloat(edgeWeightInputField.getText());
-                confirmEdgeWeight.setText("Ok");
+                if (Float.parseFloat(edgeWeightInputField.getText()) > 0)
+                    confirmEdgeWeight.setText("Ok");
+                else
+                    confirmEdgeWeight.setText("---");
             }catch(NumberFormatException e){
                 confirmEdgeWeight.setText("---");
             }
@@ -949,8 +976,6 @@ public class Sandbox implements Screen {
 
             vertexCoordsX.set(lastVertexClicked, Gdx.input.getX());
             vertexCoordsY.set(lastVertexClicked, (Gdx.graphics.getHeight() - Gdx.input.getY()));
-
-
 
             saved = false;
         }
@@ -983,7 +1008,7 @@ public class Sandbox implements Screen {
         binAnimation();
 
 
-        savedLabel.setVisible(saved && !firstTimeSave);
+        savedLabel.setVisible(saved && !firstTimeSave && vertexCoordsX.size() != 0);
 
         stage.draw();
         stage.act();
@@ -1095,6 +1120,33 @@ public class Sandbox implements Screen {
         sr.setColor(Color.RED);
 
         sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)), Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize / 3);
+
+
+        float midpointX = (vertexCoordsX.get(vertex) + Gdx.input.getX()) * 0.5f;
+        float midpointY = (vertexCoordsY.get(vertex) + (Gdx.graphics.getHeight() - Gdx.input.getY())) * 0.5f;
+
+        float x1 = 0 - vertexSize;
+        float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+        float x2 = 0 + vertexSize;
+        float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+        float x3 = 0;
+        float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+        double rotationAngle;
+
+        if (Gdx.input.getX() < vertexCoordsX.get(vertex))
+            rotationAngle = (0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
+        else
+            rotationAngle = -(0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
+
+
+        sr.identity();
+        sr.translate(midpointX, midpointY, 0);
+        sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
+        sr.triangle(x1, y1, x2, y2, x3, y3);
+
+
+        sr.end();
+        sr.identity();
 
 
         sr.end();
@@ -1375,7 +1427,7 @@ public class Sandbox implements Screen {
                 else
                     font.draw(batch, weightText, midpointX - 0.5f * fontWidth + 0.75f * addX, midpointY + 0.5f * fontHeight + 0.75f * addY);
 
-                whiteFont.draw(batch, "A", vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+
 
                 batch.end();
             }

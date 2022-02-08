@@ -27,6 +27,7 @@ public class AlgorithmExecutor implements Screen {
 
     SpriteBatch batch = new SpriteBatch();
     BitmapFont font = new BitmapFont(Gdx.files.internal("font.fnt"));
+    BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("whiteFont.fnt"));
     GlyphLayout layout = new GlyphLayout();
 
     private boolean modalBoxVisible;
@@ -134,22 +135,65 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-
-
-
-
-
-
-
-
-
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
         Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
         Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
         Rectangle.setPosition(0, -1);
         stage.addActor(Rectangle);
+
+
+
+
+
+
+        final TextButton sandboxButton = new TextButton(("Edit Graph"), buttonSkin, "maroon");
+        sandboxButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        sandboxButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        sandboxButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.16f)));
+        stage.addActor(sandboxButton);
+
+        sandboxButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox(currentGraphName + ".graph",false));
+
+            }
+
+
+        });
+
 
 
 
@@ -251,15 +295,30 @@ public class AlgorithmExecutor implements Screen {
     private void drawExistingVertex() {
 
 
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(0.07f, 0.07f, 0.07f, 1);
+
 
 
         for (int i = 0; i < vertexCoordsX.size(); i++) {
-
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.setColor(0.07f, 0.07f, 0.07f, 1);
             sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+            sr.end();
+
+
+            String letter = String.valueOf(i);
+            //letter = String.valueOf((char)(65+i));
+
+            layout.setText(whiteFont, letter);   // add label here
+            float fontWidth = layout.width;
+            float fontHeight = layout.height;
+            batch.begin();
+            whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+            batch.end();
+
         }
-        sr.end();
+
+
+
     }
 
     private void drawExistingEdge() {
