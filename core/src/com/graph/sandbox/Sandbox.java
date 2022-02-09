@@ -394,21 +394,82 @@ public class Sandbox implements Screen {
 
 
 
-        
-        
-        
-        
-        
 
 
 
 
 
 
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+        final Window populateVertexBox = new Window("Populate Vertex", buttonSkin, "maroon");
+        populateVertexBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        populateVertexBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        populateVertexBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        populateVertexBox.setModal(true);
+        populateVertexBox.setMovable(false);
+        populateVertexBox.getTitleLabel().setAlignment(1);
+        populateVertexBox.setVisible(false);
+        stage.addActor(populateVertexBox);
+
+
+        final TextField populateVInputField = new TextField(currentGraphName, buttonSkin);
+        populateVertexBox.add(populateVInputField).height(Value.percentHeight(0.3f, populateVertexBox)).width(Value.percentWidth(0.7f, populateVertexBox)).colspan(2);
+
+
+        populateVertexBox.row();
+
+        TextButton cancelVPopulate = new TextButton(("Cancel"), buttonSkin, "maroon");
+        populateVertexBox.add(cancelVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox)).padTop(Value.percentWidth(0.05f, populateVertexBox));
+        cancelVPopulate.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                populateVertexBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+        TextButton confirmVPopulate = new TextButton(("Ok"), buttonSkin, "maroon");
+        populateVertexBox.add(confirmVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox)).padTop(Value.percentWidth(0.05f, populateVertexBox));
+        confirmVPopulate.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+               //do stuff
+
+                populateVertexBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+        final TextButton populateVertexButton = new TextButton(("Populate Vertex"), buttonSkin, "maroon");
+        populateVertexButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        populateVertexButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
+        populateVertexButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.73f)));
+        stage.addActor(populateVertexButton);
+
+        populateVertexButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                //do stuff
+
+                populateVertexBox.setVisible(true);
+                modalBoxVisible = true;
+            }
+        });
         
         
         

@@ -2,4 +2,4 @@
 windowed
 vertex
 edge
-medium
+small

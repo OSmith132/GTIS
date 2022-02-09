@@ -158,19 +158,34 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-
-
-
-
-
-
-
-
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
         Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
         Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
         Rectangle.setPosition(0, -1);
         stage.addActor(Rectangle);
+
+
+
+
+
+
+
+
+        final TextButton dijkstraButton = new TextButton(("Dijkstra's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
+        dijkstraButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        dijkstraButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        dijkstraButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
+        stage.addActor(dijkstraButton);
+
+        dijkstraButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                //Run Dijkstra's
+
+            }
+        });
+
 
 
 
