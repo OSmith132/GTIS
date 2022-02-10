@@ -69,6 +69,13 @@ public class Sandbox implements Screen {
     Image binOpen = new Image(new Texture(Gdx.files.internal("binOpen.png")));
     Image binClosed = new Image(new Texture(Gdx.files.internal("binClosed.png")));
 
+
+
+    Window populateVertexBox;
+    TextField populateVInputField;
+    Slider vPopSlider;
+
+
     TextButton confirmEdgeWeight;
     final TextField edgeWeightInputField;
     final Window edgeWeightBox;
@@ -410,8 +417,12 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
         final Window populateVertexBox = new Window("Populate Vertex", buttonSkin, "maroon");
-        populateVertexBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        populateVertexBox.setHeight(Gdx.graphics.getHeight() * (0.2f));
         populateVertexBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         populateVertexBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
         populateVertexBox.setModal(true);
@@ -421,14 +432,33 @@ public class Sandbox implements Screen {
         stage.addActor(populateVertexBox);
 
 
-        final TextField populateVInputField = new TextField(currentGraphName, buttonSkin);
-        populateVertexBox.add(populateVInputField).height(Value.percentHeight(0.3f, populateVertexBox)).width(Value.percentWidth(0.7f, populateVertexBox)).colspan(2);
 
+
+
+        populateVInputField = new TextField("50", buttonSkin,"spinner");
+        populateVInputField.setAlignment(1);
+
+
+        Button plusButton = new Button(buttonSkin,"spinner-plus");
+        plusButton.add(populateVInputField).height(Value.percentHeight(0.25f, populateVertexBox)).width(Value.percentWidth(0.3f, populateVertexBox)).colspan(2);//.padTop(Value.percentWidth(0.01f, populateVertexBox));
+
+
+        populateVertexBox.add(plusButton).height(Value.percentHeight(0.25f, populateVertexBox)).width(Value.percentWidth(0.25f, populateVertexBox)).colspan(2).padTop(Value.percentWidth(0.01f, populateVertexBox));
 
         populateVertexBox.row();
 
+        vPopSlider = new Slider(1,100,1,false,buttonSkin);
+        vPopSlider.setValue(50);
+        populateVertexBox.add(vPopSlider).height(Value.percentHeight(0.1f, populateVertexBox)).width(Value.percentWidth(0.7f, populateVertexBox)).colspan(2).pad(Value.percentWidth(0.02f, populateVertexBox));
+
+        populateVertexBox.row();
+
+
+
+
+
         TextButton cancelVPopulate = new TextButton(("Cancel"), buttonSkin, "maroon");
-        populateVertexBox.add(cancelVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox)).padTop(Value.percentWidth(0.05f, populateVertexBox));
+        populateVertexBox.add(cancelVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox));
         cancelVPopulate.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -439,7 +469,7 @@ public class Sandbox implements Screen {
         });
 
         TextButton confirmVPopulate = new TextButton(("Ok"), buttonSkin, "maroon");
-        populateVertexBox.add(confirmVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox)).padTop(Value.percentWidth(0.05f, populateVertexBox));
+        populateVertexBox.add(confirmVPopulate).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.35f, populateVertexBox)).pad(Value.percentWidth(0.025f, populateVertexBox));
         confirmVPopulate.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -453,7 +483,7 @@ public class Sandbox implements Screen {
         });
 
 
-        final TextButton populateVertexButton = new TextButton(("Populate Vertex"), buttonSkin, "maroon");
+        final TextButton populateVertexButton = new TextButton(("V-Populate"), buttonSkin, "maroon");
         populateVertexButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         populateVertexButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
         populateVertexButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.73f)));
@@ -470,22 +500,27 @@ public class Sandbox implements Screen {
                 modalBoxVisible = true;
             }
         });
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         
         
@@ -1012,6 +1047,14 @@ public class Sandbox implements Screen {
                 confirmEdgeWeight.setText("---");
             }
 
+        }
+
+
+
+
+
+        if(populateVInputField.isVisible() && (int)vPopSlider.getValue() != Integer.parseInt(populateVInputField.getText())) {
+            populateVInputField.setText(String.valueOf((int) vPopSlider.getValue()));
         }
 
 
