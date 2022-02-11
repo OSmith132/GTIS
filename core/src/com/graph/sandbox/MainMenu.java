@@ -571,7 +571,7 @@ public class MainMenu implements Screen {
 
             vertexSizeSlider.addListener(new ClickListener() {
                 @Override
-                public void clicked(InputEvent event, float x, float y) {
+                public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
                     if (vertexSizeSlider.getValue() == 0){
                         vertexSizeLabel.setText("Vertex Size:  small");
@@ -586,6 +586,21 @@ public class MainMenu implements Screen {
 
                 }
                                          });
+
+
+
+//
+//            vPopSlider = new Slider(1,100,1,false,buttonSkin);
+//            vPopSlider.setValue(50);
+//
+//            vPopSlider.addListener(new ClickListener() {
+//                @Override
+//                public void touchDragged(InputEvent event, float x, float y, int pointer) {
+//
+//                    populateVInputField.setText(String.valueOf((int) vPopSlider.getValue()));
+//
+//                }
+//            });
 
 
 

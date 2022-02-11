@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
+
+
 public class Sandbox implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer sr = new ShapeRenderer();
@@ -44,6 +46,8 @@ public class Sandbox implements Screen {
 
     private boolean graphIsDigraph;
     private boolean firstTimeSave;
+
+    private boolean showVertexNumbers = false;
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -439,16 +443,25 @@ public class Sandbox implements Screen {
         populateVInputField.setAlignment(1);
 
 
-        Button plusButton = new Button(buttonSkin,"spinner-plus");
-        plusButton.add(populateVInputField).height(Value.percentHeight(0.25f, populateVertexBox)).width(Value.percentWidth(0.3f, populateVertexBox)).colspan(2);//.padTop(Value.percentWidth(0.01f, populateVertexBox));
-
-
-        populateVertexBox.add(plusButton).height(Value.percentHeight(0.25f, populateVertexBox)).width(Value.percentWidth(0.25f, populateVertexBox)).colspan(2).padTop(Value.percentWidth(0.01f, populateVertexBox));
+        populateVertexBox.add(populateVInputField).height(Value.percentHeight(0.2f, populateVertexBox)).width(Value.percentWidth(0.2f, populateVertexBox)).colspan(2).padTop(Value.percentWidth(0.01f, populateVertexBox));
 
         populateVertexBox.row();
 
         vPopSlider = new Slider(1,100,1,false,buttonSkin);
         vPopSlider.setValue(50);
+
+        vPopSlider.addListener(new ClickListener() {
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+
+                populateVInputField.setText(String.valueOf((int) vPopSlider.getValue()));
+
+            }
+        });
+
+
+
+
         populateVertexBox.add(vPopSlider).height(Value.percentHeight(0.1f, populateVertexBox)).width(Value.percentWidth(0.7f, populateVertexBox)).colspan(2).pad(Value.percentWidth(0.02f, populateVertexBox));
 
         populateVertexBox.row();
@@ -475,7 +488,7 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-               //do stuff
+               populateVertex((int)vPopSlider.getValue());
 
                 populateVertexBox.setVisible(false);
                 modalBoxVisible = false;
@@ -1018,12 +1031,12 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.V) && !modalBoxVisible){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V) && !modalBoxVisible) {
             newEdgeClicked = false;
             newVertexClicked = true;
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !modalBoxVisible) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E) && !modalBoxVisible) {
             newVertexClicked = false;
             lastVertexClicked = -1;
             edgeWeightInputField.setText("");
@@ -1031,19 +1044,17 @@ public class Sandbox implements Screen {
         }
 
 
-
-
-        if((Objects.equals(edgeWeightInputField.getText(), "")))
+        if ((Objects.equals(edgeWeightInputField.getText(), "")))
             confirmEdgeWeight.setText("---");
 
 
-        else{
-            try{
+        else {
+            try {
                 if (Float.parseFloat(edgeWeightInputField.getText()) > 0)
                     confirmEdgeWeight.setText("Ok");
                 else
                     confirmEdgeWeight.setText("---");
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 confirmEdgeWeight.setText("---");
             }
 
@@ -1052,10 +1063,24 @@ public class Sandbox implements Screen {
 
 
 
+        if (populateVInputField.isVisible() && !Objects.equals(Float.toString(vPopSlider.getValue()), populateVInputField.getText())){
 
-        if(populateVInputField.isVisible() && (int)vPopSlider.getValue() != Integer.parseInt(populateVInputField.getText())) {
-            populateVInputField.setText(String.valueOf((int) vPopSlider.getValue()));
+            try {
+                    vPopSlider.setValue(Integer.parseInt(populateVInputField.getText()));
+                    if (Integer.parseInt(populateVInputField.getText()) > 100)
+                        populateVInputField.setText("100");
+                    else if (Integer.parseInt(populateVInputField.getText()) < 0)
+                        populateVInputField.setText("0");
+            }
+            catch (NumberFormatException e) {
+                vPopSlider.setValue(0);
+                populateVInputField.setText("50");
+            }
         }
+
+
+
+
 
 
 
@@ -1124,45 +1149,56 @@ public class Sandbox implements Screen {
 
     private void drawExistingVertex() {
 
-        for (int i = 0; i < vertexCoordsX.size(); i++) {
+        if (showVertexNumbers) {
+            for (int i = 0; i < vertexCoordsX.size(); i++) {
 
-            if (i != lastVertexClicked) {
+                if (i != lastVertexClicked) {
+                    sr.begin(ShapeRenderer.ShapeType.Filled);
+                    sr.setColor(0.07f, 0.07f, 0.07f, 1);
+                    sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+                    sr.end();
+
+                    String letter = String.valueOf(i);
+                    //letter = String.valueOf((char)(65+i));
+
+                    layout.setText(whiteFont, letter);   // add label here
+                    float fontWidth = layout.width;
+                    float fontHeight = layout.height;
+                    batch.begin();
+                    whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+                    batch.end();
+                }
+            }
+
+            if (lastVertexClicked != -1 && showVertexNumbers) {
                 sr.begin(ShapeRenderer.ShapeType.Filled);
                 sr.setColor(0.07f, 0.07f, 0.07f, 1);
-                sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+                sr.circle(vertexCoordsX.get(lastVertexClicked), vertexCoordsY.get(lastVertexClicked), vertexSize);
                 sr.end();
 
-                String letter = String.valueOf(i);
-                //letter = String.valueOf((char)(65+i));
+
+                String letter = String.valueOf(lastVertexClicked);
+                //letter = String.valueOf((char)(65+lastVertexClicked));
 
                 layout.setText(whiteFont, letter);   // add label here
                 float fontWidth = layout.width;
                 float fontHeight = layout.height;
                 batch.begin();
-                whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+                whiteFont.draw(batch, letter, vertexCoordsX.get(lastVertexClicked) - 0.5f * fontWidth, vertexCoordsY.get(lastVertexClicked) + 0.5f * fontHeight);
                 batch.end();
+
             }
         }
 
-        if (lastVertexClicked != -1) {
-            sr.begin(ShapeRenderer.ShapeType.Filled);
-            sr.setColor(0.07f, 0.07f, 0.07f, 1);
-            sr.circle(vertexCoordsX.get(lastVertexClicked), vertexCoordsY.get(lastVertexClicked), vertexSize);
-            sr.end();
+        else{
+            for (int i = 0; i < vertexCoordsX.size(); i++) {
 
-
-            String letter = String.valueOf(lastVertexClicked);
-            //letter = String.valueOf((char)(65+lastVertexClicked));
-
-            layout.setText(whiteFont, letter);   // add label here
-            float fontWidth = layout.width;
-            float fontHeight = layout.height;
-            batch.begin();
-            whiteFont.draw(batch, letter, vertexCoordsX.get(lastVertexClicked) - 0.5f * fontWidth, vertexCoordsY.get(lastVertexClicked) + 0.5f * fontHeight);
-            batch.end();
-
+                sr.begin(ShapeRenderer.ShapeType.Filled);
+                sr.setColor(0.07f, 0.07f, 0.07f, 1);
+                sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
+                sr.end();
+            }
         }
-
 
 
     }  //letter in here
@@ -1207,16 +1243,16 @@ public class Sandbox implements Screen {
 
         sr.end();
 
-
-        String letter = String.valueOf(vertexCoordsX.size());
-        //letter = String.valueOf((char)(65+vertexCoordsX.size()));
-
-        layout.setText(whiteFont, letter);   // add label here
-        float fontWidth = layout.width;
-        float fontHeight = layout.height;
-        batch.begin();
-        whiteFont.draw(batch, letter, Gdx.input.getX() - 0.5f * fontWidth, (Gdx.graphics.getHeight() - Gdx.input.getY()) + 0.5f * fontHeight);
-        batch.end();
+        if (showVertexNumbers) {
+            String letter = String.valueOf(vertexCoordsX.size());
+            //letter = String.valueOf((char)(65+vertexCoordsX.size()));
+            layout.setText(whiteFont, letter);   // add label here
+            float fontWidth = layout.width;
+            float fontHeight = layout.height;
+            batch.begin();
+            whiteFont.draw(batch, letter, Gdx.input.getX() - 0.5f * fontWidth, (Gdx.graphics.getHeight() - Gdx.input.getY()) + 0.5f * fontHeight);
+            batch.end();
+        }
     }  //letter in here
 
     private void drawMovingEdge(int vertex) {
@@ -1541,9 +1577,38 @@ public class Sandbox implements Screen {
     }
 
 
+    private void populateVertex(int number){
 
 
+            for (int i=0; i < number ; i++) {
 
+            int x = (int) (Gdx.graphics.getWidth() * 0.2f + (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+            int y = (int) (Math.random() * Gdx.graphics.getHeight());
+
+
+            for (int k = 0; k < vertexCoordsX.size(); k++) {
+
+                if (Math.pow(x - vertexCoordsX.get(k), 2) + Math.pow(y - vertexCoordsY.get(k), 2)<= vertexSize * vertexSize * 4 + 5) {
+                    x = (int) (Gdx.graphics.getWidth() * 0.2f + (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+                    y = (int) (Math.random() * Gdx.graphics.getHeight());
+                    k = 0;
+                }
+
+            }
+
+            vertexCoordsX.add(x);
+            vertexCoordsY.add(y);
+
+        }
+    }
+
+
+    //                float x = Gdx.input.getX();
+    //                float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+    //
+    //                if (Math.pow(x - vertexCoordsX.get(i), 2) + Math.pow(y - vertexCoordsY.get(i), 2) <= vertexSize * vertexSize) {
+    //                    return i;
+    //                }
 
 
     @Override
