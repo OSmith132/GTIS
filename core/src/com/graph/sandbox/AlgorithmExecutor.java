@@ -30,6 +30,8 @@ public class AlgorithmExecutor implements Screen {
     BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("whiteFont.fnt"));
     GlyphLayout layout = new GlyphLayout();
 
+    private boolean showVertexNumbers = false;
+
     private boolean modalBoxVisible;
     private boolean graphIsDigraph;
 
@@ -127,10 +129,14 @@ public class AlgorithmExecutor implements Screen {
 
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
+            font.getData().setScale(0.5f,0.5f);
+            whiteFont.getData().setScale(0.5f,0.5f);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
+            font.getData().setScale(5f/3f,5f/3f);
+            whiteFont.getData().setScale(5f/3f,5f/3f);
         }
 
 
@@ -319,17 +325,17 @@ public class AlgorithmExecutor implements Screen {
             sr.circle(vertexCoordsX.get(i), vertexCoordsY.get(i), vertexSize);
             sr.end();
 
+            if (showVertexNumbers) {
+                String letter = String.valueOf(i);
+                //letter = String.valueOf((char)(65+i));
 
-            String letter = String.valueOf(i);
-            //letter = String.valueOf((char)(65+i));
-
-            layout.setText(whiteFont, letter);   // add label here
-            float fontWidth = layout.width;
-            float fontHeight = layout.height;
-            batch.begin();
-            whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
-            batch.end();
-
+                layout.setText(whiteFont, letter);   // add label here
+                float fontWidth = layout.width;
+                float fontHeight = layout.height;
+                batch.begin();
+                whiteFont.draw(batch, letter, vertexCoordsX.get(i) - 0.5f * fontWidth, vertexCoordsY.get(i) + 0.5f * fontHeight);
+                batch.end();
+            }
         }
 
 

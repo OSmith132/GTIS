@@ -19,9 +19,10 @@ import com.badlogic.gdx.utils.Align;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
-
-
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Sandbox implements Screen {
@@ -47,7 +48,8 @@ public class Sandbox implements Screen {
     private boolean graphIsDigraph;
     private boolean firstTimeSave;
 
-    private boolean showVertexNumbers = false;
+    private boolean showVertexNumbers = true;
+    private boolean showEdgeWeights = true;
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -75,9 +77,17 @@ public class Sandbox implements Screen {
 
 
 
-    Window populateVertexBox;
+
     TextField populateVInputField;
     Slider vPopSlider;
+
+    TextField populateEInputField;
+    Slider ePopSlider;
+
+
+    int maxVertices;
+    int maxEdges = 20;
+
 
 
     TextButton confirmEdgeWeight;
@@ -290,12 +300,15 @@ public class Sandbox implements Screen {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
             font.getData().setScale(0.5f,0.5f);
             whiteFont.getData().setScale(0.5f,0.5f);
+            maxVertices = 400;
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
+            maxVertices = 100;
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
             font.getData().setScale(5f/3f,5f/3f);
             whiteFont.getData().setScale(5f/3f,5f/3f);
+            maxVertices = 50;
         }
 
 
@@ -439,7 +452,7 @@ public class Sandbox implements Screen {
 
 
 
-        populateVInputField = new TextField("50", buttonSkin,"spinner");
+        populateVInputField = new TextField(Integer.toString(maxVertices /2), buttonSkin,"spinner");
         populateVInputField.setAlignment(1);
 
 
@@ -447,8 +460,8 @@ public class Sandbox implements Screen {
 
         populateVertexBox.row();
 
-        vPopSlider = new Slider(1,100,1,false,buttonSkin);
-        vPopSlider.setValue(50);
+        vPopSlider = new Slider(0, maxVertices,1,false,buttonSkin);
+        vPopSlider.setValue((int)(maxVertices /2f));
 
         vPopSlider.addListener(new ClickListener() {
             @Override
@@ -526,6 +539,110 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+        final Window populateEdgeBox = new Window("Populate Edge", buttonSkin, "maroon");
+        populateEdgeBox.setHeight(Gdx.graphics.getHeight() * (0.2f));
+        populateEdgeBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        populateEdgeBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        populateEdgeBox.setModal(true);
+        populateEdgeBox.setMovable(false);
+        populateEdgeBox.getTitleLabel().setAlignment(1);
+        populateEdgeBox.setVisible(false);
+        stage.addActor(populateEdgeBox);
+
+
+
+
+
+        populateEInputField = new TextField(Integer.toString(maxEdges), buttonSkin,"spinner");
+        populateEInputField.setAlignment(1);
+
+        final CheckBox popEFloatButton = new CheckBox(" Int", buttonSkin, "radio");
+        popEFloatButton.setChecked(true);
+
+        populateEdgeBox.add(populateEInputField).height(Value.percentHeight(0.2f, populateEdgeBox)).width(Value.percentWidth(0.2f, populateEdgeBox)).colspan(1).padTop(Value.percentWidth(0.01f, populateEdgeBox)).padRight( - (popEFloatButton.getPrefWidth() + populateEInputField.getPrefWidth()/2f + Gdx.graphics.getWidth() * (0.005f)));
+        populateEdgeBox.add(popEFloatButton).padRight(-popEFloatButton.getPrefWidth());
+
+
+        populateEdgeBox.row();
+
+        ePopSlider = new Slider(0, maxEdges,1,false,buttonSkin);
+        ePopSlider.setValue(maxEdges);
+
+        ePopSlider.addListener(new ClickListener() {
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+
+                populateEInputField.setText(String.valueOf((int) ePopSlider.getValue()));
+
+            }
+        });
+
+
+        populateEdgeBox.add(ePopSlider).height(Value.percentHeight(0.1f, populateEdgeBox)).width(Value.percentWidth(0.7f, populateEdgeBox)).colspan(3).pad(Value.percentWidth(0.02f, populateEdgeBox));
+
+
+
+        populateEdgeBox.row();
+
+
+
+
+
+        TextButton cancelEPopulate = new TextButton(("Cancel"), buttonSkin, "maroon");
+        populateEdgeBox.add(cancelEPopulate).height(Value.percentHeight(0.2f, populateEdgeBox)).width(Value.percentWidth(0.35f, populateEdgeBox)).pad(Value.percentWidth(0.025f, populateEdgeBox));
+        cancelEPopulate.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                populateEdgeBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+        TextButton confirmEPopulate = new TextButton(("Ok"), buttonSkin, "maroon");
+        populateEdgeBox.add(confirmEPopulate).height(Value.percentHeight(0.2f, populateEdgeBox)).width(Value.percentWidth(0.35f, populateEdgeBox)).pad(Value.percentWidth(0.025f, populateEdgeBox));
+        confirmEPopulate.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                if (vertexCoordsX.size() > 1)
+                    populateEdge((int)ePopSlider.getValue(), !popEFloatButton.isChecked());
+
+                populateEdgeBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+        final TextButton populateEdgeButton = new TextButton(("E-Populate"), buttonSkin, "maroon");
+        populateEdgeButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        populateEdgeButton.setWidth(Gdx.graphics.getWidth() * (0.08f));
+        populateEdgeButton.setPosition((Gdx.graphics.getWidth() * (0.105f)), (Gdx.graphics.getHeight() * (0.73f)));
+        stage.addActor(populateEdgeButton);
+
+        populateEdgeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                //do stuff
+
+                populateEdgeBox.setVisible(true);
+                modalBoxVisible = true;
+            }
+        });
 
 
 
@@ -860,6 +977,8 @@ public class Sandbox implements Screen {
                 modalBoxVisible = false;
                 newVertex.setTouchable(Touchable.enabled);
                 newEdge.setTouchable(Touchable.enabled);
+                populateVertexButton.setTouchable(Touchable.enabled);
+                populateEdgeButton.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
                 algorithmExecutor.setTouchable(Touchable.enabled);
@@ -881,6 +1000,8 @@ public class Sandbox implements Screen {
                 modalBoxVisible = false;
                 newVertex.setTouchable(Touchable.enabled);
                 newEdge.setTouchable(Touchable.enabled);
+                populateVertexButton.setTouchable(Touchable.enabled);
+                populateEdgeButton.setTouchable(Touchable.enabled);
                 saveButton.setTouchable(Touchable.enabled);
                 saveAsButton.setTouchable(Touchable.enabled);
                 algorithmExecutor.setTouchable(Touchable.enabled);
@@ -999,6 +1120,8 @@ public class Sandbox implements Screen {
             modalBoxVisible = true;
             newVertex.setTouchable(Touchable.disabled);
             newEdge.setTouchable(Touchable.disabled);
+            populateVertexButton.setTouchable(Touchable.disabled);
+            populateEdgeButton.setTouchable(Touchable.disabled);
             saveButton.setTouchable(Touchable.disabled);
             saveAsButton.setTouchable(Touchable.disabled);
             algorithmExecutor.setTouchable(Touchable.disabled);
@@ -1063,24 +1186,47 @@ public class Sandbox implements Screen {
 
 
 
-        if (populateVInputField.isVisible() && !Objects.equals(Float.toString(vPopSlider.getValue()), populateVInputField.getText())){
+        if (populateVInputField.isVisible() && !Objects.equals(Integer.toString((int)vPopSlider.getValue()), populateVInputField.getText())){
 
             try {
                     vPopSlider.setValue(Integer.parseInt(populateVInputField.getText()));
-                    if (Integer.parseInt(populateVInputField.getText()) > 100)
-                        populateVInputField.setText("100");
+                    if (Integer.parseInt(populateVInputField.getText()) > maxVertices - vertexCoordsX.size())
+                        populateVInputField.setText(String.valueOf(maxVertices - vertexCoordsX.size()));
                     else if (Integer.parseInt(populateVInputField.getText()) < 0)
                         populateVInputField.setText("0");
+                    vPopSlider.setRange(0,maxVertices - vertexCoordsX.size());
+
+
             }
             catch (NumberFormatException e) {
                 vPopSlider.setValue(0);
-                populateVInputField.setText("50");
+               // populateVInputField.setText(Integer.toString((maxVertices - vertexCoordsX.size()) /2));
             }
         }
 
 
 
 
+
+
+
+        if (populateEInputField.isVisible() && !Objects.equals(Integer.toString((int)ePopSlider.getValue()), populateEInputField.getText())){
+
+            try {
+                ePopSlider.setValue(Integer.parseInt(populateEInputField.getText()));
+                if (Integer.parseInt(populateEInputField.getText()) > maxEdges - edgeListTo.size())
+                    populateEInputField.setText(String.valueOf(maxEdges - edgeListTo.size()));
+                else if (Integer.parseInt(populateEInputField.getText()) < 0)
+                    populateEInputField.setText("0");
+                ePopSlider.setRange(0,maxEdges - edgeListTo.size());
+
+
+            }
+            catch (NumberFormatException e) {
+                ePopSlider.setValue(0);
+            //    populateEInputField.setText(Integer.toString((maxEdges - edgeListTo.size()) /2));
+            }
+        }
 
 
 
@@ -1115,8 +1261,12 @@ public class Sandbox implements Screen {
             removeDuplicateEdges();
         }
 
-//        System.out.println(edgeListFrom);
-//        System.out.println(edgeListTo);
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
+            System.out.println("Well Done! You've found the debug button!");
+
+        }
 
 
         placeNewEdge();
@@ -1127,8 +1277,8 @@ public class Sandbox implements Screen {
         if (graphIsDigraph)
             drawDigraphArrows();
 
-
-        drawFloatValues();
+        if (showEdgeWeights)
+            drawEdgeValues();
 
         drawExistingVertex();
 
@@ -1261,35 +1411,33 @@ public class Sandbox implements Screen {
 
         sr.rectLine((vertexCoordsX.get(vertex)), (vertexCoordsY.get(vertex)), Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()), vertexSize / 3);
 
+        if (graphIsDigraph) {
+            float midpointX = (vertexCoordsX.get(vertex) + Gdx.input.getX()) * 0.5f;
+            float midpointY = (vertexCoordsY.get(vertex) + (Gdx.graphics.getHeight() - Gdx.input.getY())) * 0.5f;
 
-        float midpointX = (vertexCoordsX.get(vertex) + Gdx.input.getX()) * 0.5f;
-        float midpointY = (vertexCoordsY.get(vertex) + (Gdx.graphics.getHeight() - Gdx.input.getY())) * 0.5f;
+            float x1 = 0 - vertexSize;
+            float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x2 = 0 + vertexSize;
+            float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            float x3 = 0;
+            float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
+            double rotationAngle;
 
-        float x1 = 0 - vertexSize;
-        float y1 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-        float x2 = 0 + vertexSize;
-        float y2 = (float) (0 - 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-        float x3 = 0;
-        float y3 = (float) (0 + 0.5f * Math.sqrt((2 * vertexSize * 2 * vertexSize) - (vertexSize * vertexSize)));
-        double rotationAngle;
+            if (Gdx.input.getX() < vertexCoordsX.get(vertex))
+                rotationAngle = (0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
+            else
+                rotationAngle = -(0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
 
-        if (Gdx.input.getX() < vertexCoordsX.get(vertex))
-            rotationAngle = (0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
-        else
-            rotationAngle = -(0.5f * Math.PI) + Math.atan((double) ((Gdx.graphics.getHeight() - Gdx.input.getY()) - vertexCoordsY.get(vertex)) / (Gdx.input.getX() - vertexCoordsX.get(vertex)));
-
-
-        sr.identity();
-        sr.translate(midpointX, midpointY, 0);
-        sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
-        sr.triangle(x1, y1, x2, y2, x3, y3);
-
-
-        sr.end();
-        sr.identity();
+            sr.identity();
+            sr.translate(midpointX, midpointY, 0);
+            sr.rotate(0, 0, 1, (float) Math.toDegrees(rotationAngle));
+            sr.triangle(x1, y1, x2, y2, x3, y3);
 
 
-        sr.end();
+        }
+            sr.end();
+            sr.identity();
+
     }
 
     private int findClickedVertex() {
@@ -1394,6 +1542,7 @@ public class Sandbox implements Screen {
             if (Objects.equals(edgeListFrom.get(i), edgeListTo.get(i))) {  // Same Vertex
                 edgeListFrom.remove(i);
                 edgeListTo.remove(i);
+                edgeWeightList.remove(edgeWeightList.size() -1);    // this make break in future
                 i -= 1;
             } else {
 
@@ -1403,6 +1552,7 @@ public class Sandbox implements Screen {
                         if (k != j && Objects.equals(edgeListFrom.get(k), edgeListFrom.get(j)) && Objects.equals(edgeListTo.get(k), edgeListTo.get(j))) {
                             edgeListFrom.remove(j);
                             edgeListTo.remove(j);
+                            edgeWeightList.remove(edgeWeightList.size() -1);
                             j -= 1;
                         }
 
@@ -1416,6 +1566,7 @@ public class Sandbox implements Screen {
                         if (k != j && Objects.equals(edgeListFrom.get(k), edgeListTo.get(j)) && Objects.equals(edgeListTo.get(k), edgeListFrom.get(j))) {
                             edgeListFrom.remove(j);
                             edgeListTo.remove(j);
+                            edgeWeightList.remove(edgeWeightList.size() -1);
                             j -= 1;
                         }
 
@@ -1452,6 +1603,9 @@ public class Sandbox implements Screen {
         edgeListFrom.clear();
         edgeListTo.clear();
         edgeWeightList.clear();
+        populateVInputField.setText(Integer.toString((int)((maxVertices - vertexCoordsX.size()) /2f)));
+        populateEInputField.setText(Integer.toString((int)((maxEdges - edgeListTo.size()) /2f)));
+
     }
 
     private void drawDigraphArrows() {
@@ -1493,7 +1647,7 @@ public class Sandbox implements Screen {
 
     }
 
-    private void drawFloatValues() {
+    private void drawEdgeValues() {
 
         //System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
 
@@ -1576,39 +1730,246 @@ public class Sandbox implements Screen {
 
     }
 
-
     private void populateVertex(int number){
+            saved = false;
+
+            if (number + vertexCoordsX.size() > maxVertices && maxVertices - vertexCoordsX.size() > 0)
+                number = maxVertices - vertexCoordsX.size();
+            else if (maxVertices - vertexCoordsX.size() == 0)
+                number = 0;
 
 
             for (int i=0; i < number ; i++) {
 
-            int x = (int) (Gdx.graphics.getWidth() * 0.2f + (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+            int x = (int) (Gdx.graphics.getWidth() * 0.2f + (int)(Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
             int y = (int) (Math.random() * Gdx.graphics.getHeight());
 
 
             for (int k = 0; k < vertexCoordsX.size(); k++) {
 
-                if (Math.pow(x - vertexCoordsX.get(k), 2) + Math.pow(y - vertexCoordsY.get(k), 2)<= vertexSize * vertexSize * 4 + 5) {
-                    x = (int) (Gdx.graphics.getWidth() * 0.2f + (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+                if (Math.pow(x - vertexCoordsX.get(k), 2) + Math.pow(y - vertexCoordsY.get(k), 2)<= vertexSize * vertexSize * 4 + 5  ||  x > Gdx.graphics.getWidth()-(2*vertexSize) || x < 0.2f*Gdx.graphics.getWidth()+(2*vertexSize) || y > Gdx.graphics.getHeight()-(2*vertexSize) || y < 2*vertexSize) {
+                    x = (int) (Gdx.graphics.getWidth() * 0.2f + (int)(Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
                     y = (int) (Math.random() * Gdx.graphics.getHeight());
-                    k = 0;
+                    k = -1;
                 }
-
             }
 
             vertexCoordsX.add(x);
             vertexCoordsY.add(y);
 
         }
+
+        populateVInputField.setText(Integer.toString((int)((maxVertices - vertexCoordsX.size()) /2f)));
     }
 
 
-    //                float x = Gdx.input.getX();
-    //                float y = Gdx.graphics.getHeight() - Gdx.input.getY();
-    //
-    //                if (Math.pow(x - vertexCoordsX.get(i), 2) + Math.pow(y - vertexCoordsY.get(i), 2) <= vertexSize * vertexSize) {
-    //                    return i;
-    //                }
+
+
+
+
+
+    private void populateEdge(int maxWeight,boolean floatWeight){
+        saved = false;
+        Random rand = new Random();
+
+
+//        edgeListFrom.add(0);
+//        edgeListTo.add(rand.nextInt(vertexCoordsX.size()));
+//        edgeWeightList.add(4f);
+
+        for (int i=0; i < vertexCoordsX.size(); i++){
+
+
+            int to = getNearbyVertex(i);
+
+            float weight = ThreadLocalRandom.current().nextInt(1, maxWeight + 1);
+
+            if (floatWeight)
+                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1)/100f;
+
+
+            edgeListFrom.add(i);
+            edgeListTo.add(to);
+            edgeWeightList.add(weight);
+
+//            System.out.println(edgeListFrom +" "+ edgeListTo +" "+ edgeWeightList);
+        }
+
+
+        while(!graphConnected()){
+
+
+
+
+            int from = unvisitedVerticies().get(rand.nextInt(unvisitedVerticies().size()));
+            int to = getNearbyVertex(from);
+
+
+            float weight = ThreadLocalRandom.current().nextInt(1, maxWeight + 1);
+
+            if (floatWeight)
+                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1)/100f;
+
+
+            edgeListFrom.add(from);
+            edgeListTo.add(to);
+            edgeWeightList.add(weight);
+
+//            System.out.println(edgeListFrom +" "+ edgeListTo +" "+ edgeWeightList);
+        }
+
+
+
+
+
+    }
+
+    private int getNearbyVertex(int xIndex) {
+
+        Random rand = new Random();
+
+
+        int xCoord = vertexCoordsX.get(xIndex);
+        int yCoord = vertexCoordsY.get(xIndex);
+
+        int random;
+        int x;
+        int y;
+
+        for (float i = 0; i < Gdx.graphics.getWidth()+vertexSize; i += vertexSize) {
+
+
+            random = rand.nextInt(vertexCoordsX.size());  // there was a -1 here
+            x = vertexCoordsX.get(random);
+            y = vertexCoordsY.get(random);
+
+            boolean duplicateEdge = false;
+            for (int k=0; k < undirectedEdgeListFrom.size(); k++){
+
+
+                if (xIndex == k && random == undirectedEdgeListTo.get(k)) {
+
+                    duplicateEdge = true;
+                    break;
+                }
+
+
+            }
+
+
+
+       //     System.out.println(duplicateEdge);
+            if (x < xCoord + i && x > xCoord - i && y < yCoord + i && y > yCoord - i && xCoord != x && yCoord != y && !duplicateEdge) {
+
+                return random;
+
+            }
+
+
+        }
+
+        return 0;
+
+    }
+
+
+
+
+
+
+
+
+    ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
+    ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
+
+    private boolean graphConnected(){
+
+
+        ArrayList<Integer> visited = new ArrayList<>();
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
+
+
+//        System.out.println(dfs(0, visited).size() +""+ vertexCoordsX.size());
+
+      // System.out.println(dfs(0, visited).size() == vertexCoordsX.size());
+
+        return dfs(0, visited).size() == vertexCoordsX.size();                            //what is happening here??
+
+
+    }
+
+
+    private ArrayList<Integer> dfs(int currentVertex, ArrayList<Integer> visited){
+
+        visited.add(currentVertex);
+
+
+        ArrayList<Integer> connections = new ArrayList<>();
+        for (int i=0; i < undirectedEdgeListFrom.size(); i++) {
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)))
+                connections.add(undirectedEdgeListTo.get(i));
+        }
+
+        //System.out.println("Connections: "+connections);
+
+        for (Integer connection : connections) {
+            if (!visited.contains(connection)) {
+
+                dfs(connection, visited);
+            }
+        }
+
+
+       // System.out.println("Visited: "+visited);
+        return visited;
+    }
+
+
+
+    private ArrayList<Integer> unvisitedVerticies(){
+
+        ArrayList<Integer> visited = new ArrayList<>();
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
+
+        ArrayList<Integer> allVertices = new ArrayList<>();
+        for (int i=0; i < vertexCoordsX.size();i++){
+            allVertices.add(i);
+        }
+
+
+        ArrayList<Integer> visitedVertices = new ArrayList<>(dfs(0,visited));
+
+
+
+        allVertices.removeAll(visitedVertices);
+
+
+
+
+
+
+       // System.out.println(allVertices);
+        return allVertices;
+    }
+
+
+
+
 
 
     @Override
