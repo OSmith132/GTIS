@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.Align;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,6 +34,11 @@ public class Sandbox implements Screen {
     GlyphLayout layout = new GlyphLayout();
 
 
+    private boolean showVertexNumbers = false;
+    private boolean showEdgeWeights = true;
+
+
+
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
 
@@ -47,9 +51,6 @@ public class Sandbox implements Screen {
 
     private boolean graphIsDigraph;
     private boolean firstTimeSave;
-
-    private boolean showVertexNumbers = true;
-    private boolean showEdgeWeights = true;
 
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
@@ -103,13 +104,15 @@ public class Sandbox implements Screen {
 
     private String existingFileNameChanger(String graph_name, int i) {
 
+
+
         FileHandle file = Gdx.files.local("core/assets/Saved Graphs/" + graph_name + ".graph");
 
         if (file.exists()) {
 
 
 
-            System.out.println((int)Math.floor((i/10f)));
+
             if ((graph_name.charAt(graph_name.length() - 1)) == ')') {
 
                 String[] parts = graph_name.split("\\(" );
@@ -212,7 +215,11 @@ public class Sandbox implements Screen {
 
 
     public Sandbox(final String graph_name, final Boolean graph_new) {
-        //         "New Graph"         true / false
+
+        if (Objects.equals(configArray[1], "fullscreen")) {
+            resolutionW = Gdx.graphics.getWidth();
+            resolutionH = Gdx.graphics.getHeight();
+        }
 
 
         firstTimeSave = graph_new;
@@ -246,7 +253,7 @@ public class Sandbox implements Screen {
                     vertexXIntegerList[i] = (Float.parseFloat(vertexXStringList[i]) / 1600) * resolutionW;
                     vertexCoordsX.add(Math.round(vertexXIntegerList[i]));
 
-                    System.out.println(vertexXIntegerList[i]);
+
 
                     vertexYIntegerList[i] = (Float.parseFloat(vertexYStringList[i]) / 900) * resolutionH;
                     vertexCoordsY.add(Math.round(vertexYIntegerList[i]));
@@ -317,10 +324,10 @@ public class Sandbox implements Screen {
         //errorText.getFontScaleX()
 
 
-        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle2.png")));
         Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
-        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        Rectangle.setPosition(0, -1);
+        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f)+50);
+        Rectangle.setPosition(-50, -1);
         stage.addActor(Rectangle);
 
 
@@ -828,6 +835,65 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
+
+
+
+
+
+
+
+        final Window popupBox = new Window("", buttonSkin, "maroon");
+        popupBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        popupBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
+        popupBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        popupBox.setModal(true);
+        popupBox.setMovable(false);
+        popupBox.getTitleLabel().setAlignment(1);
+        popupBox.setVisible(false);
+
+
+        TextButton popupClose = new TextButton("X", buttonSkin, "maroonX");
+        popupClose.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                popupBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+        popupBox.getTitleTable().add(popupClose).height(Value.percentHeight(.05f, popupBox)).width(Value.percentWidth(.05f, popupBox));
+        popupBox.getTitleTable().align(Align.top | Align.right);
+
+
+        final Label popupLabel = new Label("Please fully connect the graph first",buttonSkin,"error");
+        popupBox.add(popupLabel).pad(Value.percentWidth(0.4f, popupBox));
+
+
+
+
+
+
+
+
+        stage.addActor(popupBox);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         final Window algorithmsBox = new Window("You will need to the save the graph first", buttonSkin, "maroon");
         algorithmsBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         algorithmsBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
@@ -860,23 +926,43 @@ public class Sandbox implements Screen {
                     algorithmsBox.setVisible(false);
                 } else {
                     save(graphIsDigraph, currentGraphName, false);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
+                    algorithmsBox.setVisible(false);
+
+                    if (vertexCoordsX.size() >= 2 && graphConnected()) {
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
+
+
+                    } else if (vertexCoordsX.size() < 2) {
+
+                        algorithmsBox.setVisible(false);
+                        if (Objects.equals(vertexName, "vertex"))
+                            popupLabel.setText("Please add more vertices");
+                        else
+                            popupLabel.setText("Please add more nodes");
+
+                        popupBox.setVisible(true);
+
+
+                    } else if (!graphConnected()) {
+                        algorithmsBox.setVisible(false);
+                        popupLabel.setText("Please fully connect the graph first");
+
+                        popupBox.setVisible(true);
+
+                    }
                 }
 
                 saved = true;
 
 
-
             }
         });
+
+
 
         algorithmsBox.align(Align.center);
         stage.addActor(algorithmsBox);
         algorithmsBox.setVisible(false);
-
-
-
-
 
 
 
@@ -891,16 +977,31 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
-                if (saved && !firstTimeSave) {
+                if (saved && !firstTimeSave && vertexCoordsX.size() >= 2 && graphConnected()) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
-                } else {
+
+                } else if (!saved) {
 
                     algorithmsBox.setVisible(true);
                     modalBoxVisible = true;
 
+                } else if (vertexCoordsX.size() < 2) {
+                    algorithmsBox.setVisible(false);
 
+                    if (Objects.equals(vertexName, "vertex"))
+                        popupLabel.setText("Please add more vertices");
+                    else
+                        popupLabel.setText("Please add more nodes");
+
+                    popupBox.setVisible(true);
+
+
+                } else if (!graphConnected()) {
+                    algorithmsBox.setVisible(false);
+                    popupLabel.setText("Please fully connect the graph first");
+                    popupBox.setVisible(true);
+                    modalBoxVisible = true;
                 }
-
 
 
             }
@@ -1649,7 +1750,6 @@ public class Sandbox implements Screen {
 
     private void drawEdgeValues() {
 
-        //System.out.println(edgeListFrom + " " + edgeListTo + " " + edgeWeightList);
 
 
         if (edgeWeightList.size() != edgeListFrom.size() || (edgeListTo.size() != edgeListFrom.size())) {
@@ -1730,25 +1830,25 @@ public class Sandbox implements Screen {
 
     }
 
-    private void populateVertex(int number){
-            saved = false;
+    private void populateVertex(int number) {
+        saved = false;
 
-            if (number + vertexCoordsX.size() > maxVertices && maxVertices - vertexCoordsX.size() > 0)
-                number = maxVertices - vertexCoordsX.size();
-            else if (maxVertices - vertexCoordsX.size() == 0)
-                number = 0;
+        if (number + vertexCoordsX.size() > maxVertices && maxVertices - vertexCoordsX.size() > 0)
+            number = maxVertices - vertexCoordsX.size();
+        else if (maxVertices - vertexCoordsX.size() == 0)
+            number = 0;
 
 
-            for (int i=0; i < number ; i++) {
+        for (int i = 0; i < number; i++) {
 
-            int x = (int) (Gdx.graphics.getWidth() * 0.2f + (int)(Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+            int x = (int) (Gdx.graphics.getWidth() * 0.2f + (int) (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
             int y = (int) (Math.random() * Gdx.graphics.getHeight());
 
 
             for (int k = 0; k < vertexCoordsX.size(); k++) {
 
-                if (Math.pow(x - vertexCoordsX.get(k), 2) + Math.pow(y - vertexCoordsY.get(k), 2)<= vertexSize * vertexSize * 4 + 5  ||  x > Gdx.graphics.getWidth()-(2*vertexSize) || x < 0.2f*Gdx.graphics.getWidth()+(2*vertexSize) || y > Gdx.graphics.getHeight()-(2*vertexSize) || y < 2*vertexSize) {
-                    x = (int) (Gdx.graphics.getWidth() * 0.2f + (int)(Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
+                if (Math.pow(x - vertexCoordsX.get(k), 2) + Math.pow(y - vertexCoordsY.get(k), 2) <= vertexSize * vertexSize * 4 + 5 || x > Gdx.graphics.getWidth() - (2 * vertexSize) || x < 0.2f * Gdx.graphics.getWidth() + (2 * vertexSize) || y > Gdx.graphics.getHeight() - (2 * vertexSize) || y < 2 * vertexSize) {
+                    x = (int) (Gdx.graphics.getWidth() * 0.2f + (int) (Math.random() * (Gdx.graphics.getWidth() * 0.8f)));
                     y = (int) (Math.random() * Gdx.graphics.getHeight());
                     k = -1;
                 }
@@ -1759,25 +1859,16 @@ public class Sandbox implements Screen {
 
         }
 
-        populateVInputField.setText(Integer.toString((int)((maxVertices - vertexCoordsX.size()) /2f)));
+        populateVInputField.setText(Integer.toString((int) ((maxVertices - vertexCoordsX.size()) / 2f)));
     }
 
-
-
-
-
-
-
-    private void populateEdge(int maxWeight,boolean floatWeight){
+    private void populateEdge(int maxWeight, boolean floatWeight) {
         saved = false;
         Random rand = new Random();
 
 
-//        edgeListFrom.add(0);
-//        edgeListTo.add(rand.nextInt(vertexCoordsX.size()));
-//        edgeWeightList.add(4f);
 
-        for (int i=0; i < vertexCoordsX.size(); i++){
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
 
 
             int to = getNearbyVertex(i);
@@ -1785,41 +1876,36 @@ public class Sandbox implements Screen {
             float weight = ThreadLocalRandom.current().nextInt(1, maxWeight + 1);
 
             if (floatWeight)
-                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1)/100f;
+                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1) / 100f;
 
 
             edgeListFrom.add(i);
             edgeListTo.add(to);
             edgeWeightList.add(weight);
 
-//            System.out.println(edgeListFrom +" "+ edgeListTo +" "+ edgeWeightList);
+
         }
 
 
-        while(!graphConnected()){
+        while (!graphConnected()) {
 
 
-
-
-            int from = unvisitedVerticies().get(rand.nextInt(unvisitedVerticies().size()));
+            int from = unvisitedVertices().get(rand.nextInt(unvisitedVertices().size()));
             int to = getNearbyVertex(from);
 
 
             float weight = ThreadLocalRandom.current().nextInt(1, maxWeight + 1);
 
             if (floatWeight)
-                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1)/100f;
+                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1) / 100f;
 
 
             edgeListFrom.add(from);
             edgeListTo.add(to);
             edgeWeightList.add(weight);
 
-//            System.out.println(edgeListFrom +" "+ edgeListTo +" "+ edgeWeightList);
+
         }
-
-
-
 
 
     }
@@ -1836,15 +1922,15 @@ public class Sandbox implements Screen {
         int x;
         int y;
 
-        for (float i = 0; i < Gdx.graphics.getWidth()+vertexSize; i += vertexSize) {
+        for (float i = 0; i < Gdx.graphics.getWidth() + vertexSize; i += 1) {    // change this
 
 
-            random = rand.nextInt(vertexCoordsX.size());  // there was a -1 here
+            random = rand.nextInt(vertexCoordsX.size());
             x = vertexCoordsX.get(random);
             y = vertexCoordsY.get(random);
 
             boolean duplicateEdge = false;
-            for (int k=0; k < undirectedEdgeListFrom.size(); k++){
+            for (int k = 0; k < undirectedEdgeListFrom.size(); k++) {
 
 
                 if (xIndex == k && random == undirectedEdgeListTo.get(k)) {
@@ -1858,7 +1944,6 @@ public class Sandbox implements Screen {
 
 
 
-       //     System.out.println(duplicateEdge);
             if (x < xCoord + i && x > xCoord - i && y < yCoord + i && y > yCoord - i && xCoord != x && yCoord != y && !duplicateEdge) {
 
                 return random;
@@ -1872,17 +1957,10 @@ public class Sandbox implements Screen {
 
     }
 
-
-
-
-
-
-
-
     ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
     ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
 
-    private boolean graphConnected(){
+    private boolean graphConnected() {
 
 
         ArrayList<Integer> visited = new ArrayList<>();
@@ -1895,30 +1973,23 @@ public class Sandbox implements Screen {
         undirectedEdgeListFrom.addAll(edgeListFrom);
         undirectedEdgeListFrom.addAll(edgeListTo);
 
-
-
-//        System.out.println(dfs(0, visited).size() +""+ vertexCoordsX.size());
-
-      // System.out.println(dfs(0, visited).size() == vertexCoordsX.size());
-
         return dfs(0, visited).size() == vertexCoordsX.size();                            //what is happening here??
 
 
     }
 
-
-    private ArrayList<Integer> dfs(int currentVertex, ArrayList<Integer> visited){
+    private ArrayList<Integer> dfs(int currentVertex, ArrayList<Integer> visited) {
 
         visited.add(currentVertex);
 
 
         ArrayList<Integer> connections = new ArrayList<>();
-        for (int i=0; i < undirectedEdgeListFrom.size(); i++) {
+        for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
             if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)))
                 connections.add(undirectedEdgeListTo.get(i));
         }
 
-        //System.out.println("Connections: "+connections);
+
 
         for (Integer connection : connections) {
             if (!visited.contains(connection)) {
@@ -1928,13 +1999,11 @@ public class Sandbox implements Screen {
         }
 
 
-       // System.out.println("Visited: "+visited);
+
         return visited;
     }
 
-
-
-    private ArrayList<Integer> unvisitedVerticies(){
+    private ArrayList<Integer> unvisitedVertices() {
 
         ArrayList<Integer> visited = new ArrayList<>();
         undirectedEdgeListFrom.clear();
@@ -1947,25 +2016,21 @@ public class Sandbox implements Screen {
 
 
         ArrayList<Integer> allVertices = new ArrayList<>();
-        for (int i=0; i < vertexCoordsX.size();i++){
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
             allVertices.add(i);
         }
 
 
-        ArrayList<Integer> visitedVertices = new ArrayList<>(dfs(0,visited));
-
+        ArrayList<Integer> visitedVertices = new ArrayList<>(dfs(0, visited));
 
 
         allVertices.removeAll(visitedVertices);
 
 
 
-
-
-
-       // System.out.println(allVertices);
         return allVertices;
     }
+
 
 
 

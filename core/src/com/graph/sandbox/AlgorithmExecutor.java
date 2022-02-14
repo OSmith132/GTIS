@@ -65,6 +65,14 @@ public class AlgorithmExecutor implements Screen {
 
     public AlgorithmExecutor(final String graph_name){
 
+        if (Objects.equals(configArray[1], "fullscreen")) {
+            resolutionW = Gdx.graphics.getWidth();
+            resolutionH = Gdx.graphics.getHeight();
+        }
+
+
+
+
         currentGraphName = graph_name.substring(0, graph_name.length() - 6);
 
         FileHandle graphFile = Gdx.files.local("core/assets/Saved Graphs/" + currentGraphName + ".graph");  //  maybe change back to graph_name
@@ -151,23 +159,10 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle2.png")));
         Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
-        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        Rectangle.setPosition(0, -1);
+        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f) + 50);
+        Rectangle.setPosition(-50, -1);
         stage.addActor(Rectangle);
 
 
@@ -177,10 +172,12 @@ public class AlgorithmExecutor implements Screen {
 
 
 
+
+
         final TextButton dijkstraButton = new TextButton(("Dijkstra's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
-        dijkstraButton.setHeight(Gdx.graphics.getHeight() * (0.1f));
+        dijkstraButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         dijkstraButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
-        dijkstraButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
+        dijkstraButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.86f)));
         stage.addActor(dijkstraButton);
 
         dijkstraButton.addListener(new ClickListener() {
@@ -191,6 +188,53 @@ public class AlgorithmExecutor implements Screen {
 
             }
         });
+
+
+
+
+
+        final TextButton primsButton = new TextButton(("Prims's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
+        primsButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        primsButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        primsButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.75f)));
+        stage.addActor(primsButton);
+
+        primsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                //Run Prims's
+
+            }
+        });
+
+
+
+
+        final TextButton kruskalButton = new TextButton(("Kruskal's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
+        kruskalButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        kruskalButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        kruskalButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.64f)));
+        stage.addActor(kruskalButton);
+
+        kruskalButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                //Run Prims's
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -314,10 +358,6 @@ public class AlgorithmExecutor implements Screen {
 
 
     private void drawExistingVertex() {
-
-
-
-
 
         for (int i = 0; i < vertexCoordsX.size(); i++) {
             sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -506,6 +546,10 @@ public class AlgorithmExecutor implements Screen {
         }
 
     }
+
+
+
+
 
 
 

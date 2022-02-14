@@ -60,10 +60,10 @@ public class MainMenu implements Screen {
         stage.addActor(title);
 
 
-        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle1.png")));
+        Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle2.png")));
         Rectangle.setHeight(Gdx.graphics.getHeight() + 1);
-        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.25f));
-        Rectangle.setPosition(0, -1);
+        Rectangle.setWidth(Gdx.graphics.getWidth() * (0.25f) + 50);
+        Rectangle.setPosition(-50, -1);
         stage.addActor(Rectangle);
 
 
