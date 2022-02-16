@@ -59,19 +59,12 @@ public class AlgorithmExecutor implements Screen {
     String currentGraphName;
 
 
-
-
-
-
-
-    public AlgorithmExecutor(final String graph_name){
+    public AlgorithmExecutor(final String graph_name) {
 
         if (Objects.equals(configArray[1], "fullscreen")) {
             resolutionW = Gdx.graphics.getWidth();
             resolutionH = Gdx.graphics.getHeight();
         }
-
-
 
 
         currentGraphName = graph_name.substring(0, graph_name.length() - 6);
@@ -135,29 +128,21 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
-            font.getData().setScale(0.5f,0.5f);
-            whiteFont.getData().setScale(0.5f,0.5f);
+            font.getData().setScale(0.4f, 0.4f);
+            whiteFont.getData().setScale(0.5f, 0.5f);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
+            whiteFont.getData().setScale(0.8f, 0.8f);
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
-            font.getData().setScale(5f/3f,5f/3f);
-            whiteFont.getData().setScale(5f/3f,5f/3f);
+            font.getData().setScale(4f / 3f, 4f / 3f);
+            whiteFont.getData().setScale(4f / 3f, 4f / 3f);
         }
 
 
-
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
-
-
-
-
-
-
-
 
 
         Image Rectangle = new Image(new Texture(Gdx.files.internal("rectangle2.png")));
@@ -165,14 +150,6 @@ public class AlgorithmExecutor implements Screen {
         Rectangle.setWidth(Gdx.graphics.getWidth() * (0.2f) + 50);
         Rectangle.setPosition(-50, -1);
         stage.addActor(Rectangle);
-
-
-
-
-
-
-
-
 
 
         final TextButton dijkstraButton = new TextButton(("Dijkstra's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
@@ -191,9 +168,6 @@ public class AlgorithmExecutor implements Screen {
         });
 
 
-
-
-
         final TextButton primsButton = new TextButton(("Prims's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
         primsButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         primsButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
@@ -204,12 +178,12 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                //Run Prims's
+
+                primsAlg(0);
+
 
             }
         });
-
-
 
 
         final TextButton kruskalButton = new TextButton(("Kruskal's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
@@ -222,25 +196,10 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                //Run Prims's
+                //Run Kruskals's
 
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         final TextButton sandboxButton = new TextButton(("Edit Graph"), buttonSkin, "maroon");
@@ -253,15 +212,12 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox(currentGraphName + ".graph",false));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Sandbox(currentGraphName + ".graph", false));
 
             }
 
 
         });
-
-
-
 
 
         final Window exitBox = new Window("Are you sure you want to exit?", buttonSkin, "maroon");
@@ -318,12 +274,7 @@ public class AlgorithmExecutor implements Screen {
         });
 
 
-
     }
-
-
-
-
 
 
     @Override
@@ -344,29 +295,21 @@ public class AlgorithmExecutor implements Screen {
 
         drawExistingEdge();
 
+        if (visitedEdgeListFrom.size() > 0)
+            drawFinishedAlgEdges();
+
+
         drawFloatValues();
 
         drawExistingVertex();
-
 
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
 
 
-            primsAlg(0);
-
-
-
-
-//            ArrayList<Integer> vertices = new ArrayList<>();
-//            vertices.add(0);
-//            vertices.add(2);
-//            vertices.add(5);
-//            System.out.println(findClosestVertexPrims(vertices));
-            //graphHasCycle();
-
         }
+
 
         stage.draw();
         stage.act();
@@ -393,7 +336,6 @@ public class AlgorithmExecutor implements Screen {
                 batch.end();
             }
         }
-
 
 
     }
@@ -564,8 +506,7 @@ public class AlgorithmExecutor implements Screen {
     }
 
 
-    private void vertexSelectPointer(){
-
+    private void vertexSelectPointer() {
 
 
     }
@@ -586,7 +527,6 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-
         for (Integer connection : connections) {
             if (!visited.contains(connection)) {
 
@@ -598,89 +538,96 @@ public class AlgorithmExecutor implements Screen {
     }
 
 
+//    boolean graphHasCycle;
+//
+//    private void dfsCycle(int currentVertex, ArrayList<Integer> visited, int prevVertex, ArrayList<Integer> undirectedVisitedEdgeListFrom, ArrayList<Integer> undirectedVisitedEdgeListTo) {
+//
+//        visited.add(currentVertex);
+//
+//
+//        ArrayList<Integer> connections = new ArrayList<>();
+//        for (int i = 0; i < undirectedVisitedEdgeListFrom.size(); i++) {
+//            if (undirectedVisitedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedVisitedEdgeListTo.get(i)))
+//                connections.add(undirectedVisitedEdgeListTo.get(i));
+//        }
+//
+//        System.out.println("connections: " + connections);
+//
+//        for (Integer connection : connections) {
+//            if (!visited.contains(connection))
+//                dfsCycle(connection, visited, currentVertex, undirectedVisitedEdgeListFrom, undirectedVisitedEdgeListTo);
+//
+//            else if (connection != prevVertex) {
+//                graphHasCycle = true;
+//
+//            }
+//        }
+//
+//    }
+//
+//    private boolean graphHasCycle(ArrayList<Integer> vertexList, int newVertex, ArrayList<Integer> visitedEdgeListFrom, ArrayList<Integer> visitedEdgeListTo) {
+//
+//        ArrayList<Integer> undirectedVisitedEdgeListFrom = new ArrayList<>();
+//        ArrayList<Integer> undirectedVisitedEdgeListTo = new ArrayList<>();
+//
+//        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListFrom);
+//        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListTo);
+//        undirectedVisitedEdgeListTo.addAll(visitedEdgeListTo);
+//        undirectedVisitedEdgeListTo.addAll(visitedEdgeListFrom);
+//
+//        System.out.println(undirectedVisitedEdgeListFrom);
+//        System.out.println(undirectedVisitedEdgeListTo);
+//
+//        //  vertexList.add(newVertex);
+//
+//
+//        graphHasCycle = false;
+//        // dfsCycle(vertexList.get(0), new ArrayList<Integer>(), -1, undirectedVisitedEdgeListFrom ,undirectedVisitedEdgeListTo);
+//
+//        System.out.println(graphHasCycle);
+//
+//        return graphHasCycle;
+//
+//
+//    }
 
-    boolean graphHasCycle;
 
-    private void dfsCycle(int currentVertex, ArrayList<Integer> visited, int prevVertex, ArrayList<Integer> undirectedVisitedEdgeListFrom, ArrayList<Integer> undirectedVisitedEdgeListTo) {
+    private void drawFinishedAlgEdges() {
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(Color.LIME);
 
-        visited.add(currentVertex);
 
+        for (int i = 0; (i < visitedEdgeListFrom.size()) && (i < visitedEdgeListTo.size()); i++) {
 
-        ArrayList<Integer> connections = new ArrayList<>();
-        for (int i = 0; i < undirectedVisitedEdgeListFrom.size(); i++) {
-            if (undirectedVisitedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedVisitedEdgeListTo.get(i)))
-                connections.add(undirectedVisitedEdgeListTo.get(i));
+            sr.rectLine(vertexCoordsX.get(visitedEdgeListFrom.get(i)), vertexCoordsY.get(visitedEdgeListFrom.get(i)), vertexCoordsX.get(visitedEdgeListTo.get(i)), vertexCoordsY.get(visitedEdgeListTo.get(i)), vertexSize / 3);
+
         }
 
-        System.out.println("connections: " + connections);
-
-        for (Integer connection : connections) {
-            if (!visited.contains(connection))
-                dfsCycle(connection, visited, currentVertex, undirectedVisitedEdgeListFrom, undirectedVisitedEdgeListTo);
-
-            else if (connection != prevVertex) {
-                graphHasCycle = true;
-
-            }
-        }
-
+        sr.end();
     }
 
 
+    ArrayList<Integer> visitedEdgeListFrom = new ArrayList<>();
+    ArrayList<Integer> visitedEdgeListTo = new ArrayList<>();
 
-
-    private boolean graphHasCycle(ArrayList<Integer> vertexList, int newVertex, ArrayList<Integer> visitedEdgeListFrom,ArrayList<Integer> visitedEdgeListTo) {
-
-        ArrayList<Integer> undirectedVisitedEdgeListFrom = new ArrayList<>();
-        ArrayList<Integer> undirectedVisitedEdgeListTo = new ArrayList<>();
-
-        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListFrom);
-        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListTo);
-        undirectedVisitedEdgeListTo.addAll(visitedEdgeListTo);
-        undirectedVisitedEdgeListTo.addAll(visitedEdgeListFrom);
-
-
-
-        vertexList.add(newVertex);
-
-
-        graphHasCycle = false;
-        dfsCycle(vertexList.get(0), new ArrayList<Integer>(), -1, undirectedVisitedEdgeListFrom ,undirectedVisitedEdgeListTo);
-
-        System.out.println(graphHasCycle);
-
-        return graphHasCycle;
-
-    }
-
-
-
-
-
-    private void primsAlg(int startVertex){
+    private void primsAlg(int startVertex) {
 
         float totalWeight = 0;
         ArrayList<Integer> vertexList = new ArrayList<>();
-        ArrayList<Integer> visitedEdgeListFrom = new ArrayList<>();
-        ArrayList<Integer> visitedEdgeListTo = new ArrayList<>();
+
 
         vertexList.add(startVertex);
 
-        for (int i=0; i < vertexCoordsX.size() -1; i++) {
 
+        for (int i = 0; i < vertexCoordsX.size() - 1; i++) {
 
-            visitedEdgeListFrom.add((int)(float)findClosestVertexPrims(vertexList,visitedEdgeListFrom,visitedEdgeListTo).get(0));
-            visitedEdgeListTo.add((int)(float)findClosestVertexPrims(vertexList,visitedEdgeListFrom,visitedEdgeListTo).get(1));
-            vertexList.add((int)(float)findClosestVertexPrims(vertexList,visitedEdgeListFrom,visitedEdgeListTo).get(1));
-            totalWeight += findClosestVertexPrims(vertexList,visitedEdgeListFrom,visitedEdgeListTo).get(2);
+            visitedEdgeListFrom.add((int) (float) findClosestVertexPrims(vertexList).get(0));
+            visitedEdgeListTo.add((int) (float) findClosestVertexPrims(vertexList).get(1));
+            totalWeight += findClosestVertexPrims(vertexList).get(2);
+            vertexList.add((int) (float) findClosestVertexPrims(vertexList).get(1));
 
 
         }
-
-
-
-
-
 
         System.out.println("Path: " + vertexList);
         System.out.println("Total Weight: " + totalWeight);
@@ -689,7 +636,8 @@ public class AlgorithmExecutor implements Screen {
     }
 
 
-    private ArrayList<Float> findClosestVertexPrims(ArrayList<Integer> vertexList,ArrayList<Integer> visitedEdgeListFrom,ArrayList<Integer> visitedEdgeListTo) {
+    private ArrayList<Float> findClosestVertexPrims(ArrayList<Integer> vertexList) {
+
 
         ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
         ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
@@ -700,48 +648,50 @@ public class AlgorithmExecutor implements Screen {
         undirectedEdgeListFrom.addAll(edgeListTo);
 
 
-        int closestVertex = 0;
+        int closestVertex = -1;
 
+
+        ArrayList<Integer> connectionsTo = new ArrayList<>();
+        ArrayList<Integer> connectionsFrom = new ArrayList<>();
 
         for (int k = 0; k < vertexList.size(); k++) {
             int currentVertex = vertexList.get(k);
 
 
-            ArrayList<Integer> connections = new ArrayList<>();
             for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
-                if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)) && !vertexList.contains(undirectedEdgeListTo.get(i)))
-                    connections.add(undirectedEdgeListTo.get(i));
+
+
+                if (undirectedEdgeListFrom.get(i) == currentVertex && !connectionsTo.contains(undirectedEdgeListTo.get(i)) && !vertexList.contains(undirectedEdgeListTo.get(i))) {
+                    connectionsTo.add(undirectedEdgeListTo.get(i));
+                    connectionsFrom.add(undirectedEdgeListFrom.get(i));
+                }
+
+
             }
 
 
-            //      System.out.println("list:        " + vertexList);
+        }
 
-            for (Integer connection : connections) {
 
-                int weightIndex = 0;
+        for (int currentVertex : vertexList) {
+
+
+            for (Integer connection : connectionsTo) {
+
+
+                int weightIndex = -1;
                 for (int j = 0; j < edgeListFrom.size(); j++) {
                     if ((currentVertex == edgeListFrom.get(j) && Objects.equals(connection, edgeListTo.get(j))) || (currentVertex == edgeListTo.get(j) && Objects.equals(connection, edgeListFrom.get(j)))) {
                         weightIndex = j;
                         break;
                     }
-
                 }
-//                System.out.println("\n\ni:            " + i);
-//                System.out.println("current V:    " + currentVertex);
-//                System.out.println("connectionsi: " + connections.get(i));
-//                System.out.println("From:         " + edgeListFrom + "  To:   " + edgeListTo);
-//                System.out.println("closest:      " + edgeWeightList.get(closestVertex));
-//                System.out.println("weight Index: " + weightIndex + " + " + edgeWeightList.get(weightIndex));
-//                System.out.println("new:          " + edgeWeightList.get(weightIndex) );
-//                System.out.println("Full List:    " + edgeWeightList);
-//                System.out.println("connections: " + connections);
-//                System.out.println(!vertexList.contains(connections.get(i)));
-//
-//                System.out.println("(edgeWeightList.get(weightIndex):  " + (edgeWeightList.get(weightIndex)));
-//                System.out.println("edgeWeightList.get(closestVertex): " + edgeWeightList.get(closestVertex));
-                if (closestVertex == -1 || (edgeWeightList.get(weightIndex) < edgeWeightList.get(closestVertex) && !graphHasCycle(vertexList, edgeListTo.get(weightIndex), visitedEdgeListFrom, visitedEdgeListTo))) {
+
+
+                if (closestVertex == -1 || (weightIndex != -1 && (edgeWeightList.get(weightIndex) < edgeWeightList.get(closestVertex)))) {
                     closestVertex = weightIndex;
                 }
+
             }
 
         }
@@ -762,11 +712,6 @@ public class AlgorithmExecutor implements Screen {
 
 
     }
-
-
-
-
-
 
 
     @Override
