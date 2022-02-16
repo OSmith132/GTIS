@@ -845,6 +845,9 @@ public class Sandbox implements Screen {
 
 
 
+
+
+
         final Window popupBox = new Window("", buttonSkin, "maroon");
         popupBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         popupBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
@@ -869,16 +872,27 @@ public class Sandbox implements Screen {
 
 
         final Label popupLabel = new Label("Please fully connect the graph first",buttonSkin,"error");
-        popupBox.add(popupLabel).pad(Value.percentWidth(0.4f, popupBox));
+        popupBox.add(popupLabel).padTop(Value.percentWidth(0.05f, popupBox));
 
+        popupBox.row();
 
-
+        final TextButton popupCloseButton = new TextButton("Ok",buttonSkin,"maroon");
+        popupCloseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                popupBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+        popupBox.add(popupCloseButton).height(Value.percentHeight(0.2f, popupBox)).width(Value.percentWidth(0.4f, popupBox)).pad(Value.percentWidth(0.05f, popupBox));
 
 
 
 
 
         stage.addActor(popupBox);
+
+
 
 
 
