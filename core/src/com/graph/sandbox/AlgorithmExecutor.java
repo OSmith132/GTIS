@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 
@@ -29,6 +30,8 @@ public class AlgorithmExecutor implements Screen {
     SpriteBatch batch = new SpriteBatch();
     BitmapFont font = new BitmapFont(Gdx.files.internal("font.fnt"));
     BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("whiteFont.fnt"));
+    BitmapFont greenFont = new BitmapFont(Gdx.files.internal("greenFont.fnt"));
+    BitmapFont redFont = new BitmapFont(Gdx.files.internal("redFont.fnt"));
     GlyphLayout layout = new GlyphLayout();
 
     private boolean showVertexNumbers = true;
@@ -38,12 +41,23 @@ public class AlgorithmExecutor implements Screen {
 
     private int lastVertexClicked = -1;
 
+    private boolean runningPrims = false;
+    private boolean runningKruskals = false;
+    private boolean runningDijkstras = false;
+
+    private boolean primsButtonClicked = false;
+    private boolean kruskalsButtonClicked = false;
+    private boolean dijkstrasButtonClicked = false;
+
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
     ArrayList<Integer> vertexCoordsY = new ArrayList<>();
 
     ArrayList<Integer> edgeListFrom = new ArrayList<>();
     ArrayList<Integer> edgeListTo = new ArrayList<>();
     ArrayList<Float> edgeWeightList = new ArrayList<>();
+
+    final Window popupBox;
+    final Label popupLabel;
 
 
     final FileHandle configFile = Gdx.files.local("core/assets/config.txt");
@@ -142,6 +156,10 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
+
+
+
+
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
 
 
@@ -162,7 +180,14 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                //Run Dijkstra's
+                if (!runningDijkstras)
+                    resetAlg();
+
+                runningPrims = false;
+                runningKruskals = false;
+                runningDijkstras = true;
+
+                dijkstrasButtonClicked = true;
 
             }
         });
@@ -178,9 +203,14 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
+                if (!runningPrims)
+                    resetAlg();
 
-                primsAlg(0);
+                runningPrims = true;
+                runningKruskals = false;
+                runningDijkstras = false;
 
+                primsButtonClicked = true;
 
             }
         });
@@ -196,10 +226,90 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                //Run Kruskals's
+                if (!runningKruskals)
+                    resetAlg();
+
+                runningPrims = false;
+                runningKruskals = true;
+                runningDijkstras = false;
+
+
+                kruskalsButtonClicked = true;
+
 
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+        popupBox = new Window("", buttonSkin, "maroon");
+        popupBox.setHeight(Gdx.graphics.getHeight() * (0.25f));
+        popupBox.setWidth(Gdx.graphics.getWidth() * (0.19f));
+        popupBox.setPosition(Gdx.graphics.getWidth() * (0.005f), Gdx.graphics.getHeight() * (0.34f));
+        popupBox.getTitleLabel().setAlignment(-1);
+        popupBox.setVisible(false);
+
+
+        TextButton popupClose = new TextButton("X", buttonSkin, "maroonX");
+        popupClose.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                popupBox.setVisible(false);
+                modalBoxVisible = false;
+                resetAlg();
+            }
+        });
+
+
+        popupBox.getTitleTable().add(popupClose).height(Value.percentHeight(.05f, popupBox)).width(Value.percentWidth(.05f, popupBox));
+        //popupBox.getTitleTable().align(Align.top | Align.right);
+
+
+        popupLabel = new Label("If you're seeing this there has been an error.",buttonSkin,"error");
+        popupBox.add(popupLabel).padTop(Value.percentWidth(0.05f, popupBox));
+
+        popupBox.row();
+
+        final TextButton popupCloseButton = new TextButton("Ok",buttonSkin,"maroon");
+        popupCloseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                popupBox.setVisible(false);
+                modalBoxVisible = false;
+                resetAlg();
+            }
+        });
+        popupBox.add(popupCloseButton).height(Value.percentHeight(0.15f, popupBox)).width(Value.percentWidth(0.3f, popupBox)).pad(Value.percentWidth(0.075f, popupBox)).padBottom(Value.percentHeight(-0.05f, popupBox));
+
+
+
+
+
+        stage.addActor(popupBox);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         final TextButton sandboxButton = new TextButton(("Edit Graph"), buttonSkin, "maroon");
@@ -267,14 +377,15 @@ public class AlgorithmExecutor implements Screen {
                 exitBox.setVisible(true);
                 modalBoxVisible = true;
 
-
             }
-
 
         });
 
-
     }
+
+
+
+
 
 
     @Override
@@ -288,7 +399,6 @@ public class AlgorithmExecutor implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         findClickedVertex();
-
 
         if (graphIsDigraph)
             drawDigraphArrows();
@@ -304,17 +414,60 @@ public class AlgorithmExecutor implements Screen {
         drawExistingVertex();
 
 
+        if (visitedEdgeListFrom.size() > 0)
+            drawFinishedAlgVertices();
+
+
+
+
+
+
+
+
+
+        if (runningPrims && primsButtonClicked){
+
+            vertexSelectPointer(true);
+
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1) {
+                primsAlg(findClickedVertex());
+                startVertex = findClickedVertex();
+                primsButtonClicked = false;
+                popupBox.setVisible(true);
+            }
+        }
+
+
+
+
+        if (runningKruskals && kruskalsButtonClicked) {
+
+            kruskalAlg();
+            startVertex = -1;
+            kruskalsButtonClicked = false;
+            popupBox.setVisible(true);
+
+        }
+
+
+
+
+
+
+
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
 
 
         }
 
-
         stage.draw();
         stage.act();
 
     }
+
+
 
     private void drawExistingVertex() {
 
@@ -505,9 +658,19 @@ public class AlgorithmExecutor implements Screen {
         return lastVertexClicked;
     }
 
+    private void vertexSelectPointer(boolean startVertex) {
+        batch.begin();
 
-    private void vertexSelectPointer() {
+        if (startVertex){
+            layout.setText(font, "Start");
+            greenFont.draw(batch, "Start", Gdx.input.getX() + 15, (Gdx.graphics.getHeight() - Gdx.input.getY()));
+        }
+        else{
+            layout.setText(font, "End");
+            redFont.draw(batch, "End", Gdx.input.getX() + 15, (Gdx.graphics.getHeight() - Gdx.input.getY()));
+        }
 
+        batch.end();
 
     }
 
@@ -537,101 +700,147 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
-//    boolean graphHasCycle;
-//
-//    private void dfsCycle(int currentVertex, ArrayList<Integer> visited, int prevVertex, ArrayList<Integer> undirectedVisitedEdgeListFrom, ArrayList<Integer> undirectedVisitedEdgeListTo) {
-//
-//        visited.add(currentVertex);
-//
-//
-//        ArrayList<Integer> connections = new ArrayList<>();
-//        for (int i = 0; i < undirectedVisitedEdgeListFrom.size(); i++) {
-//            if (undirectedVisitedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedVisitedEdgeListTo.get(i)))
-//                connections.add(undirectedVisitedEdgeListTo.get(i));
-//        }
-//
-//        System.out.println("connections: " + connections);
-//
-//        for (Integer connection : connections) {
-//            if (!visited.contains(connection))
-//                dfsCycle(connection, visited, currentVertex, undirectedVisitedEdgeListFrom, undirectedVisitedEdgeListTo);
-//
-//            else if (connection != prevVertex) {
-//                graphHasCycle = true;
-//
-//            }
-//        }
-//
-//    }
-//
-//    private boolean graphHasCycle(ArrayList<Integer> vertexList, int newVertex, ArrayList<Integer> visitedEdgeListFrom, ArrayList<Integer> visitedEdgeListTo) {
-//
-//        ArrayList<Integer> undirectedVisitedEdgeListFrom = new ArrayList<>();
-//        ArrayList<Integer> undirectedVisitedEdgeListTo = new ArrayList<>();
-//
-//        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListFrom);
-//        undirectedVisitedEdgeListFrom.addAll(visitedEdgeListTo);
-//        undirectedVisitedEdgeListTo.addAll(visitedEdgeListTo);
-//        undirectedVisitedEdgeListTo.addAll(visitedEdgeListFrom);
-//
-//        System.out.println(undirectedVisitedEdgeListFrom);
-//        System.out.println(undirectedVisitedEdgeListTo);
-//
-//        //  vertexList.add(newVertex);
-//
-//
-//        graphHasCycle = false;
-//        // dfsCycle(vertexList.get(0), new ArrayList<Integer>(), -1, undirectedVisitedEdgeListFrom ,undirectedVisitedEdgeListTo);
-//
-//        System.out.println(graphHasCycle);
-//
-//        return graphHasCycle;
-//
-//
-//    }
-
-
     private void drawFinishedAlgEdges() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.LIME);
 
 
-        for (int i = 0; (i < visitedEdgeListFrom.size()) && (i < visitedEdgeListTo.size()); i++) {
-
+        for (int i = 0; i < visitedEdgeListFrom.size(); i++) {
             sr.rectLine(vertexCoordsX.get(visitedEdgeListFrom.get(i)), vertexCoordsY.get(visitedEdgeListFrom.get(i)), vertexCoordsX.get(visitedEdgeListTo.get(i)), vertexCoordsY.get(visitedEdgeListTo.get(i)), vertexSize / 3);
 
         }
 
         sr.end();
+
+    }
+
+    private void drawFinishedAlgVertices(){
+
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+
+        if (startVertex != -1){
+            sr.setColor(Color.GREEN);
+            sr.circle(vertexCoordsX.get(startVertex), vertexCoordsY.get(startVertex), vertexSize);
+        }
+
+        if (endVertex != -1){
+            sr.setColor(Color.FIREBRICK);
+            sr.circle(vertexCoordsX.get(endVertex), vertexCoordsY.get(endVertex), vertexSize);
+        }
+
+        sr.end();
+
+
+
+        if (showVertexNumbers && startVertex != -1) {
+
+            String letter = String.valueOf(startVertex);
+            //letter = String.valueOf((char)(65+i));
+
+            layout.setText(whiteFont, letter);   // add label here
+            float fontWidth = layout.width;
+            float fontHeight = layout.height;
+            batch.begin();
+            whiteFont.draw(batch, letter, vertexCoordsX.get(startVertex) - 0.5f * fontWidth, vertexCoordsY.get(startVertex) + 0.5f * fontHeight);
+            batch.end();
+        }
+
+        if (showVertexNumbers && endVertex != -1) {
+
+            String letter = String.valueOf(endVertex);
+            //letter = String.valueOf((char)(65+i));
+
+            layout.setText(whiteFont, letter);   // add label here
+            float fontWidth = layout.width;
+            float fontHeight = layout.height;
+            batch.begin();
+            whiteFont.draw(batch, letter, vertexCoordsX.get(endVertex) - 0.5f * fontWidth, vertexCoordsY.get(endVertex) + 0.5f * fontHeight);
+            batch.end();
+        }
+
+
+
     }
 
 
+    private void resetAlg(){
+        visitedEdgeListFrom.clear();
+        visitedEdgeListTo.clear();
+        startVertex = -1;
+        endVertex = -1;
+        runningPrims = false;
+        runningKruskals = false;
+        runningDijkstras = false;
+
+    }
+
+
+
+    ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
+    ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
     ArrayList<Integer> visitedEdgeListFrom = new ArrayList<>();
     ArrayList<Integer> visitedEdgeListTo = new ArrayList<>();
+    int startVertex = -1;
+    int endVertex = -1;
 
     private void primsAlg(int startVertex) {
 
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
+        visitedEdgeListFrom.clear();
+        visitedEdgeListTo.clear();
+
         float totalWeight = 0;
         ArrayList<Integer> vertexList = new ArrayList<>();
-
 
         vertexList.add(startVertex);
 
 
         for (int i = 0; i < vertexCoordsX.size() - 1; i++) {
 
-            visitedEdgeListFrom.add((int) (float) findClosestVertexPrims(vertexList).get(0));
-            visitedEdgeListTo.add((int) (float) findClosestVertexPrims(vertexList).get(1));
-            totalWeight += findClosestVertexPrims(vertexList).get(2);
-            vertexList.add((int) (float) findClosestVertexPrims(vertexList).get(1));
+            ArrayList<Float> primsArray = new ArrayList<>(findClosestVertexPrims(vertexList));
+
+            visitedEdgeListFrom.add((int) (float) primsArray.get(0));
+            visitedEdgeListTo.add((int) (float) primsArray.get(1));
+            totalWeight += primsArray.get(2);
+            vertexList.add((int) (float) primsArray.get(1));
 
 
         }
 
+
+
+
+        String dispVertexList = vertexList.toString();
+        dispVertexList = dispVertexList.replace("[","");
+        dispVertexList = dispVertexList.replace("]","");
+
+        layout.setText(whiteFont, dispVertexList);
+        float width = layout.width - Gdx.graphics.getWidth() * 0.19f;
+
+        if (width > 0 && width < Gdx.graphics.getWidth())
+            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f + width );
+        else if (width > Gdx.graphics.getWidth()/2f){
+            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+            dispVertexList = dispVertexList.substring(0,15) + "...";
+        }
+        else
+            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+
+        popupBox.getTitleLabel().setText("Prim's Algorithm:");
+        popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
+
+
         System.out.println("Path: " + vertexList);
         System.out.println("Total Weight: " + totalWeight);
-
 
     }
 
@@ -639,13 +848,6 @@ public class AlgorithmExecutor implements Screen {
     private ArrayList<Float> findClosestVertexPrims(ArrayList<Integer> vertexList) {
 
 
-        ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
-        ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
-
-        undirectedEdgeListTo.addAll(edgeListTo);
-        undirectedEdgeListTo.addAll(edgeListFrom);
-        undirectedEdgeListFrom.addAll(edgeListFrom);
-        undirectedEdgeListFrom.addAll(edgeListTo);
 
 
         int closestVertex = -1;
@@ -712,6 +914,126 @@ public class AlgorithmExecutor implements Screen {
 
 
     }
+
+
+
+
+
+    private void kruskalAlg(){
+
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
+
+
+        visitedEdgeListFrom.clear();
+        visitedEdgeListTo.clear();
+
+        float totalWeight = 0;
+
+
+
+
+        for (int i = 0; i < vertexCoordsX.size() -1; i++) {
+            ArrayList<Float> kruskalArray = new ArrayList<>(findNextEdgeKruskals());
+
+            visitedEdgeListFrom.add((int)(float)kruskalArray.get(0));
+            visitedEdgeListTo.add((int)(float)kruskalArray.get(1));
+            totalWeight += kruskalArray.get(2);
+
+
+        }
+
+
+
+
+
+
+        System.out.println("Path: " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
+        System.out.println("Total Weight: " + totalWeight);
+
+    }
+
+
+
+
+
+    private ArrayList<Float> findNextEdgeKruskals() {
+
+
+        int smallestEdgeIndex = -1;
+
+        ArrayList<Float> undirectedEdgeWeightList = new ArrayList<>(edgeWeightList);
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+
+        System.out.println(undirectedEdgeWeightList);
+
+        for (int i=0; i < undirectedEdgeWeightList.size(); i++){
+
+
+            boolean edgeExists = false;
+            for(int k=0; k < visitedEdgeListFrom.size(); k++) {
+                    if ((Objects.equals(visitedEdgeListFrom.get(k), undirectedEdgeListFrom.get(i)) && Objects.equals(visitedEdgeListTo.get(k), undirectedEdgeListTo.get(i)))  ||  (Objects.equals(visitedEdgeListFrom.get(k), undirectedEdgeListTo.get(i)) && Objects.equals(visitedEdgeListTo.get(k), undirectedEdgeListFrom.get(i)))) {
+                        edgeExists = true;
+                        break;
+                    }
+            }
+
+
+
+            if ( smallestEdgeIndex == -1 || ( undirectedEdgeWeightList.get(i) < undirectedEdgeWeightList.get(smallestEdgeIndex) && !edgeExists &&  !graphHasCycle(i) )){
+
+                if(!edgeExists)
+                    smallestEdgeIndex = i;
+
+            }
+        }
+
+
+        int smallestEdgeFrom = undirectedEdgeListFrom.get(smallestEdgeIndex);
+        int smallestEdgeTo = undirectedEdgeListTo.get(smallestEdgeIndex);
+        float smallestWeight = undirectedEdgeWeightList.get(smallestEdgeIndex);
+
+
+
+
+        ArrayList<Float> returnList = new ArrayList<>();
+
+        returnList.add((float)smallestEdgeFrom);
+        returnList.add((float)smallestEdgeTo);
+        returnList.add(smallestWeight);
+
+        return returnList;  // from: 0    To:   1    Weight:   2
+
+    }
+
+
+
+
+
+    private boolean graphHasCycle(int edgeIndexAdded){
+
+        ArrayList<Integer> newVisitedEdgeListFrom = new ArrayList<>(edgeListFrom);
+        ArrayList<Integer> newVisitedEdgeListTo = new ArrayList<>(edgeListTo);
+
+        newVisitedEdgeListFrom.add(edgeListFrom.get(edgeIndexAdded));
+        newVisitedEdgeListTo.add(edgeListTo.get(edgeIndexAdded));
+
+
+
+        return false;
+    }
+
+
+
+
+
 
 
     @Override

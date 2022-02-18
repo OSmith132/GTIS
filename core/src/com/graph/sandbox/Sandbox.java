@@ -34,7 +34,7 @@ public class Sandbox implements Screen {
     GlyphLayout layout = new GlyphLayout();
 
 
-    private boolean showVertexNumbers = false;
+    private boolean showVertexNumbers = true;
     private boolean showEdgeWeights = true;
 
 
@@ -119,7 +119,7 @@ public class Sandbox implements Screen {
                 String[] intPart = parts[parts.length-1].split("\\)");
                 System.out.println(intPart[0]);
                 System.out.println(Integer.parseInt(intPart[0]));
-                graph_name = graph_name.substring(0, graph_name.length() -( 3 +    (int)Math.floor(       (Integer.parseInt(intPart[0]))/10f)        )        ) + "(" + i + ")";
+                graph_name = graph_name.substring(0, graph_name.length() -( 3 +    (int)Math.floor(       (  String.valueOf(Integer.parseInt(intPart[0])).length() -1  ))        )        ) + "(" + i + ")";
 
 
 
@@ -306,17 +306,20 @@ public class Sandbox implements Screen {
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
             font.getData().setScale(0.5f,0.5f);
-            whiteFont.getData().setScale(0.5f,0.5f);
+            whiteFont.getData().setScale(0.4f,0.4f);
             maxVertices = 400;
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
             maxVertices = 100;
+            whiteFont.getData().setScale(0.8f,0.8f);
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
             font.getData().setScale(5f/3f,5f/3f);
-            whiteFont.getData().setScale(5f/3f,5f/3f);
+            whiteFont.getData().setScale(4f/3f,4f/3f);
             maxVertices = 50;
         }
+
+
 
 
         final Label errorText = new Label("*Sorry, this feature has not yet been implemented", buttonSkin, "error");
@@ -2044,6 +2047,7 @@ public class Sandbox implements Screen {
 
         return allVertices;
     }
+
 
 
 
