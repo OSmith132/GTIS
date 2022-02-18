@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.util.Objects;
-import java.util.Scanner;
 
 
 public class Main extends Game {
