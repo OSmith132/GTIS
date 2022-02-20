@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 
@@ -408,6 +410,9 @@ public class AlgorithmExecutor implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
 
+         //   bfsDijkstra(new ArrayList<Integer>() ,0,5);
+
+            dijkstraAlg(0, 5);
 
         }
 
@@ -619,32 +624,6 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-//    private void dfs(int currentVertex, ArrayList<Integer> visited) {
-//
-//        ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
-//        ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
-//
-//
-//        visited.add(currentVertex);
-//
-//
-//        ArrayList<Integer> connections = new ArrayList<>();
-//        for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
-//            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)))
-//                connections.add(undirectedEdgeListTo.get(i));
-//        }
-//
-//
-//        for (Integer connection : connections) {
-//            if (!visited.contains(connection)) {
-//
-//                dfs(connection, visited);
-//            }
-//        }
-//
-//
-//    }
-
     private void drawFinishedAlgEdges() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(Color.LIME);
@@ -720,6 +699,9 @@ public class AlgorithmExecutor implements Screen {
 
     ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
     ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
+
+    ArrayList<Float> undirectedEdgeWeightList = new ArrayList<>();
+
     ArrayList<Integer> visitedEdgeListFrom = new ArrayList<>();
     ArrayList<Integer> visitedEdgeListTo = new ArrayList<>();
     int startVertex = -1;
@@ -784,7 +766,6 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     private ArrayList<Float> findClosestVertexPrims(ArrayList<Integer> vertexList) {
 
 
@@ -819,13 +800,16 @@ public class AlgorithmExecutor implements Screen {
             for (Integer connection : connectionsTo) {
 
 
-                int weightIndex = -1;
-                for (int j = 0; j < edgeListFrom.size(); j++) {
-                    if ((currentVertex == edgeListFrom.get(j) && Objects.equals(connection, edgeListTo.get(j))) || (currentVertex == edgeListTo.get(j) && Objects.equals(connection, edgeListFrom.get(j)))) {
-                        weightIndex = j;
-                        break;
-                    }
-                }
+//                int weightIndex = -1;
+//                for (int j = 0; j < edgeListFrom.size(); j++) {
+//                    if ((currentVertex == edgeListFrom.get(j) && Objects.equals(connection, edgeListTo.get(j))) || (currentVertex == edgeListTo.get(j) && Objects.equals(connection, edgeListFrom.get(j)))) {
+//                        weightIndex = j;
+//                        break;
+//                    }
+//                }
+
+
+                int weightIndex = findWeightIndex(currentVertex, connection);
 
 
                 if (closestVertex == -1 || (weightIndex != -1 && (edgeWeightList.get(weightIndex) < edgeWeightList.get(closestVertex)))) {
@@ -853,7 +837,6 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     private void kruskalAlg() {
 
 
@@ -865,6 +848,9 @@ public class AlgorithmExecutor implements Screen {
         undirectedEdgeListFrom.addAll(edgeListFrom);
         undirectedEdgeListFrom.addAll(edgeListTo);
 
+        undirectedEdgeWeightList.clear();
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+        undirectedEdgeWeightList.addAll(edgeWeightList);
 
         visitedEdgeListFrom.clear();
         visitedEdgeListTo.clear();
@@ -916,14 +902,11 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     private ArrayList<Float> findNextEdgeKruskals(ArrayList<Integer> vertexList) {
 
 
         int smallestEdgeIndex = -1;
 
-        ArrayList<Float> undirectedEdgeWeightList = new ArrayList<>(edgeWeightList);
-        undirectedEdgeWeightList.addAll(edgeWeightList);
 
 
         for (int i = 0; i < undirectedEdgeWeightList.size(); i++) {
@@ -960,11 +943,9 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     boolean graphHasCycle;
     ArrayList<Integer> newVisitedEdgeListFrom = new ArrayList<>();
     ArrayList<Integer> newVisitedEdgeListTo = new ArrayList<>();
-
 
     private boolean graphHasCycle(int edgeIndexAdded) {
 
@@ -995,7 +976,6 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     private void dfsCycle(int currentVertex, ArrayList<Integer> visited, int lastVertex) {
 
 
@@ -1021,6 +1001,222 @@ public class AlgorithmExecutor implements Screen {
 
 
     }
+
+
+    private int findWeightIndex(int from, int to){
+
+
+        for (int j = 0; j < edgeListFrom.size(); j++) {
+            if ((from == edgeListFrom.get(j) && Objects.equals(to, edgeListTo.get(j))) || (from == edgeListTo.get(j) && Objects.equals(to, edgeListFrom.get(j)))) {
+                return j;
+            }
+        }
+        return -1;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    ArrayList<Integer> shortestWeightList = new ArrayList<>();
+
+
+    private void dijkstraAlg(int startVertex, int endVertex) {
+
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+        undirectedEdgeWeightList.clear();
+
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        if (!graphIsDigraph) {
+            undirectedEdgeListFrom.addAll(edgeListFrom);
+            undirectedEdgeListFrom.addAll(edgeListTo);
+        }
+
+
+
+        tempLabels.clear();
+        permLabels.clear();
+
+        ArrayList<Float> negativeArray = new ArrayList<>();
+        for (int i=0; i < vertexCoordsX.size(); i++)
+            negativeArray.add(0f);
+
+
+        tempLabels.addAll(negativeArray);
+        permLabels.addAll(negativeArray);
+
+        System.out.println(bfsDijkstra(new ArrayList<Integer>(),-1,startVertex,endVertex));
+
+
+
+
+
+       // System.out.println("Path: " + shortestPathList);
+       // System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
+       // System.out.println("Total Weight: " + totalWeight);
+
+
+    }
+
+
+
+
+
+
+
+
+
+    ArrayList<Integer> sortedConnections = new ArrayList<>();
+    ArrayList<Float> sortedConnectionWeight = new ArrayList<>();
+
+    ArrayList<Float> tempLabels = new ArrayList<>();
+    ArrayList<Float> permLabels = new ArrayList<>();
+
+    private ArrayList<Integer> bfsDijkstra(ArrayList<Integer> visited,int lastVertex, int currentVertex,int endVertex){
+
+
+
+        visited.add(currentVertex);
+        if (lastVertex == -1) {
+            tempLabels.set(currentVertex, 0f);
+            permLabels.set(currentVertex, 0f);
+        }else {
+            permLabels.set(currentVertex, tempLabels.get(currentVertex));
+            sortedConnections.remove(0);
+            sortedConnectionWeight.remove(0);
+        }
+
+
+        System.out.println(tempLabels);
+        System.out.println(permLabels);
+
+
+        if (currentVertex == endVertex){
+            return visited;
+        }
+
+
+
+
+
+        ArrayList<Integer> connections = new ArrayList<>();
+        ArrayList<Float> connectionWeight = new ArrayList<>();
+        for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)) && !visited.contains(undirectedEdgeListTo.get(i)) && !sortedConnections.contains(undirectedEdgeListTo.get(i))) {
+                connections.add(undirectedEdgeListTo.get(i));
+                connectionWeight.add(undirectedEdgeWeightList.get(i) + permLabels.get(currentVertex));
+            }
+        }
+
+
+
+
+
+        System.out.println(connections + "  " + connectionWeight);
+
+
+        if (sortedConnectionWeight.size() > 0) {
+
+            for (int i = 0; i < connectionWeight.size(); i++) {
+
+                for (int j = 0; j < sortedConnectionWeight.size(); j++) {
+                    if (connectionWeight.get(i) < sortedConnectionWeight.get(j)) {
+                        sortedConnectionWeight.add(j, connectionWeight.get(i));
+                        sortedConnections.add(j, connections.get(i));
+                        break;
+                    }
+                }
+
+                if (!sortedConnections.contains(connections.get(i))){
+                    sortedConnectionWeight.add(connectionWeight.get(i));
+                    sortedConnections.add(connections.get(i));
+                }
+
+            }
+
+        }else {
+
+            sortedConnectionWeight.addAll(connectionWeight);
+            Collections.sort(sortedConnectionWeight);
+
+            for (float connection : sortedConnectionWeight) {
+                sortedConnections.add(connections.get(connectionWeight.indexOf(connection)));
+                connectionWeight.set(connectionWeight.indexOf(connection),-1f);
+            }
+
+        }
+
+
+
+
+
+
+        System.out.println(sortedConnections);
+        System.out.println(sortedConnectionWeight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        for (int connection : sortedConnections){
+
+            if (lastVertex == -1 || tempLabels.get(connection) == 0)
+                tempLabels.set(connection,  edgeWeightList.get(findWeightIndex(currentVertex, connection)));
+            else {
+                for (int vertex : visited) {
+
+                    if (findWeightIndex(vertex, connection) != -1) {
+                        if (tempLabels.get(connection) < tempLabels.get(vertex) + edgeWeightList.get(findWeightIndex(vertex, connection)))
+                            tempLabels.set(connection, tempLabels.get(vertex) + edgeWeightList.get(findWeightIndex(vertex, connection)));
+                    }
+
+                }
+            }// tempLabels are not updating
+        }
+
+
+
+
+
+        bfsDijkstra(visited,currentVertex,sortedConnections.get(0),endVertex);
+
+
+
+        return visited;
+    }
+
+
+
+
+
+
+
 
 
     @Override
