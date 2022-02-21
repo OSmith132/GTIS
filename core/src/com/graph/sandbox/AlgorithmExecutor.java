@@ -1112,6 +1112,10 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
+        sortedConnectionWeight.clear();
+        sortedConnections.clear();
+
+
         shortestPathList.clear();
 
         visitedEdgeListFrom.clear();
