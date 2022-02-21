@@ -828,11 +828,8 @@ public class AlgorithmExecutor implements Screen {
         dispVertexList = dispVertexList.replace("]", "");
 
         layout.setText(whiteFont, dispVertexList);
-        float width = layout.width - Gdx.graphics.getWidth() * 0.19f;
 
-        if (width > 0 && width < Gdx.graphics.getWidth())
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f + width);
-        else if (width > Gdx.graphics.getWidth() / 2f) {
+        if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
             popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
             dispVertexList = dispVertexList.substring(0, 15) + "...";
         } else
@@ -953,11 +950,8 @@ public class AlgorithmExecutor implements Screen {
         dispVertexList = dispVertexList.replace("]", "");
 
         layout.setText(whiteFont, dispVertexList);
-        float width = layout.width - Gdx.graphics.getWidth() * 0.19f;
 
-        if (width > 0 && width < Gdx.graphics.getWidth())
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f + width);
-        else if (width > Gdx.graphics.getWidth() / 2f) {
+        if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
             popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
             dispVertexList = dispVertexList.substring(0, 15) + "...";
         } else
@@ -1180,9 +1174,8 @@ public class AlgorithmExecutor implements Screen {
             layout.setText(whiteFont, dispVertexList);
             float width = layout.width - Gdx.graphics.getWidth() * 0.19f;
 
-            if (width > 0 && width < Gdx.graphics.getWidth())
-                popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f + width);
-            else if (width > Gdx.graphics.getWidth() / 2f) {
+
+            if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
                 popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
                 dispVertexList = dispVertexList.substring(0, 15) + "...";
             } else

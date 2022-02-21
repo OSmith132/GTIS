@@ -1,5 +1,5 @@
-1280 x 720
+1366 x 768
 windowed
 vertex
 edge
-small
+medium
