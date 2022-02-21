@@ -373,7 +373,7 @@ public class AlgorithmExecutor implements Screen {
 
         findClickedVertex();
 
-        if (graphIsDigraph)
+        if (graphIsDigraph && !runningKruskals && !runningPrims)
             drawDigraphArrows();
 
         drawExistingEdge();
@@ -462,6 +462,7 @@ public class AlgorithmExecutor implements Screen {
         stage.act();
 
     }
+
 
 
 
@@ -680,7 +681,7 @@ public class AlgorithmExecutor implements Screen {
 
         sr.end();
 
-        if (graphIsDigraph){    //new bit
+        if (graphIsDigraph && !runningKruskals && !runningPrims){
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(Color.LIME);
 
@@ -1260,10 +1261,6 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-        System.out.println(undirectedEdgeListFrom + "  " + undirectedEdgeListTo);
-        System.out.println(connections + "  " + connectionWeight);
-
-
         if (sortedConnectionWeight.size() > 0) {
 
             for (int i = 0; i < connectionWeight.size(); i++) {
@@ -1299,10 +1296,6 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-        System.out.println(sortedConnections);
-        System.out.println(sortedConnectionWeight);
-
-
 
 
 
@@ -1330,8 +1323,6 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-        System.out.println(tempLabels);
-        System.out.println(permLabels);
 
         if (sortedConnections.size() == 0){
             return visited;

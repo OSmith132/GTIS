@@ -117,8 +117,6 @@ public class Sandbox implements Screen {
 
                 String[] parts = graph_name.split("\\(" );
                 String[] intPart = parts[parts.length-1].split("\\)");
-                System.out.println(intPart[0]);
-                System.out.println(Integer.parseInt(intPart[0]));
                 graph_name = graph_name.substring(0, graph_name.length() -( 3 +    (int)Math.floor(       (  String.valueOf(Integer.parseInt(intPart[0])).length() -1  ))        )        ) + "(" + i + ")";
 
 
