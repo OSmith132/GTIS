@@ -585,7 +585,7 @@ public class Sandbox implements Screen {
 
         populateEdgeBox.row();
 
-        ePopSlider = new Slider(0, maxEdges,1,false,buttonSkin);
+        ePopSlider = new Slider(1, maxEdges,1,false,buttonSkin);
         ePopSlider.setValue(maxEdges);
 
         ePopSlider.addListener(new ClickListener() {
@@ -1334,12 +1334,12 @@ public class Sandbox implements Screen {
                     populateEInputField.setText(String.valueOf(maxEdges - edgeListTo.size()));
                 else if (Integer.parseInt(populateEInputField.getText()) < 0)
                     populateEInputField.setText("0");
-                ePopSlider.setRange(0,maxEdges - edgeListTo.size());
+                ePopSlider.setRange(1,maxEdges - edgeListTo.size());
 
 
             }
             catch (NumberFormatException e) {
-                ePopSlider.setValue(0);
+                ePopSlider.setValue((maxEdges - edgeListTo.size()) /2f);
             //    populateEInputField.setText(Integer.toString((maxEdges - edgeListTo.size()) /2));
             }
         }

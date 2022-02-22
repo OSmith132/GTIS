@@ -452,9 +452,6 @@ public class AlgorithmExecutor implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
 
-         //   bfsDijkstra(new ArrayList<Integer>() ,0,5);
-
-            dijkstraAlg(0, 5);
 
         }
 
