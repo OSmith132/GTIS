@@ -1064,7 +1064,6 @@ public class Sandbox implements Screen {
 
                 if (saved) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                    errorText.remove();
                 } else {
 
                     saveBox.setVisible(true);

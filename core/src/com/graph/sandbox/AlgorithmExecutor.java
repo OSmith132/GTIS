@@ -37,6 +37,8 @@ public class AlgorithmExecutor implements Screen {
 
 
     private final boolean showVertexNumbers = true;
+    private final boolean showEdgeWeights = true;
+
 
     private boolean modalBoxVisible;
     private final boolean graphIsDigraph;
@@ -143,15 +145,15 @@ public class AlgorithmExecutor implements Screen {
 
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
-            font.getData().setScale(0.4f, 0.4f);
-            whiteFont.getData().setScale(0.5f, 0.5f);
+            font.getData().setScale(0.5f,0.5f);
+            whiteFont.getData().setScale(0.4f,0.4f);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
-            whiteFont.getData().setScale(0.8f, 0.8f);
+            whiteFont.getData().setScale(0.8f,0.8f);
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
-            font.getData().setScale(4f / 3f, 4f / 3f);
-            whiteFont.getData().setScale(4f / 3f, 4f / 3f);
+            font.getData().setScale(5f/3f,5f/3f);
+            whiteFont.getData().setScale(4f/3f,4f/3f);
         }
 
 
@@ -381,8 +383,8 @@ public class AlgorithmExecutor implements Screen {
         if (visitedEdgeListFrom.size() > 0)
             drawFinishedAlgEdges();
 
-
-        drawFloatValues();
+        if (showEdgeWeights)
+            drawFloatValues();
 
         drawExistingVertex();
 
