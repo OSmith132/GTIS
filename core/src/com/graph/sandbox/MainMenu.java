@@ -68,9 +68,9 @@ public class MainMenu implements Screen {
 
 
         TextButton newGraph = new TextButton("New Graph", buttonSkin, "maroon");                                                                              //New Graph Button
-        newGraph.setHeight(Gdx.graphics.getHeight() * (0.12f));
-        newGraph.setWidth(Gdx.graphics.getWidth() * (0.225f));
-        newGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.84f)));
+        newGraph.setHeight(Gdx.graphics.getHeight() * (0.11f));
+        newGraph.setWidth(Gdx.graphics.getWidth() * (0.22f));
+        newGraph.setPosition((Gdx.graphics.getWidth() * (0.0135f)), (Gdx.graphics.getHeight() * (0.84f)));
 
         newGraph.addListener(new ClickListener() {
             @Override
@@ -305,7 +305,7 @@ public class MainMenu implements Screen {
         TextButton openGraph = new TextButton("Open Graph", buttonSkin, "maroon");
         openGraph.setHeight(Gdx.graphics.getHeight() * (0.1f));
         openGraph.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        openGraph.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.72f)));
+        openGraph.setPosition((Gdx.graphics.getWidth() * (0.025f)), (Gdx.graphics.getHeight() * (0.72f)));
 
         openGraph.addListener(new ClickListener() {
             @Override
@@ -393,7 +393,7 @@ public class MainMenu implements Screen {
         TextButton Settings = new TextButton("Settings", buttonSkin, "maroon");
         Settings.setHeight(Gdx.graphics.getHeight() * (0.1f));
         Settings.setWidth(Gdx.graphics.getWidth() * (0.2f));
-        Settings.setPosition((Gdx.graphics.getWidth() * (0.125f) - Gdx.graphics.getWidth() * (0.1125f)), (Gdx.graphics.getHeight() * (0.60f)));
+        Settings.setPosition((Gdx.graphics.getWidth() * (0.025f)), (Gdx.graphics.getHeight() * (0.60f)));
 
 
         {//--------------------------------------------------------------

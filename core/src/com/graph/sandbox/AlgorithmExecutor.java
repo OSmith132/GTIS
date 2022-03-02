@@ -1172,8 +1172,6 @@ public class AlgorithmExecutor implements Screen {
             dispVertexList = dispVertexList.replace("]", "");
 
             layout.setText(whiteFont, dispVertexList);
-            float width = layout.width - Gdx.graphics.getWidth() * 0.19f;
-
 
             if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
                 popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
