@@ -1269,6 +1269,9 @@ public class Sandbox implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+
+
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.V) && !modalBoxVisible) {
             newEdgeClicked = false;
             newVertexClicked = true;
@@ -1378,10 +1381,7 @@ public class Sandbox implements Screen {
 
 
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
-            System.out.println("Well Done! You've found the debug button!");
 
-        }
 
 
         placeNewEdge();
@@ -1401,6 +1401,16 @@ public class Sandbox implements Screen {
 
         binAnimation();
 
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
+            System.out.println("Well Done! You've found the debug button!");
+        }
+
+
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && !modalBoxVisible) {
+            eraseVertex();
+        }
 
         savedLabel.setVisible(saved && !firstTimeSave && vertexCoordsX.size() != 0);
 
@@ -1881,6 +1891,14 @@ public class Sandbox implements Screen {
         Random rand = new Random();
 
 
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
 
         for (int i = 0; i < vertexCoordsX.size(); i++) {
 
@@ -2049,7 +2067,44 @@ public class Sandbox implements Screen {
 
 
 
+    public void eraseVertex() {
 
+        int vertex = findClickedVertex();
+
+        if (vertex != -1 && !newVertexClicked && !newEdgeClicked) {
+
+            vertexCoordsX.remove(vertex);
+            vertexCoordsY.remove(vertex);
+
+            for (int i = 0; i < edgeListFrom.size(); i++) {
+
+                if (edgeListFrom.get(i) == vertex  ||  edgeListTo.get(i) == vertex){
+                    edgeListFrom.remove(i);
+                    edgeListTo.remove(i);
+                    edgeWeightList.remove(i);
+
+                    i -= 1;
+
+                }
+
+            }
+
+            for (int i = 0; i < edgeListFrom.size(); i++) {
+
+                if (edgeListFrom.get(i) > vertex)
+                    edgeListFrom.set(i,edgeListFrom.get(i)-1);
+
+                if (edgeListTo.get(i) > vertex)
+                    edgeListTo.set(i,edgeListTo.get(i)-1);
+            }
+
+            lastVertexClicked = -1;
+
+            System.out.println(vertexCoordsX + "  " + vertexCoordsY + "  " + edgeListFrom + "  " + edgeListTo + "  " + edgeWeightList);
+            System.out.println(vertexCoordsX.size() + "  " + vertexCoordsY.size() + "  " + edgeListFrom.size() + "  " + edgeListTo.size() + "  " + edgeWeightList.size());
+
+        }
+    }
 
 
 

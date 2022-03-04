@@ -852,7 +852,7 @@ public class AlgorithmExecutor implements Screen {
 
 
         ArrayList<Integer> connectionsTo = new ArrayList<>();
-        ArrayList<Integer> connectionsFrom = new ArrayList<>();
+
 
         for (int k = 0; k < vertexList.size(); k++) {
             int currentVertex = vertexList.get(k);
@@ -863,7 +863,7 @@ public class AlgorithmExecutor implements Screen {
 
                 if (undirectedEdgeListFrom.get(i) == currentVertex && !connectionsTo.contains(undirectedEdgeListTo.get(i)) && !vertexList.contains(undirectedEdgeListTo.get(i))) {
                     connectionsTo.add(undirectedEdgeListTo.get(i));
-                    connectionsFrom.add(undirectedEdgeListFrom.get(i));
+
                 }
 
 
