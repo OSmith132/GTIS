@@ -2099,9 +2099,8 @@ public class Sandbox implements Screen {
             }
 
             lastVertexClicked = -1;
+            saved = false;
 
-            System.out.println(vertexCoordsX + "  " + vertexCoordsY + "  " + edgeListFrom + "  " + edgeListTo + "  " + edgeWeightList);
-            System.out.println(vertexCoordsX.size() + "  " + vertexCoordsY.size() + "  " + edgeListFrom.size() + "  " + edgeListTo.size() + "  " + edgeWeightList.size());
 
         }
     }
