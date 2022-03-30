@@ -377,6 +377,8 @@ public class MainMenu implements Screen {
 
 
 
+
+
         TextButton settingsClose = new TextButton("X", buttonSkin, "orange-smallX");
         settingsClose.addListener(new ClickListener() {
             @Override

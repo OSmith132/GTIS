@@ -1188,7 +1188,7 @@ public class Sandbox implements Screen {
                 else{
                     try{
 
-                        if (Float.parseFloat(edgeWeightInputField.getText()) > 0) {
+                        if (Float.parseFloat(edgeWeightInputField.getText()) >= 0) {
 
                             edgeWeightList.add(Float.parseFloat(edgeWeightInputField.getText()));
                             confirmEdgeWeight.setText("Ok");
@@ -1291,7 +1291,7 @@ public class Sandbox implements Screen {
 
         else {
             try {
-                if (Float.parseFloat(edgeWeightInputField.getText()) > 0)
+                if (Float.parseFloat(edgeWeightInputField.getText()) >= 0)
                     confirmEdgeWeight.setText("Ok");
                 else
                     confirmEdgeWeight.setText("---");
@@ -1985,7 +1985,7 @@ public class Sandbox implements Screen {
 
         }
 
-        return 0;
+        return 1;
 
     }
 

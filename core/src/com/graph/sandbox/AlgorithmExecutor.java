@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -20,7 +21,6 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
 
 
@@ -46,12 +46,17 @@ public class AlgorithmExecutor implements Screen {
     private boolean runningPrims = false;
     private boolean runningKruskals = false;
     private boolean runningDijkstras = false;
+    private boolean runningCpa = false;
+
+
 
     private boolean primsButtonClicked = false;
     private boolean kruskalsButtonClicked = false;
     private boolean dijkstrasButtonClicked = false;
+    private boolean cpaButtonClicked = false;
 
     private boolean firstClickDijkstra = false;
+    private boolean firstClickCpa = false;
 
     ArrayList<Integer> vertexCoordsX = new ArrayList<>();
     ArrayList<Integer> vertexCoordsY = new ArrayList<>();
@@ -183,6 +188,7 @@ public class AlgorithmExecutor implements Screen {
                 runningPrims = false;
                 runningKruskals = false;
                 runningDijkstras = true;
+                runningCpa = false;
 
                 dijkstrasButtonClicked = true;
                 firstClickDijkstra = false;
@@ -197,7 +203,7 @@ public class AlgorithmExecutor implements Screen {
         });
 
 
-        final TextButton primsButton = new TextButton(("Prims's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
+        final TextButton primsButton = new TextButton(("Prim's"), buttonSkin, "maroon");                                           //copy this for primm's and Kruskal's
         primsButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
         primsButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
         primsButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.75f)));
@@ -213,6 +219,8 @@ public class AlgorithmExecutor implements Screen {
                 runningPrims = true;
                 runningKruskals = false;
                 runningDijkstras = false;
+                runningCpa = false;
+
 
                 primsButtonClicked = true;
 
@@ -238,6 +246,8 @@ public class AlgorithmExecutor implements Screen {
                 runningPrims = false;
                 runningKruskals = true;
                 runningDijkstras = false;
+                runningCpa = false;
+
 
 
                 kruskalsButtonClicked = true;
@@ -247,10 +257,44 @@ public class AlgorithmExecutor implements Screen {
         });
 
 
+        final TextButton cpaButton = new TextButton(("CPA"), buttonSkin, "maroon");
+        cpaButton.setHeight(Gdx.graphics.getHeight() * (0.09f));
+        cpaButton.setWidth(Gdx.graphics.getWidth() * (0.1725f));
+        cpaButton.setPosition((Gdx.graphics.getWidth() * (0.0125f)), (Gdx.graphics.getHeight() * (0.53f)));
+        stage.addActor(cpaButton);
+
+        cpaButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                if (!runningCpa)
+                    resetAlg();
+
+                runningPrims = false;
+                runningKruskals = false;
+                runningDijkstras = false;
+                runningCpa = true;
+
+                cpaButtonClicked = true;
+                firstClickCpa = true;
+
+                startVertex = -1;
+                endVertex = -1;
+
+                visitedEdgeListFrom.clear();
+                visitedEdgeListTo.clear();
+
+            }
+        });
+
+
+
+
+
         popupBox = new Window("", buttonSkin, "maroon");
-        popupBox.setHeight(Gdx.graphics.getHeight() * (0.25f));
+        popupBox.setHeight(Gdx.graphics.getHeight() * (0.2f));
         popupBox.setWidth(Gdx.graphics.getWidth() * (0.19f));
-        popupBox.setPosition(Gdx.graphics.getWidth() * (0.005f), Gdx.graphics.getHeight() * (0.34f));
+        popupBox.setPosition(Gdx.graphics.getWidth() * (0.005f), Gdx.graphics.getHeight() * (0.28f));
         popupBox.getTitleLabel().setAlignment(-1);
         popupBox.setVisible(false);
 
@@ -421,6 +465,31 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
+//        if (runningCpa && cpaButtonClicked) {
+//
+//
+//
+//            if (!firstClickDijkstra) {
+//                vertexSelectPointer(true);
+//
+//                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1) {
+//                    startVertex = findClickedVertex();
+//                    firstClickDijkstra = true;
+//                }
+//            }
+//            else{
+//                vertexSelectPointer(false);
+//
+//                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1 && findClickedVertex() != startVertex) {
+//                    endVertex = findClickedVertex();
+//                    // firstClickDijkstra = false;
+//                    dijkstraAlg(startVertex, endVertex);
+//                    popupBox.setVisible(true);
+//                    dijkstrasButtonClicked = false;
+//                }
+//            }
+//
+//        }
 
 
 
@@ -453,9 +522,8 @@ public class AlgorithmExecutor implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
-
-
         }
+
 
         stage.draw();
         stage.act();
@@ -675,17 +743,50 @@ public class AlgorithmExecutor implements Screen {
 
         for (int i = 0; i < visitedEdgeListFrom.size(); i++) {
             sr.rectLine(vertexCoordsX.get(visitedEdgeListFrom.get(i)), vertexCoordsY.get(visitedEdgeListFrom.get(i)), vertexCoordsX.get(visitedEdgeListTo.get(i)), vertexCoordsY.get(visitedEdgeListTo.get(i)), vertexSize / 3);
-
         }
 
+
+
+
+
+        sr.setColor(0.95f, 0.95f, 0.95f, 1);
+        sr.setColor(Color.BLUE);
+        for (int i = 0; i < edgeListFrom.size(); i++){
+            if (edgeWeightList.get(i) == 0 && !runningCpa) {    //needs to be runningCpa
+
+                float x1 = vertexCoordsX.get(edgeListFrom.get(i));
+                float y1 = vertexCoordsY.get(edgeListFrom.get(i));
+                float x2 = vertexCoordsX.get(edgeListTo.get(i));
+                float y2 = vertexCoordsY.get(edgeListTo.get(i));
+
+                float divisor = (float)Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 - y1),2));
+                float vecX = ((x2 - x1) / divisor) * vertexSize;
+                float vecY = ((y2 - y1) / divisor) * vertexSize;
+
+
+
+
+                for (int k=0; k<divisor; k+=1) {
+
+                    x1 += vecX * k;
+                    y1 += vecY * k;
+                    sr.rectLine(x1,y1,x1 + vecX,y1 + vecY,vertexSize/3);
+                    x1 -= vecX * k;
+                    y1 -= vecY * k;
+                }
+
+            }
+        }
         sr.end();
 
-        if (graphIsDigraph && !runningKruskals && !runningPrims){
+
+
+        if (graphIsDigraph && !runningKruskals && !runningPrims || runningCpa){
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(Color.LIME);
 
 
-            for (int i = 0; (i < visitedEdgeListFrom.size()) && (i < visitedEdgeListTo.size()); i++) {
+            for (int i = 0;(i < visitedEdgeListFrom.size()); i++) {
 
 
                 float midpointX = (vertexCoordsX.get(visitedEdgeListFrom.get(i)) + vertexCoordsX.get(visitedEdgeListTo.get(i))) * 0.5f;
@@ -774,6 +875,8 @@ public class AlgorithmExecutor implements Screen {
         runningPrims = false;
         runningKruskals = false;
         runningDijkstras = false;
+        runningCpa = false;
+        firstClickCpa = false;
         firstClickDijkstra = false;
 
     }
@@ -829,11 +932,8 @@ public class AlgorithmExecutor implements Screen {
 
         layout.setText(whiteFont, dispVertexList);
 
-        if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+        if (layout.width > Gdx.graphics.getWidth() * 0.2f)
             dispVertexList = dispVertexList.substring(0, 15) + "...";
-        } else
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
 
         popupBox.getTitleLabel().setText("Prim's Algorithm:");
         popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
@@ -951,11 +1051,9 @@ public class AlgorithmExecutor implements Screen {
 
         layout.setText(whiteFont, dispVertexList);
 
-        if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+        if (layout.width > Gdx.graphics.getWidth() * 0.2f)
             dispVertexList = dispVertexList.substring(0, 15) + "...";
-        } else
-            popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+
 
         popupBox.getTitleLabel().setText("Kruskal's Algorithm:");
         popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
@@ -1173,18 +1271,18 @@ public class AlgorithmExecutor implements Screen {
 
             layout.setText(whiteFont, dispVertexList);
 
-            if (layout.width > Gdx.graphics.getWidth() * 0.2f) {
-                popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+            if (layout.width > Gdx.graphics.getWidth() * 0.2f)
                 dispVertexList = dispVertexList.substring(0, 15) + "...";
-            } else
-                popupBox.setWidth(Gdx.graphics.getWidth() * 0.19f);
+
+
+
 
             popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
             popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
 
 
             System.out.println("Path: " + shortestPathList);
-             System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
+            System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
             System.out.println("Total Weight: " + totalWeight);
         }
 
@@ -1200,16 +1298,6 @@ public class AlgorithmExecutor implements Screen {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     ArrayList<Integer> sortedConnections = new ArrayList<>();
     ArrayList<Float> sortedConnectionWeight = new ArrayList<>();
 
@@ -1221,7 +1309,7 @@ public class AlgorithmExecutor implements Screen {
     int criticalVertex;
 
 
-    private ArrayList<Integer> bfsDijkstra(ArrayList<Integer> visited,int lastVertex, int currentVertex,int endVertex){
+    private void bfsDijkstra(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex){
 
 
 
@@ -1242,7 +1330,7 @@ public class AlgorithmExecutor implements Screen {
             shortestPathList.add(currentVertex);
             criticalVertex = prevVertexList.get(currentVertex);
             shortestPathList.add(criticalVertex);
-            return visited;
+            return;
         }
 
 
@@ -1321,10 +1409,7 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-        if (sortedConnections.size() == 0){
-            return visited;
-        }else {
-
+        if (sortedConnections.size() != 0){
 
             bfsDijkstra(visited, currentVertex, sortedConnections.get(0), endVertex);
 
@@ -1334,8 +1419,124 @@ public class AlgorithmExecutor implements Screen {
             }
         }
 
-        return visited;
     }
+
+
+
+
+
+    private void cpaAlg(int startVertex, int endVertex) {
+
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+        undirectedEdgeWeightList.clear();
+
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+        undirectedEdgeWeightList.addAll(edgeWeightList);
+
+        undirectedEdgeListTo.addAll(edgeListTo);
+        undirectedEdgeListFrom.addAll(edgeListFrom);
+
+
+
+        sortedConnectionWeight.clear();
+        sortedConnections.clear();
+
+
+        shortestPathList.clear();
+
+        visitedEdgeListFrom.clear();
+        visitedEdgeListTo.clear();
+
+        tempLabels.clear();
+        permLabels.clear();
+        prevVertexList.clear();
+        criticalVertex = -1;
+
+        ArrayList<Float> negativeArray = new ArrayList<>();
+        for (int i=0; i < vertexCoordsX.size(); i++){
+            negativeArray.add(0f);
+            prevVertexList.add(-1);
+        }
+
+
+        tempLabels.addAll(negativeArray);
+        permLabels.addAll(negativeArray);
+
+
+
+
+        bfsDijkstra(new ArrayList<Integer>(), -1, startVertex, endVertex);
+
+
+        Collections.reverse(shortestPathList);
+        float totalWeight = permLabels.get(endVertex);
+
+
+
+
+        if (shortestPathList.size() > 0) {
+
+
+            for (int vertex : shortestPathList){
+
+                if (vertex == shortestPathList.get(0)) {
+                    visitedEdgeListFrom.add(vertex);
+                }else if (vertex == shortestPathList.get(shortestPathList.size() -1)){
+                    visitedEdgeListTo.add(vertex);
+                }else{
+                    visitedEdgeListFrom.add(vertex);
+                    visitedEdgeListTo.add(vertex);
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+
+            String dispVertexList = shortestPathList.toString();
+            dispVertexList = dispVertexList.replace("[", "");
+            dispVertexList = dispVertexList.replace("]", "");
+
+            layout.setText(whiteFont, dispVertexList);
+
+            if (layout.width > Gdx.graphics.getWidth() * 0.2f)
+                dispVertexList = dispVertexList.substring(0, 15) + "...";
+
+
+
+
+            popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
+            popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
+
+
+            System.out.println("Path: " + shortestPathList);
+            System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
+            System.out.println("Total Weight: " + totalWeight);
+        }
+
+        else{
+
+            popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
+            popupLabel.setText("No Path Found");
+
+            System.out.println("No Path Found");
+
+        }
+
+    }
+
+
+
+
+
 
 
 
@@ -1372,3 +1573,7 @@ public class AlgorithmExecutor implements Screen {
         batch.dispose();
     }
 }
+
+
+
+//https://www.geeksforgeeks.org/union-find/
