@@ -36,7 +36,7 @@ public class AlgorithmExecutor implements Screen {
     GlyphLayout layout = new GlyphLayout();
 
 
-    private final boolean showVertexNumbers = true;
+    private final boolean showVertexNumbers = false;
     private final boolean showEdgeWeights = true;
 
 
@@ -522,6 +522,7 @@ public class AlgorithmExecutor implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
+            cpaAlg(0,5);
         }
 
 
@@ -750,9 +751,8 @@ public class AlgorithmExecutor implements Screen {
 
 
         sr.setColor(0.95f, 0.95f, 0.95f, 1);
-        sr.setColor(Color.BLUE);
         for (int i = 0; i < edgeListFrom.size(); i++){
-            if (edgeWeightList.get(i) == 0 && !runningCpa) {    //needs to be runningCpa
+            if (edgeWeightList.get(i) == 0 && runningCpa) {    //needs to be runningCpa
 
                 float x1 = vertexCoordsX.get(edgeListFrom.get(i));
                 float y1 = vertexCoordsY.get(edgeListFrom.get(i));
@@ -764,15 +764,8 @@ public class AlgorithmExecutor implements Screen {
                 float vecY = ((y2 - y1) / divisor) * vertexSize;
 
 
-
-
-                for (int k=0; k<divisor; k+=1) {
-
-                    x1 += vecX * k;
-                    y1 += vecY * k;
-                    sr.rectLine(x1,y1,x1 + vecX,y1 + vecY,vertexSize/3);
-                    x1 -= vecX * k;
-                    y1 -= vecY * k;
+                for (int k=0; k<divisor/(Math.sqrt(Math.pow(vecX,2) + Math.pow(vecY,2))); k+=2) {
+                    sr.rectLine(x1 + k*vecX ,y1 + k*vecY,x1 + (k+1)*vecX,y1 + (k+1)*vecY,vertexSize/3);
                 }
 
             }
@@ -880,7 +873,6 @@ public class AlgorithmExecutor implements Screen {
         firstClickDijkstra = false;
 
     }
-
 
     ArrayList<Integer> undirectedEdgeListFrom = new ArrayList<>();
     ArrayList<Integer> undirectedEdgeListTo = new ArrayList<>();
@@ -1183,8 +1175,8 @@ public class AlgorithmExecutor implements Screen {
 
 
 
-    ArrayList<Integer> shortestPathList = new ArrayList<>();
 
+    ArrayList<Integer> shortestPathList = new ArrayList<>();
 
     private void dijkstraAlg(int startVertex, int endVertex) {
 
@@ -1297,7 +1289,6 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-
     ArrayList<Integer> sortedConnections = new ArrayList<>();
     ArrayList<Float> sortedConnectionWeight = new ArrayList<>();
 
@@ -1305,9 +1296,7 @@ public class AlgorithmExecutor implements Screen {
     ArrayList<Float> permLabels = new ArrayList<>();
     ArrayList<Integer> prevVertexList = new ArrayList<>();
 
-
     int criticalVertex;
-
 
     private void bfsDijkstra(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex){
 
@@ -1425,6 +1414,7 @@ public class AlgorithmExecutor implements Screen {
 
 
 
+
     private void cpaAlg(int startVertex, int endVertex) {
 
 
@@ -1439,101 +1429,104 @@ public class AlgorithmExecutor implements Screen {
         undirectedEdgeListFrom.addAll(edgeListFrom);
 
 
+        earliestEventTimeList.clear();
+        latestEventTimeList.clear();
 
-        sortedConnectionWeight.clear();
-        sortedConnections.clear();
-
-
-        shortestPathList.clear();
-
-        visitedEdgeListFrom.clear();
-        visitedEdgeListTo.clear();
-
-        tempLabels.clear();
-        permLabels.clear();
-        prevVertexList.clear();
-        criticalVertex = -1;
 
         ArrayList<Float> negativeArray = new ArrayList<>();
         for (int i=0; i < vertexCoordsX.size(); i++){
             negativeArray.add(0f);
-            prevVertexList.add(-1);
         }
 
+        earliestEventTimeList.addAll(negativeArray);
+        latestEventTimeList.addAll(negativeArray);
 
-        tempLabels.addAll(negativeArray);
-        permLabels.addAll(negativeArray);
+        bfsForwardPass(new ArrayList<Integer>(), -1, startVertex, endVertex);
 
-
-
-
-        bfsDijkstra(new ArrayList<Integer>(), -1, startVertex, endVertex);
-
-
-        Collections.reverse(shortestPathList);
-        float totalWeight = permLabels.get(endVertex);
-
-
-
-
-        if (shortestPathList.size() > 0) {
-
-
-            for (int vertex : shortestPathList){
-
-                if (vertex == shortestPathList.get(0)) {
-                    visitedEdgeListFrom.add(vertex);
-                }else if (vertex == shortestPathList.get(shortestPathList.size() -1)){
-                    visitedEdgeListTo.add(vertex);
-                }else{
-                    visitedEdgeListFrom.add(vertex);
-                    visitedEdgeListTo.add(vertex);
-                }
-
-            }
-
-
-
-
-
-
-
-
-
-
-            String dispVertexList = shortestPathList.toString();
-            dispVertexList = dispVertexList.replace("[", "");
-            dispVertexList = dispVertexList.replace("]", "");
-
-            layout.setText(whiteFont, dispVertexList);
-
-            if (layout.width > Gdx.graphics.getWidth() * 0.2f)
-                dispVertexList = dispVertexList.substring(0, 15) + "...";
-
-
-
-
-            popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
-            popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
-
-
-            System.out.println("Path: " + shortestPathList);
-            System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
-            System.out.println("Total Weight: " + totalWeight);
-        }
-
-        else{
-
-            popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
-            popupLabel.setText("No Path Found");
-
-            System.out.println("No Path Found");
-
-        }
 
     }
 
 
+    ArrayList<Float> earliestEventTimeList = new ArrayList<>();
+    ArrayList<Float> latestEventTimeList = new ArrayList<>();
+
+
+    private void bfsForwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex){
+
+
+        visited.add(currentVertex);
+
+
+        if (lastVertex == -1)
+            earliestEventTimeList.set(currentVertex,0f);
+
+
+
+
+
+        ArrayList<Integer> connections = new ArrayList<>();
+        ArrayList<Float> connectionWeight = new ArrayList<>();
+        for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)) && !visited.contains(undirectedEdgeListTo.get(i)) && !sortedConnections.contains(undirectedEdgeListTo.get(i))) {
+                connections.add(undirectedEdgeListTo.get(i));
+                connectionWeight.add(undirectedEdgeWeightList.get(i) + earliestEventTimeList.get(currentVertex));
+            }
+        }
+
+
+        if (sortedConnectionWeight.size() > 0) {
+
+            for (int i = 0; i < connectionWeight.size(); i++) {
+
+                for (int j = 0; j < sortedConnectionWeight.size(); j++) {
+                    if (connectionWeight.get(i) < sortedConnectionWeight.get(j)) {
+                        sortedConnectionWeight.add(j, connectionWeight.get(i));
+                        sortedConnections.add(j, connections.get(i));
+                        break;
+                    }
+                }
+
+                if (!sortedConnections.contains(connections.get(i))){
+                    sortedConnectionWeight.add(connectionWeight.get(i));
+                    sortedConnections.add(connections.get(i));
+                }
+
+            }
+
+        }else {
+
+            sortedConnectionWeight.addAll(connectionWeight);
+            Collections.sort(sortedConnectionWeight);
+
+            for (float connection : sortedConnectionWeight) {
+                sortedConnections.add(connections.get(connectionWeight.indexOf(connection)));
+                connectionWeight.set(connectionWeight.indexOf(connection),-1f);
+            }
+
+        }
+
+        System.out.println(connections);
+        System.out.println(sortedConnections);
+        System.out.println(sortedConnectionWeight);
+
+
+        for (int connection : sortedConnections){
+
+
+        }
+
+
+
+        if (sortedConnections.size() != 0){
+
+            bfsForwardPass(visited, currentVertex, sortedConnections.get(0), endVertex);
+
+            if (criticalVertex == currentVertex && prevVertexList.get(currentVertex) != -1) {
+                criticalVertex = prevVertexList.get(currentVertex);
+            }
+        }
+
+    }
 
 
 
