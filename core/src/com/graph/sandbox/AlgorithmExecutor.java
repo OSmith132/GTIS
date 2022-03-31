@@ -36,7 +36,7 @@ public class AlgorithmExecutor implements Screen {
     GlyphLayout layout = new GlyphLayout();
 
 
-    private final boolean showVertexNumbers = false;
+    private final boolean showVertexNumbers = true;
     private final boolean showEdgeWeights = true;
 
 
@@ -47,7 +47,6 @@ public class AlgorithmExecutor implements Screen {
     private boolean runningKruskals = false;
     private boolean runningDijkstras = false;
     private boolean runningCpa = false;
-
 
 
     private boolean primsButtonClicked = false;
@@ -150,15 +149,15 @@ public class AlgorithmExecutor implements Screen {
 
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
-            font.getData().setScale(0.5f,0.5f);
-            whiteFont.getData().setScale(0.4f,0.4f);
+            font.getData().setScale(0.5f, 0.5f);
+            whiteFont.getData().setScale(0.4f, 0.4f);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
-            whiteFont.getData().setScale(0.8f,0.8f);
+            whiteFont.getData().setScale(0.8f, 0.8f);
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
-            font.getData().setScale(5f/3f,5f/3f);
-            whiteFont.getData().setScale(4f/3f,4f/3f);
+            font.getData().setScale(5f / 3f, 5f / 3f);
+            whiteFont.getData().setScale(4f / 3f, 4f / 3f);
         }
 
 
@@ -249,7 +248,6 @@ public class AlgorithmExecutor implements Screen {
                 runningCpa = false;
 
 
-
                 kruskalsButtonClicked = true;
 
 
@@ -286,9 +284,6 @@ public class AlgorithmExecutor implements Screen {
 
             }
         });
-
-
-
 
 
         popupBox = new Window("", buttonSkin, "maroon");
@@ -437,9 +432,7 @@ public class AlgorithmExecutor implements Screen {
             drawFinishedAlgVertices();
 
 
-
         if (runningDijkstras && dijkstrasButtonClicked) {
-
 
 
             if (!firstClickDijkstra) {
@@ -449,13 +442,12 @@ public class AlgorithmExecutor implements Screen {
                     startVertex = findClickedVertex();
                     firstClickDijkstra = true;
                 }
-            }
-            else{
+            } else {
                 vertexSelectPointer(false);
 
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1 && findClickedVertex() != startVertex) {
                     endVertex = findClickedVertex();
-                   // firstClickDijkstra = false;
+                    // firstClickDijkstra = false;
                     dijkstraAlg(startVertex, endVertex);
                     popupBox.setVisible(true);
                     dijkstrasButtonClicked = false;
@@ -492,9 +484,6 @@ public class AlgorithmExecutor implements Screen {
 //        }
 
 
-
-
-
         if (runningPrims && primsButtonClicked) {
 
             vertexSelectPointer(true);
@@ -522,7 +511,7 @@ public class AlgorithmExecutor implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
-            cpaAlg(0,5);
+            cpaAlg(0, 6);
         }
 
 
@@ -530,9 +519,6 @@ public class AlgorithmExecutor implements Screen {
         stage.act();
 
     }
-
-
-
 
 
     private void drawExistingVertex() {
@@ -747,11 +733,8 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-
-
-
         sr.setColor(0.95f, 0.95f, 0.95f, 1);
-        for (int i = 0; i < edgeListFrom.size(); i++){
+        for (int i = 0; i < edgeListFrom.size(); i++) {
             if (edgeWeightList.get(i) == 0 && runningCpa) {    //needs to be runningCpa
 
                 float x1 = vertexCoordsX.get(edgeListFrom.get(i));
@@ -759,13 +742,13 @@ public class AlgorithmExecutor implements Screen {
                 float x2 = vertexCoordsX.get(edgeListTo.get(i));
                 float y2 = vertexCoordsY.get(edgeListTo.get(i));
 
-                float divisor = (float)Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 - y1),2));
+                float divisor = (float) Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
                 float vecX = ((x2 - x1) / divisor) * vertexSize;
                 float vecY = ((y2 - y1) / divisor) * vertexSize;
 
 
-                for (int k=0; k<divisor/(Math.sqrt(Math.pow(vecX,2) + Math.pow(vecY,2))); k+=2) {
-                    sr.rectLine(x1 + k*vecX ,y1 + k*vecY,x1 + (k+1)*vecX,y1 + (k+1)*vecY,vertexSize/3);
+                for (int k = 0; k < divisor / (Math.sqrt(Math.pow(vecX, 2) + Math.pow(vecY, 2))); k += 2) {
+                    sr.rectLine(x1 + k * vecX, y1 + k * vecY, x1 + (k + 1) * vecX, y1 + (k + 1) * vecY, vertexSize / 3);
                 }
 
             }
@@ -773,13 +756,12 @@ public class AlgorithmExecutor implements Screen {
         sr.end();
 
 
-
-        if (graphIsDigraph && !runningKruskals && !runningPrims || runningCpa){
+        if (graphIsDigraph && !runningKruskals && !runningPrims || runningCpa) {
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(Color.LIME);
 
 
-            for (int i = 0;(i < visitedEdgeListFrom.size()); i++) {
+            for (int i = 0; (i < visitedEdgeListFrom.size()); i++) {
 
 
                 float midpointX = (vertexCoordsX.get(visitedEdgeListFrom.get(i)) + vertexCoordsX.get(visitedEdgeListTo.get(i))) * 0.5f;
@@ -1064,7 +1046,6 @@ public class AlgorithmExecutor implements Screen {
         int smallestEdgeIndex = -1;
 
 
-
         for (int i = 0; i < undirectedEdgeWeightList.size(); i++) {
 
 
@@ -1160,19 +1141,25 @@ public class AlgorithmExecutor implements Screen {
 
 
     private int findWeightIndex(int from, int to){
-
-        for (int j = 0; j < edgeListFrom.size(); j++) {
-            if ((from == edgeListFrom.get(j) && Objects.equals(to, edgeListTo.get(j))) || (from == edgeListTo.get(j) && Objects.equals(to, edgeListFrom.get(j)))) {
-                return j;
+        if (!graphIsDigraph || runningKruskals  ||  runningPrims) {
+            for (int j = 0; j < edgeListFrom.size(); j++) {
+                if ((from == edgeListFrom.get(j) && Objects.equals(to, edgeListTo.get(j))) || (from == edgeListTo.get(j) && Objects.equals(to, edgeListFrom.get(j)))) {
+                    return j;
+                }
             }
+            return -1;
         }
-        return -1;
+
+        else{
+            for (int j = 0; j < edgeListFrom.size(); j++) {
+                if ((from == edgeListFrom.get(j) && Objects.equals(to, edgeListTo.get(j)))) {
+                    return j;
+                }
+            }
+            return -1;
+        }
 
     }
-
-
-
-
 
 
 
@@ -1195,6 +1182,7 @@ public class AlgorithmExecutor implements Screen {
             undirectedEdgeListFrom.addAll(edgeListTo);
         }
 
+        System.out.println(undirectedEdgeListFrom + "  " + undirectedEdgeListTo);
 
         sortedConnectionWeight.clear();
         sortedConnections.clear();
@@ -1211,7 +1199,7 @@ public class AlgorithmExecutor implements Screen {
         criticalVertex = -1;
 
         ArrayList<Float> negativeArray = new ArrayList<>();
-        for (int i=0; i < vertexCoordsX.size(); i++){
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
             negativeArray.add(0f);
             prevVertexList.add(-1);
         }
@@ -1221,8 +1209,6 @@ public class AlgorithmExecutor implements Screen {
         permLabels.addAll(negativeArray);
 
 
-
-
         bfsDijkstra(new ArrayList<Integer>(), -1, startVertex, endVertex);
 
 
@@ -1230,31 +1216,21 @@ public class AlgorithmExecutor implements Screen {
         float totalWeight = permLabels.get(endVertex);
 
 
-
-
         if (shortestPathList.size() > 0) {
 
 
-            for (int vertex : shortestPathList){
+            for (int vertex : shortestPathList) {
 
                 if (vertex == shortestPathList.get(0)) {
                     visitedEdgeListFrom.add(vertex);
-                }else if (vertex == shortestPathList.get(shortestPathList.size() -1)){
+                } else if (vertex == shortestPathList.get(shortestPathList.size() - 1)) {
                     visitedEdgeListTo.add(vertex);
-                }else{
+                } else {
                     visitedEdgeListFrom.add(vertex);
                     visitedEdgeListTo.add(vertex);
                 }
 
             }
-
-
-
-
-
-
-
-
 
 
             String dispVertexList = shortestPathList.toString();
@@ -1267,8 +1243,6 @@ public class AlgorithmExecutor implements Screen {
                 dispVertexList = dispVertexList.substring(0, 15) + "...";
 
 
-
-
             popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
             popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + totalWeight);
 
@@ -1276,9 +1250,7 @@ public class AlgorithmExecutor implements Screen {
             System.out.println("Path: " + shortestPathList);
             System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
             System.out.println("Total Weight: " + totalWeight);
-        }
-
-        else{
+        } else {
 
             popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
             popupLabel.setText("No Path Found");
@@ -1298,15 +1270,14 @@ public class AlgorithmExecutor implements Screen {
 
     int criticalVertex;
 
-    private void bfsDijkstra(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex){
-
+    private void bfsDijkstra(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex) {
 
 
         visited.add(currentVertex);
         if (lastVertex == -1) {
             tempLabels.set(currentVertex, 0f);
             permLabels.set(currentVertex, 0f);
-        }else {
+        } else {
             permLabels.set(currentVertex, tempLabels.get(currentVertex));
             sortedConnections.remove(0);
             sortedConnectionWeight.remove(0);
@@ -1314,15 +1285,12 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-
-        if (currentVertex == endVertex){
+        if (currentVertex == endVertex) {
             shortestPathList.add(currentVertex);
             criticalVertex = prevVertexList.get(currentVertex);
             shortestPathList.add(criticalVertex);
             return;
         }
-
-
 
 
         ArrayList<Integer> connections = new ArrayList<>();
@@ -1333,6 +1301,9 @@ public class AlgorithmExecutor implements Screen {
                 connectionWeight.add(undirectedEdgeWeightList.get(i) + permLabels.get(currentVertex));
             }
         }
+
+
+
 
 
         if (sortedConnectionWeight.size() > 0) {
@@ -1347,45 +1318,41 @@ public class AlgorithmExecutor implements Screen {
                     }
                 }
 
-                if (!sortedConnections.contains(connections.get(i))){
+                if (!sortedConnections.contains(connections.get(i))) {
                     sortedConnectionWeight.add(connectionWeight.get(i));
                     sortedConnections.add(connections.get(i));
                 }
 
             }
 
-        }else {
+        } else {
 
             sortedConnectionWeight.addAll(connectionWeight);
             Collections.sort(sortedConnectionWeight);
 
             for (float connection : sortedConnectionWeight) {
                 sortedConnections.add(connections.get(connectionWeight.indexOf(connection)));
-                connectionWeight.set(connectionWeight.indexOf(connection),-1f);
+                connectionWeight.set(connectionWeight.indexOf(connection), -1f);
             }
 
         }
 
 
+        for (int connection : sortedConnections) {
 
 
-
-
-
-
-
-        for (int connection : sortedConnections){
-
-            if (lastVertex == -1 || tempLabels.get(connection) == 0){
+            if (lastVertex == -1 || tempLabels.get(connection) == 0) {
                 tempLabels.set(connection, tempLabels.get(currentVertex) + edgeWeightList.get(findWeightIndex(currentVertex, connection)));
                 prevVertexList.set(connection, currentVertex);
-            }
-            else {
+            } else {
                 for (int vertex : visited) {
+                    int weightIndex = findWeightIndex(vertex, connection);
 
-                    if (findWeightIndex(vertex, connection) != -1) {
-                        if (tempLabels.get(connection) > tempLabels.get(vertex) + edgeWeightList.get(findWeightIndex(vertex, connection))) {
-                            tempLabels.set(connection, tempLabels.get(vertex) + edgeWeightList.get(findWeightIndex(vertex, connection)));
+                    System.out.println("weight " + vertex + " " + connection + " " + weightIndex);
+
+                    if (weightIndex != -1) {
+                        if (tempLabels.get(connection) > tempLabels.get(vertex) + undirectedEdgeWeightList.get(weightIndex)) {
+                            tempLabels.set(connection, tempLabels.get(vertex) + undirectedEdgeWeightList.get(weightIndex));
 
                             prevVertexList.set(connection, vertex);
                         }
@@ -1396,9 +1363,7 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-
-
-        if (sortedConnections.size() != 0){
+        if (sortedConnections.size() != 0) {
 
             bfsDijkstra(visited, currentVertex, sortedConnections.get(0), endVertex);
 
@@ -1409,6 +1374,15 @@ public class AlgorithmExecutor implements Screen {
         }
 
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1433,15 +1407,31 @@ public class AlgorithmExecutor implements Screen {
         latestEventTimeList.clear();
 
 
+
         ArrayList<Float> negativeArray = new ArrayList<>();
-        for (int i=0; i < vertexCoordsX.size(); i++){
-            negativeArray.add(0f);
+        for (int i = 0; i < vertexCoordsX.size(); i++) {
+            negativeArray.add(-1f);
         }
 
         earliestEventTimeList.addAll(negativeArray);
         latestEventTimeList.addAll(negativeArray);
 
+
+//        startVertex = 2;
         bfsForwardPass(new ArrayList<Integer>(), -1, startVertex, endVertex);
+
+
+
+
+
+        undirectedEdgeListFrom.clear();
+        undirectedEdgeListTo.clear();
+
+        undirectedEdgeListTo.addAll(edgeListFrom);
+        undirectedEdgeListFrom.addAll(edgeListTo);
+
+
+        bfsBackwardPass(new ArrayList<Integer>(),-1,endVertex,startVertex);
 
 
     }
@@ -1451,90 +1441,97 @@ public class AlgorithmExecutor implements Screen {
     ArrayList<Float> latestEventTimeList = new ArrayList<>();
 
 
-    private void bfsForwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex){
+    private void bfsForwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex) {
 
 
         visited.add(currentVertex);
 
 
         if (lastVertex == -1)
-            earliestEventTimeList.set(currentVertex,0f);
-
-
-
+            earliestEventTimeList.set(currentVertex, 0f);
 
 
         ArrayList<Integer> connections = new ArrayList<>();
         ArrayList<Float> connectionWeight = new ArrayList<>();
         for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
-            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)) && !visited.contains(undirectedEdgeListTo.get(i)) && !sortedConnections.contains(undirectedEdgeListTo.get(i))) {
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detectino
                 connections.add(undirectedEdgeListTo.get(i));
                 connectionWeight.add(undirectedEdgeWeightList.get(i) + earliestEventTimeList.get(currentVertex));
             }
         }
 
 
-        if (sortedConnectionWeight.size() > 0) {
 
-            for (int i = 0; i < connectionWeight.size(); i++) {
 
-                for (int j = 0; j < sortedConnectionWeight.size(); j++) {
-                    if (connectionWeight.get(i) < sortedConnectionWeight.get(j)) {
-                        sortedConnectionWeight.add(j, connectionWeight.get(i));
-                        sortedConnections.add(j, connections.get(i));
-                        break;
-                    }
-                }
 
-                if (!sortedConnections.contains(connections.get(i))){
-                    sortedConnectionWeight.add(connectionWeight.get(i));
-                    sortedConnections.add(connections.get(i));
-                }
+
+        //System.out.println(connections + "  " + connectionWeight + "  " + earliestEventTimeList);
+
+
+        for (int connection : connections){
+
+
+            if (earliestEventTimeList.get(connection) == -1  ||  connectionWeight.get(connections.indexOf(connection)) > earliestEventTimeList.get(connection)){
+                earliestEventTimeList.set(connection,connectionWeight.get(connections.indexOf(connection)));
 
             }
 
-        }else {
+           // System.out.println(earliestEventTimeList.get(connection));
+        }
 
-            sortedConnectionWeight.addAll(connectionWeight);
-            Collections.sort(sortedConnectionWeight);
+        //System.out.println(connectionWeight);
 
-            for (float connection : sortedConnectionWeight) {
-                sortedConnections.add(connections.get(connectionWeight.indexOf(connection)));
-                connectionWeight.set(connectionWeight.indexOf(connection),-1f);
-            }
+        for (int connection : connections){
+            System.out.println("earliest "  + earliestEventTimeList  +  "  "  +  connection);
+            bfsForwardPass(visited, currentVertex, connection, endVertex);
 
         }
 
-        System.out.println(connections);
-        System.out.println(sortedConnections);
-        System.out.println(sortedConnectionWeight);
-
-
-        for (int connection : sortedConnections){
-
-
-        }
-
-
-
-        if (sortedConnections.size() != 0){
-
-            bfsForwardPass(visited, currentVertex, sortedConnections.get(0), endVertex);
-
-            if (criticalVertex == currentVertex && prevVertexList.get(currentVertex) != -1) {
-                criticalVertex = prevVertexList.get(currentVertex);
-            }
-        }
 
     }
 
 
+    private void bfsBackwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex) {
+
+
+        visited.add(currentVertex);
+
+
+        if (lastVertex == -1)
+            latestEventTimeList.set(currentVertex, earliestEventTimeList.get(currentVertex));
+
+
+        ArrayList<Integer> connections = new ArrayList<>();
+        ArrayList<Float> connectionWeight = new ArrayList<>();
+        for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detectino
+                connections.add(undirectedEdgeListTo.get(i));
+                connectionWeight.add(-undirectedEdgeWeightList.get(i) + latestEventTimeList.get(currentVertex));
+            }
+        }
 
 
 
 
+        for (int connection : connections){
+
+            if (latestEventTimeList.get(connection) == -1  ||  connectionWeight.get(connections.indexOf(connection)) < latestEventTimeList.get(connection)){
+                latestEventTimeList.set(connection,connectionWeight.get(connections.indexOf(connection)));
+
+            }
+
+        }
+
+        System.out.println(connectionWeight);
+
+        for (int connection : connections){
+            System.out.println("latest "  + latestEventTimeList  +  "  "  +  connection);
+            bfsBackwardPass(visited, currentVertex, connection, endVertex);
+
+        }
 
 
+    }
 
 
 
@@ -1566,7 +1563,6 @@ public class AlgorithmExecutor implements Screen {
         batch.dispose();
     }
 }
-
 
 
 //https://www.geeksforgeeks.org/union-find/
