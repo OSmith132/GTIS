@@ -274,7 +274,7 @@ public class AlgorithmExecutor implements Screen {
                 runningCpa = true;
 
                 cpaButtonClicked = true;
-                firstClickCpa = true;
+                firstClickCpa = false;
 
                 startVertex = -1;
                 endVertex = -1;
@@ -447,7 +447,6 @@ public class AlgorithmExecutor implements Screen {
 
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1 && findClickedVertex() != startVertex) {
                     endVertex = findClickedVertex();
-                    // firstClickDijkstra = false;
                     dijkstraAlg(startVertex, endVertex);
                     popupBox.setVisible(true);
                     dijkstrasButtonClicked = false;
@@ -457,31 +456,30 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-//        if (runningCpa && cpaButtonClicked) {
-//
-//
-//
-//            if (!firstClickDijkstra) {
-//                vertexSelectPointer(true);
-//
-//                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1) {
-//                    startVertex = findClickedVertex();
-//                    firstClickDijkstra = true;
-//                }
-//            }
-//            else{
-//                vertexSelectPointer(false);
-//
-//                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1 && findClickedVertex() != startVertex) {
-//                    endVertex = findClickedVertex();
-//                    // firstClickDijkstra = false;
-//                    dijkstraAlg(startVertex, endVertex);
-//                    popupBox.setVisible(true);
-//                    dijkstrasButtonClicked = false;
-//                }
-//            }
-//
-//        }
+        if (runningCpa && cpaButtonClicked) {
+
+
+
+            if (!firstClickCpa) {
+                vertexSelectPointer(true);
+
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1) {
+                    startVertex = findClickedVertex();
+                    firstClickCpa = true;
+                }
+            }
+            else{
+                vertexSelectPointer(false);
+
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && findClickedVertex() != -1 && findClickedVertex() != startVertex) {
+                    endVertex = findClickedVertex();
+                    cpaAlg(startVertex, endVertex);
+                    popupBox.setVisible(true);
+                    cpaButtonClicked = false;
+                }
+            }
+
+        }
 
 
         if (runningPrims && primsButtonClicked) {
@@ -511,7 +509,7 @@ public class AlgorithmExecutor implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) && !modalBoxVisible) {
             System.out.println("Well Done! You've found the debug button!");
-            cpaAlg(0, 6);
+            cpaAlg(15, 9);
         }
 
 
@@ -1392,46 +1390,75 @@ public class AlgorithmExecutor implements Screen {
     private void cpaAlg(int startVertex, int endVertex) {
 
 
-        undirectedEdgeListFrom.clear();
-        undirectedEdgeListTo.clear();
-        undirectedEdgeWeightList.clear();
 
-        undirectedEdgeWeightList.addAll(edgeWeightList);
-        undirectedEdgeWeightList.addAll(edgeWeightList);
+         undirectedEdgeListFrom.clear();
+         undirectedEdgeListTo.clear();
+         undirectedEdgeWeightList.clear();
 
-        undirectedEdgeListTo.addAll(edgeListTo);
-        undirectedEdgeListFrom.addAll(edgeListFrom);
+         undirectedEdgeWeightList.addAll(edgeWeightList);
+         undirectedEdgeWeightList.addAll(edgeWeightList);
 
-
-        earliestEventTimeList.clear();
-        latestEventTimeList.clear();
+         undirectedEdgeListTo.addAll(edgeListTo);
+         undirectedEdgeListFrom.addAll(edgeListFrom);
 
 
+         earliestEventTimeList.clear();
+         latestEventTimeList.clear();
 
-        ArrayList<Float> negativeArray = new ArrayList<>();
-        for (int i = 0; i < vertexCoordsX.size(); i++) {
-            negativeArray.add(-1f);
-        }
 
-        earliestEventTimeList.addAll(negativeArray);
-        latestEventTimeList.addAll(negativeArray);
+         visitedEdgeListFrom.clear();
+         visitedEdgeListTo.clear();
+
+
+         ArrayList<Float> negativeArray = new ArrayList<>();
+         for (int i = 0; i < vertexCoordsX.size(); i++) {
+             negativeArray.add(-1f);
+         }
+
+         earliestEventTimeList.addAll(negativeArray);
+         latestEventTimeList.addAll(negativeArray);
 
 
 //        startVertex = 2;
-        bfsForwardPass(new ArrayList<Integer>(), -1, startVertex, endVertex);
+        // try {
+             ArrayList<Integer> forwardVisited = new ArrayList<>();
+
+             bfsForwardPass(forwardVisited, -1, startVertex, endVertex);
+
+             System.out.println("visited" + forwardVisited);
+             undirectedEdgeListFrom.clear();
+             undirectedEdgeListTo.clear();
+
+             undirectedEdgeListTo.addAll(edgeListFrom);
+             undirectedEdgeListFrom.addAll(edgeListTo);
+
+           //  bfsBackwardPass(new ArrayList<Integer>(), -1, endVertex, startVertex,forwardVisited);
+//         }
+//         catch(Exception ignored){
+//
+//         }
+
+        System.out.println("earliest "  + earliestEventTimeList);
+      //  System.out.println("latest "  + latestEventTimeList);
 
 
 
+         for (int i = 0; i < earliestEventTimeList.size(); i++) {
 
+             if (Objects.equals(earliestEventTimeList.get(i), latestEventTimeList.get(i))) {
+                 if (visitedEdgeListFrom.size() == 0)
+                     visitedEdgeListFrom.add(i);
+                 else {
+                     visitedEdgeListTo.add(i);
+                     visitedEdgeListFrom.add(visitedEdgeListTo.get(visitedEdgeListTo.size() - 1));
+                 }
 
-        undirectedEdgeListFrom.clear();
-        undirectedEdgeListTo.clear();
+             }
+         }
+         visitedEdgeListFrom.remove(visitedEdgeListFrom.size() - 1);
 
-        undirectedEdgeListTo.addAll(edgeListFrom);
-        undirectedEdgeListFrom.addAll(edgeListTo);
+         //System.out.println(visitedEdgeListFrom + " --- " + visitedEdgeListTo);
 
-
-        bfsBackwardPass(new ArrayList<Integer>(),-1,endVertex,startVertex);
 
 
     }
@@ -1449,12 +1476,17 @@ public class AlgorithmExecutor implements Screen {
 
         if (lastVertex == -1)
             earliestEventTimeList.set(currentVertex, 0f);
+        else{
+            sortedConnections.remove(0);
+            sortedConnectionWeight.remove(0);
+
+        }
 
 
         ArrayList<Integer> connections = new ArrayList<>();
         ArrayList<Float> connectionWeight = new ArrayList<>();
         for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
-            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detectino
+            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i))  && !visited.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detectino
                 connections.add(undirectedEdgeListTo.get(i));
                 connectionWeight.add(undirectedEdgeWeightList.get(i) + earliestEventTimeList.get(currentVertex));
             }
@@ -1463,16 +1495,58 @@ public class AlgorithmExecutor implements Screen {
 
 
 
+      //  System.out.println(connections + " 1 " + connectionWeight + " 1 " + earliestEventTimeList);
 
 
-        //System.out.println(connections + "  " + connectionWeight + "  " + earliestEventTimeList);
 
 
-        for (int connection : connections){
 
 
-            if (earliestEventTimeList.get(connection) == -1  ||  connectionWeight.get(connections.indexOf(connection)) > earliestEventTimeList.get(connection)){
-                earliestEventTimeList.set(connection,connectionWeight.get(connections.indexOf(connection)));
+
+        if (sortedConnectionWeight.size() > 0) {
+
+            for (int i = 0; i < connectionWeight.size(); i++) {
+
+                for (int j = 0; j < sortedConnectionWeight.size(); j++) {
+                    if (connectionWeight.get(i) < sortedConnectionWeight.get(j)) {
+                        sortedConnectionWeight.add(j, connectionWeight.get(i));
+                        sortedConnections.add(j, connections.get(i));
+                        break;
+                    }
+                }
+
+                if (!sortedConnections.contains(connections.get(i))) {
+                    sortedConnectionWeight.add(connectionWeight.get(i));
+                    sortedConnections.add(connections.get(i));
+                }
+
+            }
+
+        } else {
+
+            sortedConnectionWeight.addAll(connectionWeight);
+            Collections.sort(sortedConnectionWeight);
+
+            for (float connection : sortedConnectionWeight) {
+                sortedConnections.add(connections.get(connectionWeight.indexOf(connection)));
+                connectionWeight.set(connectionWeight.indexOf(connection), -1f);
+            }
+
+        }
+
+
+
+        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
+
+
+
+
+
+        for (int connection : sortedConnections){
+
+
+            if (sortedConnectionWeight.get(sortedConnections.indexOf(connection)) > earliestEventTimeList.get(connection)){
+                earliestEventTimeList.set(connection,sortedConnectionWeight.get(sortedConnections.indexOf(connection)));
 
             }
 
@@ -1481,8 +1555,8 @@ public class AlgorithmExecutor implements Screen {
 
         //System.out.println(connectionWeight);
 
-        for (int connection : connections){
-            System.out.println("earliest "  + earliestEventTimeList  +  "  "  +  connection);
+        for (int connection : sortedConnections){
+
             bfsForwardPass(visited, currentVertex, connection, endVertex);
 
         }
@@ -1491,7 +1565,17 @@ public class AlgorithmExecutor implements Screen {
     }
 
 
-    private void bfsBackwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex) {
+
+
+
+
+
+
+
+
+
+
+    private void bfsBackwardPass(ArrayList<Integer> visited, int lastVertex, int currentVertex, int endVertex, ArrayList<Integer> forwardVisited) {
 
 
         visited.add(currentVertex);
@@ -1504,7 +1588,7 @@ public class AlgorithmExecutor implements Screen {
         ArrayList<Integer> connections = new ArrayList<>();
         ArrayList<Float> connectionWeight = new ArrayList<>();
         for (int i = 0; i < undirectedEdgeListFrom.size(); i++) {
-            if (undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detectino
+            if (forwardVisited.contains(undirectedEdgeListTo.get(i))  &&  undirectedEdgeListFrom.get(i) == currentVertex && !connections.contains(undirectedEdgeListTo.get(i)) && !visited.contains(undirectedEdgeListTo.get(i))) {  // && !visited.contains(undirectedEdgeListTo.get(i))   needs cycle detection
                 connections.add(undirectedEdgeListTo.get(i));
                 connectionWeight.add(-undirectedEdgeWeightList.get(i) + latestEventTimeList.get(currentVertex));
             }
@@ -1522,18 +1606,15 @@ public class AlgorithmExecutor implements Screen {
 
         }
 
-        System.out.println(connectionWeight);
+       // System.out.println(connectionWeight);
 
         for (int connection : connections){
-            System.out.println("latest "  + latestEventTimeList  +  "  "  +  connection);
-            bfsBackwardPass(visited, currentVertex, connection, endVertex);
+            bfsBackwardPass(visited, currentVertex, connection, endVertex, forwardVisited);
 
         }
 
 
     }
-
-
 
 
     @Override

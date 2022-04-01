@@ -1349,9 +1349,6 @@ public class Sandbox implements Screen {
 
 
 
-
-
-
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             lastVertexClicked = findClickedVertex();
         }
