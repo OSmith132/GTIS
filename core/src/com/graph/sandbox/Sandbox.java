@@ -2061,9 +2061,6 @@ public class Sandbox implements Screen {
         return allVertices;
     }
 
-
-
-
     public void eraseVertex() {
 
         int vertex = findClickedVertex();
