@@ -659,11 +659,11 @@ public class Sandbox implements Screen {
 
 
 
-        
-        
-        
-        
-        
+
+
+
+
+
         
         
         
@@ -772,73 +772,6 @@ public class Sandbox implements Screen {
         });
 
 
-        final Window saveBox = new Window("Would you like to save and exit?", buttonSkin, "maroon");
-        saveBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
-        saveBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
-        saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
-        saveBox.setModal(true);
-        saveBox.setMovable(false);
-        saveBox.getTitleLabel().setAlignment(1);
-
-
-        TextButton cancelButton = new TextButton(("Cancel"), buttonSkin, "maroon");
-        saveBox.add(cancelButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
-        cancelButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                saveBox.setVisible(false);
-                modalBoxVisible = false;
-            }
-        });
-
-
-        TextButton noButton = new TextButton(("Don't Save"), buttonSkin, "maroon");
-        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
-        noButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-            }
-        });
-
-
-        TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
-        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
-        yesButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-
-                if (firstTimeSave) {
-                    saveAsBox.setVisible(true);
-                } else {
-                    save(graphIsDigraph, currentGraphName, false);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                }
-
-
-                saveBox.setVisible(false);
-
-
-            }
-        });
-
-
-        saveBox.align(Align.center);
-        stage.addActor(saveBox);
-        saveBox.setVisible(false);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -901,6 +834,82 @@ public class Sandbox implements Screen {
 
 
 
+        final Window saveBox = new Window("Would you like to save and exit?", buttonSkin, "maroon");
+        saveBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
+        saveBox.setWidth(Gdx.graphics.getWidth() * (0.25f));
+        saveBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
+        saveBox.setModal(true);
+        saveBox.setMovable(false);
+        saveBox.getTitleLabel().setAlignment(1);
+
+
+        TextButton cancelButton = new TextButton(("Cancel"), buttonSkin, "maroon");
+        saveBox.add(cancelButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
+        cancelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                saveBox.setVisible(false);
+                modalBoxVisible = false;
+            }
+        });
+
+
+        TextButton noButton = new TextButton(("Don't Save"), buttonSkin, "maroon");
+        saveBox.add(noButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
+
+
+        TextButton yesButton = new TextButton(("Save"), buttonSkin, "maroon");
+        saveBox.add(yesButton).height(Value.percentHeight(0.35f, saveBox)).width(Value.percentWidth(0.3f, saveBox)).pad(Value.percentWidth(0.01f, saveBox));
+        yesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                boolean graphConnected = graphConnected();
+                if (vertexCoordsX.size() >= 2 && graphConnected) {
+
+                    if (firstTimeSave) {
+                        saveAsBox.setVisible(true);
+                    } else {
+                        save(graphIsDigraph, currentGraphName, false);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                    }
+
+                    saveBox.setVisible(false);
+                }
+                else if (vertexCoordsX.size() < 2) {
+
+                    saveBox.setVisible(false);
+                    if (Objects.equals(vertexName, "vertex"))
+                        popupLabel.setText("Please add more vertices");
+                    else
+                        popupLabel.setText("Please add more nodes");
+
+                    popupBox.setVisible(true);
+
+
+                }
+                else {
+                    saveBox.setVisible(false);
+                    popupLabel.setText("Please fully connect the graph first");
+
+                    popupBox.setVisible(true);
+
+                }
+
+            }
+        });
+
+
+        saveBox.align(Align.center);
+        stage.addActor(saveBox);
+        saveBox.setVisible(false);
+
 
 
 
@@ -935,19 +944,18 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
+                boolean graphConnected = graphConnected();
 
-                if (firstTimeSave) {
+                if (firstTimeSave && vertexCoordsX.size() >= 2 && graphConnected) {
                     saveAsBox.setVisible(true);
                     algorithmsBox.setVisible(false);
-                } else {
+                }
+                else if (vertexCoordsX.size() >= 2 && graphConnected) {
                     save(graphIsDigraph, currentGraphName, false);
                     algorithmsBox.setVisible(false);
-
-                    if (vertexCoordsX.size() >= 2 && graphConnected()) {
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
-
-
-                    } else if (vertexCoordsX.size() < 2) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new AlgorithmExecutor(currentGraphName + ".graph"));
+                }
+                else if (vertexCoordsX.size() < 2) {
 
                         algorithmsBox.setVisible(false);
                         if (Objects.equals(vertexName, "vertex"))
@@ -958,16 +966,16 @@ public class Sandbox implements Screen {
                         popupBox.setVisible(true);
 
 
-                    } else if (!graphConnected()) {
+                    }
+                else {
                         algorithmsBox.setVisible(false);
                         popupLabel.setText("Please fully connect the graph first");
 
                         popupBox.setVisible(true);
 
                     }
-                }
 
-                saved = true;
+
 
 
             }

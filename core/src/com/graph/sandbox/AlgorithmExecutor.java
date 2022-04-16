@@ -269,22 +269,32 @@ public class AlgorithmExecutor implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                if (!runningCpa)
-                    resetAlg();
 
-                runningPrims = false;
-                runningKruskals = false;
-                runningDijkstras = false;
-                runningCpa = true;
+                if (graphIsDigraph) {
+                    if (!runningCpa)
+                        resetAlg();
 
-                cpaButtonClicked = true;
+                    runningPrims = false;
+                    runningKruskals = false;
+                    runningDijkstras = false;
+                    runningCpa = true;
 
-                startVertex = -1;
-                endVertex = -1;
+                    cpaButtonClicked = true;
 
-                visitedEdgeListFrom.clear();
-                visitedEdgeListTo.clear();
+                    startVertex = -1;
+                    endVertex = -1;
 
+                    visitedEdgeListFrom.clear();
+                    visitedEdgeListTo.clear();
+
+                }
+                else{
+
+                    popupBox.getTitleLabel().setText("Critical Path Analysis:");
+                    popupLabel.setText("CPA only available for digraphs");
+                    popupBox.setVisible(true);
+
+                }
             }
         });
 
