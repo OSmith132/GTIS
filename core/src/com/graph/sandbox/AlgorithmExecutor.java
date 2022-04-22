@@ -148,21 +148,32 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
+        float XScale = resolutionW / 1600f;
+        float YScale = resolutionH / 900f;
+
         if (Objects.equals(configArray[4], "small")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.0075f));
-            font.getData().setScale(0.5f, 0.5f);
-            smallFont.getData().setScale(0.25f,0.25f);
-            whiteFont.getData().setScale(0.4f, 0.4f);
+            font.getData().setScale(0.5f * XScale, 0.5f * YScale);
+            smallFont.getData().setScale(0.25f * XScale,0.25f * YScale);
+            whiteFont.getData().setScale(0.4f * XScale, 0.4f * YScale);
         } else if (Objects.equals(configArray[4], "medium")) {
             vertexSize = (Gdx.graphics.getWidth() * (0.015f));
-            smallFont.getData().setScale(0.5f,0.5f);
-            whiteFont.getData().setScale(0.8f, 0.8f);
+            smallFont.getData().setScale(0.5f * XScale,0.5f * YScale);
+            whiteFont.getData().setScale(0.8f * XScale, 0.8f * YScale);
+            font.getData().setScale(XScale, YScale);
         } else {
             vertexSize = (Gdx.graphics.getWidth() * (0.025f));
-            font.getData().setScale(5f / 3f, 5f / 3f);
-            smallFont.getData().setScale(5f / 3f,5f / 3f);
-            whiteFont.getData().setScale(4f / 3f, 4f / 3f);
+            font.getData().setScale(5f / 3f * XScale, 5f / 3f * YScale);
+            smallFont.getData().setScale(5f / 3f * XScale,5f / 3f * YScale);
+            whiteFont.getData().setScale(4f / 3f * XScale, 4f / 3f * YScale);
         }
+
+
+
+
+
+
+
 
 
         Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));

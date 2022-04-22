@@ -410,7 +410,7 @@ public class MainMenu implements Screen {
         resLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
 
         final SelectBox<String> resPicker = new SelectBox<>(buttonSkin);
-        resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540","720 x 480");
+        resPicker.setItems("2560 x 1440","1920 x 1080","1600 x 900","1366 x 768","1280 x 720","960 x 540");
         resPicker.setMaxListCount(5);
 
             resPicker.addListener(new ClickListener() {
@@ -744,7 +744,7 @@ public class MainMenu implements Screen {
                 }
 
 
-
+                settingsBox.setVisible(false);
 
             }
         });
