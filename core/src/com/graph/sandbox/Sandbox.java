@@ -94,7 +94,7 @@ public class Sandbox implements Screen {
     TextButton confirmEdgeWeight;
     final TextField edgeWeightInputField;
     final Window edgeWeightBox;
-
+    final Window saveAsBox;
     Skin buttonSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
     final Label savedLabel = new Label("Graph Saved Successfully.", buttonSkin, "error");
 
@@ -141,6 +141,7 @@ public class Sandbox implements Screen {
 
 
         firstTimeSave = false;
+        saved = true;
 
         if (saveAs) {
 
@@ -668,12 +669,12 @@ public class Sandbox implements Screen {
 
 
 
-        
-        
-        
-        
-        
-        
+
+
+
+
+        final Window popupBox = new Window("", buttonSkin, "maroon");
+        final Label popupLabel = new Label("Please fully connect the graph first",buttonSkin,"error");
         
         
         
@@ -686,7 +687,7 @@ public class Sandbox implements Screen {
         savedLabel.setVisible(false);
 
 
-        final Window saveAsBox = new Window("File Name:", buttonSkin, "maroon");
+        saveAsBox = new Window("File Name:", buttonSkin, "maroon");
         saveAsBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         saveAsBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         saveAsBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
@@ -709,7 +710,6 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-
                 saveAsBox.setVisible(false);
                 modalBoxVisible = false;
             }
@@ -722,11 +722,44 @@ public class Sandbox implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 
 
+                boolean graphConnected = graphConnected();
+                if (vertexCoordsX.size() >= 2 && graphConnected) {
+
+                    if (firstTimeSave) {
+                        saveAsBox.setVisible(true);
+                    } else {
+                        save(graphIsDigraph, currentGraphName, false);
+
+                    }
+
+
+                }
+                else if (vertexCoordsX.size() < 2) {
+
+
+                    if (Objects.equals(vertexName, "vertex"))
+                        popupLabel.setText("Please add more vertices");
+                    else
+                        popupLabel.setText("Please add more nodes");
+
+                    popupBox.setVisible(true);
+
+
+                }
+                else {
+                    popupLabel.setText("Please fully connect the graph first");
+
+                    popupBox.setVisible(true);
+                }
+
+
+
                 saveAsBox.setVisible(false);
                 modalBoxVisible = false;
 
                 currentGraphName = nameInputField.getText();
                 save(graphIsDigraph, currentGraphName, true);
+                saved = true;
 
 
             }
@@ -743,15 +776,35 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
+                boolean graphConnected = graphConnected();
+                if (vertexCoordsX.size() >= 2 && graphConnected) {
 
-                if (firstTimeSave) {
-                    saveAsBox.setVisible(true);
-                } else {
-                    save(graphIsDigraph, currentGraphName, false);
+                    if (firstTimeSave) {
+                        saveAsBox.setVisible(true);
+                    } else {
+                        save(graphIsDigraph, currentGraphName, false);
+
+                    }
+
+
                 }
+                else if (vertexCoordsX.size() < 2) {
 
-                saved = true;
 
+                    if (Objects.equals(vertexName, "vertex"))
+                        popupLabel.setText("Please add more vertices");
+                    else
+                        popupLabel.setText("Please add more nodes");
+
+                    popupBox.setVisible(true);
+
+
+                }
+                else {
+                    popupLabel.setText("Please fully connect the graph first");
+
+                    popupBox.setVisible(true);
+                }
 
             }
         });
@@ -767,10 +820,35 @@ public class Sandbox implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                saveAsBox.setVisible(true);
 
-                saved = true;
-                modalBoxVisible = true;
+
+                boolean graphConnected = graphConnected();
+                if (vertexCoordsX.size() >= 2 && graphConnected) {
+
+                    saveAsBox.setVisible(true);
+                    modalBoxVisible = true;
+
+                }
+                else if (vertexCoordsX.size() < 2) {
+
+                    if (Objects.equals(vertexName, "vertex"))
+                        popupLabel.setText("Please add more vertices");
+                    else
+                        popupLabel.setText("Please add more nodes");
+
+                    popupBox.setVisible(true);
+
+
+                }
+                else {
+                    popupLabel.setText("Please fully connect the graph first");
+
+                    popupBox.setVisible(true);
+
+                }
+
+
+
 
             }
         });
@@ -786,7 +864,7 @@ public class Sandbox implements Screen {
 
 
 
-        final Window popupBox = new Window("", buttonSkin, "maroon");
+
         popupBox.setHeight(Gdx.graphics.getHeight() * (0.16f));
         popupBox.setWidth(Gdx.graphics.getWidth() * (0.2f));
         popupBox.setPosition(Gdx.graphics.getWidth() * (0.4f), Gdx.graphics.getHeight() * (0.5f));
@@ -809,7 +887,7 @@ public class Sandbox implements Screen {
         popupBox.getTitleTable().align(Align.top | Align.right);
 
 
-        final Label popupLabel = new Label("Please fully connect the graph first",buttonSkin,"error");
+
         popupBox.add(popupLabel).padTop(Value.percentWidth(0.05f, popupBox));
 
         popupBox.row();
@@ -1421,7 +1499,7 @@ public class Sandbox implements Screen {
             eraseVertex();
         }
 
-        savedLabel.setVisible(saved && !firstTimeSave && vertexCoordsX.size() != 0);
+        savedLabel.setVisible(saved && !firstTimeSave && vertexCoordsX.size() != 0 && !saveAsBox.isVisible());
 
         stage.draw();
         stage.act();
@@ -1641,9 +1719,7 @@ public class Sandbox implements Screen {
                             break;
                         }
 
-
                     }
-
 
                     if (notDuplicateEdge) {
                         edgeWeightBox.setVisible(true);
@@ -1658,7 +1734,6 @@ public class Sandbox implements Screen {
 
 
                 }
-
 
             } else if (newEdgeClicked && firstVertexClicked) {
                 edgeListFrom.remove(edgeListFrom.size() - 1);
@@ -1917,7 +1992,7 @@ public class Sandbox implements Screen {
             float weight = ThreadLocalRandom.current().nextInt(1, maxWeight + 1);
 
             if (floatWeight)
-                weight -= ThreadLocalRandom.current().nextInt(0, 99 + 1) / 100f;
+                weight -= ThreadLocalRandom.current().nextInt(0, 100) / 100f;
 
 
             edgeListFrom.add(i);
@@ -1975,7 +2050,6 @@ public class Sandbox implements Screen {
 
 
                 if (xIndex == k && random == undirectedEdgeListTo.get(k)) {
-
                     duplicateEdge = true;
                     break;
                 }

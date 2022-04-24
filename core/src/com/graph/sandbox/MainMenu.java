@@ -35,7 +35,6 @@ public class MainMenu implements Screen {
     String[] defaultConfigArray = {"1600 x 900", "windowed", "vertex", "edge", "medium"};
 
 
-// code stacks and queues for pp6
 
     public MainMenu() {
 
@@ -550,7 +549,7 @@ public class MainMenu implements Screen {
 
 
 
-        final Label vertexSizeLabel = new Label("Vertex Size:   " + configArray[4], buttonSkin);
+        final Label vertexSizeLabel = new Label(configArray[2] + " Size:   " + configArray[4], buttonSkin);
         vertexSizeLabel.setFontScaleX(Gdx.graphics.getHeight() / 600f);
         vertexSizeLabel.setFontScaleY(Gdx.graphics.getHeight() / 600f);
         settingsBox.add(vertexSizeLabel).padTop(windowTopPadding).padRight(Value.percentWidth(0.125f, settingsBox)).colspan(2);
@@ -576,13 +575,13 @@ public class MainMenu implements Screen {
                 public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
                     if (vertexSizeSlider.getValue() == 0){
-                        vertexSizeLabel.setText("Vertex Size:  small");
+                        vertexSizeLabel.setText(configArray[2] + " Size:  small");
                     }
                     else if (vertexSizeSlider.getValue() == 1){
-                        vertexSizeLabel.setText("Vertex Size:   medium");
+                        vertexSizeLabel.setText(configArray[2] + " Size:   medium");
                     }
                     else{
-                        vertexSizeLabel.setText("Vertex Size:   large");
+                        vertexSizeLabel.setText(configArray[2] + " Size:   large");
                     }
 
 
@@ -591,28 +590,9 @@ public class MainMenu implements Screen {
 
 
 
-//
-//            vPopSlider = new Slider(1,100,1,false,buttonSkin);
-//            vPopSlider.setValue(50);
-//
-//            vPopSlider.addListener(new ClickListener() {
-//                @Override
-//                public void touchDragged(InputEvent event, float x, float y, int pointer) {
-//
-//                    populateVInputField.setText(String.valueOf((int) vPopSlider.getValue()));
-//
-//                }
-//            });
-
-
 
 
         settingsBox.row().size(Value.percentHeight(0.25f, settingsBox));
-
-
-
-
-
 
 
 
@@ -626,7 +606,7 @@ public class MainMenu implements Screen {
                 settingsBox.setVisible(false);
             }
         });
-        settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand();
+        settingsBox.add(cancelButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand().padLeft(Value.percentWidth(0.0275f, settingsBox));
 
 
 
@@ -665,7 +645,7 @@ public class MainMenu implements Screen {
 
         });
 
-        settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand();
+        settingsBox.add(defaultButton).height(Value.percentHeight(0.125f, settingsBox)).width(Value.percentWidth(0.275f, settingsBox)).bottom().padBottom(Value.percentHeight(0.01f, settingsBox)).expand().padLeft(Value.percentWidth(0.0275f, settingsBox));
 
 
 
@@ -714,15 +694,15 @@ public class MainMenu implements Screen {
 
                 if (vertexSizeSlider.getValue() == 0){
                     configArray[4] = "small";
-                    vertexSizeLabel.setText("Vertex Size:  small");
+                    vertexSizeLabel.setText(configArray[2] + " Size:  small");
                 }
                 else if (vertexSizeSlider.getValue() == 1){
                     configArray[4] = "medium";
-                    vertexSizeLabel.setText("Vertex Size:   medium");
+                    vertexSizeLabel.setText(configArray[2] + " Size:   medium");
                 }
                 else{
                     configArray[4] = "large";
-                    vertexSizeLabel.setText("Vertex Size:   large");
+                    vertexSizeLabel.setText(configArray[2] + " Size:   large");
                 }
 
 
@@ -744,6 +724,7 @@ public class MainMenu implements Screen {
                 }
 
 
+                settingsOpen = false;
                 settingsBox.setVisible(false);
 
             }
