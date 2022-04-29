@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -1060,7 +1059,7 @@ public class AlgorithmExecutor implements Screen {
 
 
         for (int i = 0; i < vertexCoordsX.size() - 1; i++) {
-            ArrayList<Float> kruskalArray = new ArrayList<>(findNextEdgeKruskals(vertexList));
+            ArrayList<Float> kruskalArray = new ArrayList<>(findNextEdgeKruskals());
 
             visitedEdgeListFrom.add((int) (float) kruskalArray.get(0));
             visitedEdgeListTo.add((int) (float) kruskalArray.get(1));
@@ -1101,7 +1100,7 @@ public class AlgorithmExecutor implements Screen {
 
     }
 
-    private ArrayList<Float> findNextEdgeKruskals(ArrayList<Integer> vertexList) {
+    private ArrayList<Float> findNextEdgeKruskals() {
 
 
         int smallestEdgeIndex = -1;
