@@ -1093,9 +1093,9 @@ public class AlgorithmExecutor implements Screen {
         popupLabel.setText("Path: " + dispVertexList + "\n" + "Total Weight: " + disTotalWeight);
 
 
-        System.out.println("Path: " + vertexList);
-        System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
-        System.out.println("Total Weight: " + totalWeight);
+//        System.out.println("Path: " + vertexList);
+//        System.out.println("      " + visitedEdgeListFrom + "\n      " + visitedEdgeListTo);
+//        System.out.println("Total Weight: " + totalWeight);
 
 
     }
@@ -1233,7 +1233,7 @@ public class AlgorithmExecutor implements Screen {
             undirectedEdgeListFrom.addAll(edgeListTo);
         }
 
-        System.out.println(undirectedEdgeListFrom + "  " + undirectedEdgeListTo);
+//        System.out.println(undirectedEdgeListFrom + "  " + undirectedEdgeListTo);
 
         sortedConnectionWeight.clear();
         sortedConnections.clear();
@@ -1308,7 +1308,7 @@ public class AlgorithmExecutor implements Screen {
             popupBox.getTitleLabel().setText("Dijkstra's Algorithm:");
             popupLabel.setText("No Path Found");
 
-            System.out.println("No Path Found");
+//            System.out.println("No Path Found");
 
         }
 
@@ -1392,7 +1392,7 @@ public class AlgorithmExecutor implements Screen {
                 for (int vertex : visited) {
                     int weightIndex = findWeightIndex(vertex, connection);
 
-                    System.out.println("weight " + vertex + " " + connection + " " + weightIndex);
+//                    System.out.println("weight " + vertex + " " + connection + " " + weightIndex);
 
                     if (weightIndex != -1) {
                         if (tempLabels.get(connection) > tempLabels.get(vertex) + undirectedEdgeWeightList.get(weightIndex)) {
@@ -1493,8 +1493,13 @@ public class AlgorithmExecutor implements Screen {
                 if (layout.width > Gdx.graphics.getWidth() * 0.2f)
                     dispVertexList = dispVertexList.substring(0, 15) + "...";
 
+                String disTotalWeight = "ERROR";
+                float totalWeight = Collections.max(earliestEventTimeList);
 
-                popupLabel.setText("Critical Vertices: " + dispVertexList   + "\n"  +  "Minimum Completion Time: " + earliestEventTimeList.get(earliestEventTimeList.size()-1));
+                if (totalWeight == (int)totalWeight)
+                    disTotalWeight = Integer.toString((int)totalWeight);
+
+                popupLabel.setText("Critical Vertices: " + dispVertexList   + "\n"  +  "Minimum Completion Time: " + disTotalWeight);
 
 
 
@@ -1561,8 +1566,8 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
-        System.out.println("times   " + earliestEventTimeList);
+//        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
+//        System.out.println("times   " + earliestEventTimeList);
 
         if (sortedConnections.size() != 0) {
 
@@ -1573,8 +1578,8 @@ public class AlgorithmExecutor implements Screen {
                     bfsForwardPass(visited, currentVertex, sortedConnections.get(0));
                 }
                 else {
-                    System.out.println(visited.size() + " " + edgeListFrom.size());
-                    System.out.println(visited + "    " + edgeListFrom);
+//                    System.out.println(visited.size() + " " + edgeListFrom.size());
+//                    System.out.println(visited + "    " + edgeListFrom);
                     graphHasCycle = true;
                     return;
                 }
@@ -1624,7 +1629,7 @@ public class AlgorithmExecutor implements Screen {
 //                System.out.println("earlys con " +earliestEventTimeList.get(connection));
 
 
-                System.out.println(sortedConnections + " --- " + currentVertex);
+//                System.out.println(sortedConnections + " --- " + currentVertex);
 
 
                 if (Objects.equals(latestEventTimeList.get(connection), earliestEventTimeList.get(connection))){
@@ -1636,8 +1641,8 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
-        System.out.println("times   " + earliestEventTimeList);
+//        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
+//        System.out.println("times   " + earliestEventTimeList);
 
         if (sortedConnections.size() != 0) {
 
