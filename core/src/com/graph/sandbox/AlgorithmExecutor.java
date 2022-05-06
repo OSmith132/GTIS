@@ -1641,8 +1641,6 @@ public class AlgorithmExecutor implements Screen {
         }
 
 
-//        System.out.println("connections   " + sortedConnections + "  " + sortedConnectionWeight);
-//        System.out.println("times   " + earliestEventTimeList);
 
         if (sortedConnections.size() != 0) {
 
@@ -1775,4 +1773,3 @@ public class AlgorithmExecutor implements Screen {
 }
 
 
-//https://www.geeksforgeeks.org/union-find/

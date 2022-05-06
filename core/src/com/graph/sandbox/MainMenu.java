@@ -624,7 +624,7 @@ public class MainMenu implements Screen {
 
                 fullscreenButton.setChecked(Objects.equals(defaultConfigArray[1], "fullscreen"));
 
-                if (Objects.equals(defaultConfigArray[2], "vertex")) {
+                if (Objects.equals(defaultConfigArray[2], "Vertex")) {
                     prefNameVertex.setChecked(true);
                     prefNameNode.setChecked(false);
                 } else {
@@ -632,7 +632,7 @@ public class MainMenu implements Screen {
                     prefNameVertex.setChecked(false);
                 }
 
-                if (Objects.equals(defaultConfigArray[3], "edge")) {
+                if (Objects.equals(defaultConfigArray[3], "Edge")) {
                     prefNameEdge.setChecked(true);
                     prefNameArc.setChecked(false);
                 } else {
@@ -677,17 +677,17 @@ public class MainMenu implements Screen {
                 }
 
                 if(prefNameVertex.isChecked()){
-                    configArray[2] = "vertex";
+                    configArray[2] = "Vertex";
                 }
                 else{
-                    configArray[2] = "node";
+                    configArray[2] = "Node";
                 }
 
                 if(prefNameEdge.isChecked()){
-                    configArray[3] = "edge";
+                    configArray[3] = "Edge";
                 }
                 else{
-                    configArray[3] = "arc";
+                    configArray[3] = "Arc";
                 }
 
 
@@ -755,7 +755,7 @@ public class MainMenu implements Screen {
 
 
 
-                    if(Objects.equals(configArray[2], "vertex")){
+                    if(Objects.equals(configArray[2], "Vertex")){
                         prefNameVertex.setChecked(true);
                         prefNameNode.setChecked(false);
                     }
@@ -764,7 +764,7 @@ public class MainMenu implements Screen {
                         prefNameVertex.setChecked(false);
                     }
 
-                    if(Objects.equals(configArray[3], "edge")){
+                    if(Objects.equals(configArray[3], "Edge")){
                         prefNameEdge.setChecked(true);
                         prefNameArc.setChecked(false);
                     }
